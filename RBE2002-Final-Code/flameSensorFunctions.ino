@@ -22,11 +22,30 @@ boolean flameClose(int flameValue)
 }
 
 /*
- * This function rotates the robot until it finds the candle by stopping when the flame sensor value goes from high to low.
+ * This function rotates the robot until it finds the candle by stopping when the flame sensor value goes from high 
+ * to low.
  * 
+ * inputs: none
+ * outputs: none
  */
 void rotateUntilHot()
 {
-  
+  float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
+  delay(200); //this delay may need to be altered or removed
+  rotate(10);
+  if(flameSensorValue > analogRead(flameSensorPin)) //if the new value is smaller, the candle is closer
+  {
+    rotate(10);                               //...so keep turning that direction
+  }
+  else    //if the new value is larger, the candle is farther away
+  {
+    rotate(170);
+    if((flameSensorValue - analogRead(flameSensorPin)) - 10)  //
+    {
+      stopRobot();
+    }
+  }
+  //save the higher flame sensor value and make that the setpoint in a PID loop. use the loop to turn the robot 
+  //back to that flame sensor value. just an idea.
 }
 
