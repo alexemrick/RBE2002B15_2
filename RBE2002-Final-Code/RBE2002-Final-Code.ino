@@ -165,7 +165,11 @@ void findCandle()
     case 4: //is it the candle
     {
       float flameSensorValue = analogRead(flameSensorPin);
-//      if(flameSensorValue <
+      if(flameClose(flameSensorValue))
+      {
+        rotateUntilHot();
+      }
+
     }
 
   }
@@ -190,22 +194,6 @@ void displayLCD()
   lcd.print("Y = ");
   lcd.print(yDistanceTraveled);
   lcd.home();
-}
-
-/*
- * This function determines if the flame sensor is within 90 degrees of the robot and within 6"
- */
-boolean flameClose(int flameValue)
-{
-  boolean present = false;
-  if(flameValue < flameIsClose)
-  {
-    present = true;
-  }
-  else
-  {
-    present = false;
-  }
 }
 
 
