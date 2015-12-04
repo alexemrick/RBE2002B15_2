@@ -9,12 +9,14 @@
  */
 void doTrig(float dist, float angle) //fix this, need to add tolerances, can't really use mod
 {
-//  if ((angle % 180.0) < 5.0 || (angle % 180.0) > 175.0)
-//  {
-//    distX = (dist * (sin((PI / 2) - (angle * (PI / 90)))));
-//  }
-//  else
-//    distY = (dist * (sin((angle * (PI / 90)))));
+ // int ang = angle*100;
+ int ang = angle;
+  if ((ang % 180) < 5 || (ang % 180) > 175)
+  {
+    distX = (dist * (sin((PI / 2) - (ang * (PI / 90)))));
+  }
+  else
+    distY = (dist * (sin((ang * (PI / 90)))));
 
 }
 
