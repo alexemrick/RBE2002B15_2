@@ -97,9 +97,12 @@ const double ki = 1.8;
 const double kd = 0.7;
 
 const float distanceToFrontWall = 7.0;
-const float distanceToWallRight = 6.0;
+const float distanceToRightWall = 6.0;
+
+const int Stop = 90;
 
 const int flameIsClose = 970;
+const int flameIsHere = 22;
 //initial setup
 void setup() {
   Serial.begin(9600);
@@ -114,6 +117,9 @@ void setup() {
   fan.attach(fanPin);
 
   lcd.begin(16, 2);
+
+  Timer1.initialize(100000);
+  Timer1.attachInterrupt(readUltrasonic);
 }
 
 //main loop
@@ -138,10 +144,16 @@ void findCandle()
     case 0:
       {
        // driveStraightUltra;
-        
-        if (distanceFront <= 5.0 || distanceRight >= 14.0)
+        /*
+         * This chunk of code describes when the candle is in the 60 degree 15 inch cone
+         * float flameSensorValue = analogRead(flameSensorPin);
+      if(flameClose(flameSensorValue)) 
+      {
+        rotateUntilHot();           
+      }
+         */
+        if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
         {
-          //lcd.print("STOP");
           stopRobot();
           state = 1;
         }
@@ -152,24 +164,49 @@ void findCandle()
         {
           state = 4;
         }
-        
+        else
+        {
+          
+        }
       }
-    case 2:
+    case 2: //turn right
       {
         turnRobot(1, 90);
+        state = 0;
       }
-    case 3:
+    case 3: //turn left
       {
         turnRobot(2, 90);
+        state = 0;
       }
     case 4: //is it the candle
     {
       float flameSensorValue = analogRead(flameSensorPin);
-      if(flameClose(flameSensorValue))
+      if(flameSensorValue < flameIsHere)
       {
-        rotateUntilHot();
+        state = 5;
       }
+      else
+      {
+        state = 6;
+      }
+      
 
+    }
+    case 5: //it is the candle, blow out the candle
+    {
+      
+    }
+    case 6: //it is not the candle, there is a wall in front of you
+    {
+      
+    }
+    case 7:
+    {
+       if(distanceRight >= distanceToRightWall) //can just be else
+        {
+          state = 2; //turn right
+        }
     }
 
   }

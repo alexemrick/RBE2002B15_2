@@ -81,6 +81,6 @@ void driveForward(int speedR, int speedL)
  */
 void stopRobot()
 {
-  leftDrive.write(90);
-  rightDrive.write(90);
+  leftDrive.write(Stop);
+  rightDrive.write(Stop);
 }
