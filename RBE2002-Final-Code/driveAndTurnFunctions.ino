@@ -69,29 +69,6 @@ const double kd = 0.7;
 const float distanceToFrontWall = 7.0;
 const float distanceToWallRight = 6.0;
 
-
-//initial setup
-void setup() {
-  Serial.begin(9600);
-  Serial3.begin(9600);
-  pinMode(fanPin, OUTPUT);
-  pinMode(leftEncoderAPin, INPUT);
-  pinMode(leftEncoderBPin, INPUT);
-  pinMode(rightEncoderAPin, INPUT);
-  pinMode(rightEncoderBPin, INPUT);
-  leftDrive.attach(leftMotorPin, 1000, 2000);
-  rightDrive.attach(rightMotorPin, 1000, 2000);
-  fan.attach(fanPin);
-
-  lcd.begin(16, 2);
-}
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
-
 /*
  * This function rotates the robot 90, -90, or 180 degrees from the angle at which it starts.
  *
@@ -149,5 +126,32 @@ void rotate(int motorSpeed)
   rightDrive.write(180 - motorSpeed);
 }
 
+/*
+ * This function drives the robot straight without using any sensors.
+ *
+ * This is used in the driveStraightUltra() function. The motor speeds are updated in that function to correct the drift
+ * and keep the robot straight.
+ *
+ * inputs: int speedR, speedL = values to pass to the right and left motors respectively
+ * outputs: none
+ */
+void driveForward(int speedR, int speedL)
+{
+  leftDrive.write(speedL);
+  rightDrive.write(speedR);
+}
 
-
+/*
+ *  This function stops the robot from moving by turning off the motors.
+ *
+ *  This function is used in findCandle() when an object is detected in front of the robot or a large distance
+ *  is detected on the right. (case 0)
+ *
+ *  input: none
+ *  output: none
+ */
+void stopRobot()
+{
+  leftDrive.write(90);
+  rightDrive.write(90);
+}
