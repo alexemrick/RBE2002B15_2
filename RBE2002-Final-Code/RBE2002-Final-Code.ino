@@ -99,7 +99,7 @@ const double kd = 0.7;
 const float distanceToFrontWall = 7.0;
 const float distanceToWallRight = 6.0;
 
-
+const int flameIsClose = 970;
 //initial setup
 void setup() {
   Serial.begin(9600);
@@ -137,7 +137,7 @@ void findCandle()
   {
     case 0:
       {
-        driveStraightUltra;
+       // driveStraightUltra;
         
         if (distanceFront <= 5.0 || distanceRight >= 14.0)
         {
@@ -171,59 +171,6 @@ void findCandle()
   }
 }
 
-/*FIX: CALL THIS UP INSTEAD OF X AND THEN MAKE A condition in this function TO DETERMINE IF THIS VALUE RETURNED
- * IS IN THE X OR Y BASED ON THE GYRO (very similar to distOrientation).
- *
- * This function finds the displacement in the x or y direction that the robot traveled using trigonometry.
- *
- * inputs: float dist = distance from encoder reading, float angle = angle from gyro
- * outputs: x displacement of robot
- */
-void doTrig(float dist, float angle) //fix this, need to add tolerances, can't really use mod
-{
-//  if ((angle % 180.0) < 5.0 || (angle % 180.0) > 175.0)
-//  {
-//    distX = (dist * (sin((PI / 2) - (angle * (PI / 90)))));
-//  }
-//  else
-//    distY = (dist * (sin((angle * (PI / 90)))));
-
-}
-
-/*
- * This function takes the distance traveled measured by the encoders and determines the orientation of the robot
- * and adds that distance to either the x or y global variable depending on the gyro.
- *
- * The input distX in this function is the output from doTrigX
- *
- * input: distance the robot has traveled in inches as a float
- * output: none
- */
-void distOrientation(int gyro)
-{
-  //add tolerances, this is just an outline!
-  if (gyro > 0 && gyro < (PI / 2)) //if the robot is facing forward, the positive x direction
-  {
-    xDistanceTraveled += distX;
-    yDistanceTraveled += distY;
-  }
-  else if (gyro > (PI / 2) && gyro < PI) //if the robot is facing left, the positive y direction
-  {
-    xDistanceTraveled -= distX;
-    yDistanceTraveled += distY;
-  }
-  else if (gyro > PI && gyro < (3 * PI / 2)) //if the robot is facing backward, the negative x direction
-  {
-    xDistanceTraveled -= distX;
-    yDistanceTraveled -= distY;
-  }
-  else if (gyro > (3 * PI / 2) && gyro < (2 * PI)) //if the robot is facing right, the negative y direction
-  {
-    xDistanceTraveled += distX;
-    yDistanceTraveled -= distY;
-  }
-}
-
 /*
  * This function displays the total distance traveled as measured by the encoders onto the LCD.
  *
@@ -245,65 +192,20 @@ void displayLCD()
   lcd.home();
 }
 
-
-
-/*
- * This function drives the robot straight using the ultrasonic sensors. It measures the distance from the right and left walls twice.
- * If the right distance increases, the robot turns right slightly. If the left distance increases, the robot turns left slightly.
- *
- * This function will be case 0 of the main state machine.
- *
- * inputs: value passed to motors to drive straight
- * outputs: none
- */
-void driveStraightUltra(int motorSpeed)
-{
-  const int kp = 0;
-  const int ki = 0;
-  const int kd = 0;
-
-  int turning = 0;
-  int speedR = motorSpeed;
-  int speedL = motorSpeed;
-
-  switch (turning)
-  {
-    case 0:
-      {
-        driveForward(speedR, speedL);
-
-        float distanceL = Serial3.readStringUntil(',').toFloat();
-        float distanceR = Serial3.readStringUntil('\n').toFloat();
-
-        readUltrasonic();
-        //add tolerances
-        if ((distanceRight - distanceR) > 0)
-        {
-          turning = 1; //shift right
-        }
-        else if ((distanceLeft - distanceL) > 0)
-        {
-          turning = 2; //shift left
-        }
-      }
-    case 1: //shift right
-      {
-
-      }
-    case 2: //shift left
-      {
-
-      }
-  }
-}
-
 /*
  * This function determines if the flame sensor is within 90 degrees of the robot and within 6"
  */
 boolean flameClose(int flameValue)
 {
   boolean present = false;
-//  if(flameValue < 750
+  if(flameValue < flameIsClose)
+  {
+    present = true;
+  }
+  else
+  {
+    present = false;
+  }
 }
 
 

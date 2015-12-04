@@ -1,7 +1,3 @@
-float distanceFront;
-float distanceRight;
-float distanceLeft;
-
 /*
  * This function reads the ultrasonic values sent over Serial3 from the Arduino Uno.
  *
