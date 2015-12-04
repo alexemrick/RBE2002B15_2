@@ -2,9 +2,6 @@ float distanceFront;
 float distanceRight;
 float distanceLeft;
 
-void setup() {}
-
-void loop() {}
 /*
  * This function reads the ultrasonic values sent over Serial3 from the Arduino Uno.
  *

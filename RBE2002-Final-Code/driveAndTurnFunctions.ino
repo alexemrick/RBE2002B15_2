@@ -69,29 +69,6 @@ const double kd = 0.7;
 const float distanceToFrontWall = 7.0;
 const float distanceToWallRight = 6.0;
 
-
-//initial setup
-void setup() {
-  Serial.begin(9600);
-  Serial3.begin(9600);
-  pinMode(fanPin, OUTPUT);
-  pinMode(leftEncoderAPin, INPUT);
-  pinMode(leftEncoderBPin, INPUT);
-  pinMode(rightEncoderAPin, INPUT);
-  pinMode(rightEncoderBPin, INPUT);
-  leftDrive.attach(leftMotorPin, 1000, 2000);
-  rightDrive.attach(rightMotorPin, 1000, 2000);
-  fan.attach(fanPin);
-
-  lcd.begin(16, 2);
-}
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
-
 /*
  * This function rotates the robot 90, -90, or 180 degrees from the angle at which it starts.
  *
