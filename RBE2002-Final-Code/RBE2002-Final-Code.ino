@@ -25,7 +25,7 @@
  * - Right Encoder channel B on interrupt port 20
  * - Flame sensor on port A0
  *
-  */
+ */
 
 //libraries
 #include <Encoder.h>  //provided by Arduino
@@ -138,19 +138,19 @@ void loop() {
 void findCandle()
 {
   readUltrasonic();
-  
+
   switch (state)
   {
     case 0:
       {
-       // driveStraightUltra;
+        // driveStraightUltra;
         /*
          * This chunk of code describes when the candle is in the 60 degree 15 inch cone
          * float flameSensorValue = analogRead(flameSensorPin);
-      if(flameClose(flameSensorValue)) 
-      {
-        rotateUntilHot();           
-      }
+        if(flameClose(flameSensorValue))
+        {
+        rotateUntilHot();
+        }
          */
         if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
         {
@@ -160,13 +160,13 @@ void findCandle()
       }
     case 1:
       {
-        if(distanceFront <= distanceToFrontWall)
+        if (distanceFront <= distanceToFrontWall)
         {
           state = 4;
         }
         else
         {
-          
+          state = 7;
         }
       }
     case 2: //turn right
@@ -180,34 +180,36 @@ void findCandle()
         state = 0;
       }
     case 4: //is it the candle
-    {
-      float flameSensorValue = analogRead(flameSensorPin);
-      if(flameSensorValue < flameIsHere)
       {
-        state = 5;
+        float flameSensorValue = analogRead(flameSensorPin);
+        if (flameSensorValue < flameIsHere)
+        {
+          state = 5;
+        }
+        else
+        {
+          state = 6;
+        }
       }
-      else
-      {
-        state = 6;
-      }
-      
-
-    }
     case 5: //it is the candle, blow out the candle
-    {
-      
-    }
+      {
+        runFan();
+      }
     case 6: //it is not the candle, there is a wall in front of you
-    {
-      
-    }
-    case 7:
-    {
-       if(distanceRight >= distanceToRightWall) //can just be else
+      {
+        state = 7;
+      }
+    case 7: //is there a gap to the right
+      {
+        if (distanceRight >= distanceToRightWall)
         {
           state = 2; //turn right
         }
-    }
+        else
+        {
+          state = 3;
+        }
+      }
 
   }
 }
