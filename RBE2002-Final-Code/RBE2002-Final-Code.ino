@@ -174,7 +174,8 @@ void setup() {
 
 //main loop
 void loop() {
-  findCandle();
+  Serial.print("fuck");
+  //findCandle();
 }
 
 /*
@@ -263,7 +264,3 @@ void findCandle()
 
   }
 }
-
-
-
-
