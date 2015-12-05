@@ -105,8 +105,8 @@ const float distanceToRightWall = 6.0;
 
 const int Stop = 90;
 
-const int flameIsClose = 970;
-const int flameIsHere = 22;
+const int flameIsClose = 970; //flame sensor value if it's in the cone
+const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
 float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
@@ -150,7 +150,7 @@ void setup() {
   slaveEnc.write(0);
 
   //setup for gyro stuff
-  
+
 
   if (!gyro.init()) // gyro init
   {
