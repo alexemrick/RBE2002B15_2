@@ -1,5 +1,7 @@
 /*
  * Drives robot straight; 2 wheels, encoder on each
+ * 
+ * change variables, constants, and motor names to match main file
  */
 #include <UltrasonicSensor.h>
 #include <UltrasonicSensorArray.h>
@@ -62,6 +64,8 @@ void setup() {
 Timer1.initialize(100000);
 Timer1.attachInterrupt(pid);
 }
+
+
 void readUltrasonic() {
 
   distanceFront = Serial3.readStringUntil(',').toFloat();
