@@ -1,4 +1,4 @@
-/*
+//*
  * Drives robot straight; 2 wheels, encoder on each
  */
 #include <UltrasonicSensor.h>
@@ -39,6 +39,8 @@ double kp = 0.5; //0.01;
 double ki = 0; //0;
 double kd = 0.1; //1;
 
+float old;
+
 void setup() {
   // motor pins
   masterMotor.attach(8, 1000, 2000);  // left
@@ -47,7 +49,8 @@ void setup() {
   // reset ultrasonic?
   Serial.begin(9600);
   Serial3.begin(9600);
-
+  
+ old = Serial3.readStringUntil(',').toFloat();
 
   // run motors
   masterMotor.write(masterPower);
@@ -62,10 +65,12 @@ void readUltrasonic() {
   distanceFront = Serial3.readStringUntil(',').toFloat();
   distanceLeft = Serial3.readStringUntil(',').toFloat();
   distanceRight = Serial3.readStringUntil('\n').toFloat();
+  
+ 
 }
 
 void pid() {
-
+ 
 
 
   error = distanceRight - distanceR;
@@ -73,17 +78,26 @@ void pid() {
   IError += error;
   oldError = error;
 
-  // distanceRight = 0;
+ 
 
 }
 
 void loop() {
-  readUltrasonic();
-
-
+  old = distanceLeft;
+ readUltrasonic();
+  
   POUT = error * kp + DError * kd + IError * ki;
   slaveMotor.write(slavePower - POUT);
+  
+ 
+  if(distanceLeft > old + 1 || distanceLeft < old - 1 );
+         
 
+   else if(distanceLeft < old + 1 || distanceLeft > old - 1){
+             slaveMotor.write(slavePower);
+       }
+
+  
   Serial.print(distanceRight);
   Serial.print(", ");
   Serial.print(distanceRight - distanceR);
