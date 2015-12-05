@@ -39,6 +39,7 @@ double kp = 0.5; //0.01;
 double ki = 0; //0;
 double kd = 0.1; //1;
 
+float front;
 float old;
 
 void setup() {
@@ -50,7 +51,8 @@ void setup() {
   Serial.begin(9600);
   Serial3.begin(9600);
   
- old = Serial3.readStringUntil(',').toFloat();
+ front = Serial3.readStringUntil(',').toFloat(); //this will be the front distance
+ old = Serial3.readStringUntil(',').toFloat();   //this will be the left distance
 
   // run motors
   masterMotor.write(masterPower);
@@ -83,14 +85,18 @@ void pid() {
 }
 
 void loop() {
-  old = distanceLeft;
+  old = distanceLeft;  //old is set to the distance from the left ultrasonic in setup, distanceLeft right now
+                       //is zero so I don't think you need this line
  readUltrasonic();
   
   POUT = error * kp + DError * kd + IError * ki;
   slaveMotor.write(slavePower - POUT);
   
  
-  if(distanceLeft > old + 1 || distanceLeft < old - 1 );
+  if(distanceLeft > old + 1 || distanceLeft < old - 1 ) //if the robot has deviated more than 1 inch
+  {
+    //??
+  }
          
 
    else if(distanceLeft < old + 1 || distanceLeft > old - 1){
