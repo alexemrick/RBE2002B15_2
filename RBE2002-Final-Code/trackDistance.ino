@@ -1,35 +1,42 @@
 /*
- * Tracks the distance w/ 2 encoders
+ * Tracks the distance w/ 2 encoders and averages the values
  */
-#include <Encoder.h>
-#include <TimerOne.h>
-#include <LiquidCrystal.h>
-
-LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
-
 float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393/300;
 
-// set encoders and motors
-// master on left; slave on right; for robot front faces away from you
-Encoder masterEnc(2,3);     // interrupt pins available:
-Encoder slaveEnc(18,19);    // used[2, 3, 18, 19], free[20, 21]
-
-void setup() {
-  lcd.begin(16,2);
-  lcd.setCursor(0,0);
-
-  // reset encoders
-  masterEnc.write(0);
-  slaveEnc.write(0);
+/*
+ * This function displays the total distance traveled as measured by the encoders onto the LCD.
+ *
+ * xDistanceTraveled and yDistanceTraveled are global variables that are set by the function that tracks the
+ * dista
+ *
+ * inputs: none
+ * outputs: none
+ */
+void displayLCD()
+{
+  sprintf(str1, "%f", xDistanceTraveled);
+  lcd.print("X = ");
+  lcd.print(xDistanceTraveled);
+  lcd.setCursor(8, 2);
+  sprintf(str2, "%f", yDistanceTraveled);
+  lcd.print("Y = ");
+  lcd.print(yDistanceTraveled);
+  lcd.home();
 }
 
-void loop() {
+
+void trackDistance()
+{
+  // master on left; slave on right; for robot front faces away from you
   // 1 rev = 90 ticks; circum. of wheel = 8.639 in.
-  masterEncValue = -((float)masterEnc.read()*encoderConversion);
+   masterEncValue = -((float)masterEnc.read()*encoderConversion);
   slaveEncValue = -((float)slaveEnc.read()*encoderConversion);
   distanceTraveled = (masterEncValue - slaveEncValue) / 2;
-  lcd.setCursor(0,0);
   lcd.print((int)distanceTraveled);
+  lcd.setCursor(0,0);
+  
+  //displayLCD(); // this will be used when the gyro is implemented to tell direction. until then just print distanceTraveled
 }
+
 

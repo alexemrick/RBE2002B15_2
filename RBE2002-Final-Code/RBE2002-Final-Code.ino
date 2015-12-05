@@ -32,6 +32,8 @@
 #include <Servo.h>    //provided by Arduino
 #include <TimerOne.h> //provided by Arduino
 #include <LiquidCrystal.h> //include the LCD library
+#include <Wire.h>
+#include <L3G.h>
 
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
@@ -65,6 +67,8 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 Servo leftDrive;
 Servo rightDrive;
 Servo fan;
+
+L3G gyro;
 
 char str1[8]; //8?
 char str2[8];
@@ -103,10 +107,30 @@ const int Stop = 90;
 
 const int flameIsClose = 970;
 const int flameIsHere = 22;
+
+//variables for gyro
+float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
+
+long timer = 0; //general purpose timer
+long timer1 = 0;
+
+float G_gain = .00875; // gyros gain factor for 250deg/sec
+float gyro_x; //gyro x val
+float gyro_y; //gyro x val
+float gyro_z; //gyro x val
+float gyro_xold; //gyro cummulative x value
+float gyro_yold; //gyro cummulative y value
+float gyro_zold; //gyro cummulative z value
+float gerrx; // Gyro x error
+float gerry; // Gyro y error
+float gerrz; // Gyro 7 error
+
+
 //initial setup
 void setup() {
   Serial.begin(9600);
   Serial3.begin(9600);
+  Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
   pinMode(leftEncoderAPin, INPUT);
   pinMode(leftEncoderBPin, INPUT);
@@ -117,9 +141,35 @@ void setup() {
   fan.attach(fanPin);
 
   lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
 
   Timer1.initialize(100000);
   Timer1.attachInterrupt(readUltrasonic);
+
+  masterEnc.write(0);
+  slaveEnc.write(0);
+
+  //setup for gyro stuff
+  
+
+  if (!gyro.init()) // gyro init
+  {
+    while (1);
+  }
+  timer = millis(); // init timer for first reading
+  gyro.enableDefault(); // gyro init. default 250/deg/s
+  delay(1000);// allow time for gyro to settle
+  for (int i = 0; i < 100; i++) { // takes 100 samples of the gyro
+    gyro.read();
+    gerrx += gyro.g.x;
+    gerry += gyro.g.y;
+    gerrz += gyro.g.z;
+    delay(25);
+  }
+
+  gerrx = gerrx / 100; // average reading to obtain an error/offset
+  gerry = gerry / 100;
+  gerrz = gerrz / 100;
 }
 
 //main loop
@@ -214,25 +264,6 @@ void findCandle()
   }
 }
 
-/*
- * This function displays the total distance traveled as measured by the encoders onto the LCD.
- *
- * xDistanceTraveled and yDistanceTraveled are global variables that are set by the function that tracks the
- * dista
- *
- * inputs: none
- * outputs: none
- */
-void displayLCD()
-{
-  sprintf(str1, "%f", xDistanceTraveled);
-  lcd.print("X = ");
-  lcd.print(xDistanceTraveled);
-  lcd.setCursor(8, 2);
-  sprintf(str2, "%f", yDistanceTraveled);
-  lcd.print("Y = ");
-  lcd.print(yDistanceTraveled);
-  lcd.home();
-}
+
 
 
