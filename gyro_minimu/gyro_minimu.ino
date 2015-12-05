@@ -87,10 +87,13 @@ void loop() {
   Serial.print("G ");
   Serial.print("X: ");
   Serial.print(gyro_x);
+//  Serial.print(gyro.g.x);
   Serial.print(" Y: ");
   Serial.print(gyro_y);
+//  Serial.print(gyro.g.y);
   Serial.print(" Z: ");
   Serial.println(gyro_z);
+//  Serial.println(gyro.g.z);
   }
 
 }
