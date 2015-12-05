@@ -31,11 +31,15 @@ void setup() {
   Serial.begin(9600);
   Wire.begin(); // i2c begin
 
-  gyro.init();
-  gyro.enableDefault(); // gyro init. default 250/deg/s
-
   accel.init();
   accel.enableDefault();
+
+  if (!gyro.init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type!");
+    while (1);
+  }
+  gyro.enableDefault(); // gyro init. default 250/deg/s
 
   timer = millis(); // init timer for first reading
 
@@ -54,31 +58,57 @@ void setup() {
 }
 
 void loop() {
-  gyro.read(); // read gyro
   accel.readAcc();
+  if ((millis() - timer) >= 5) // reads imu every 5ms
+  {
+    gyro.read(); // read gyro
+    timer = millis();
 
-  gyro_x = (float)(gyro.g.x - gerrx) * G_gain; // offset by error then multiply by gyro gain factor
-  gyro_y = (float)(gyro.g.y - gerry) * G_gain;
-  gyro_z = (float)(gyro.g.z - gerrz) * G_gain;
+    gyro_x = (float)(gyro.g.x - gerrx) * G_gain; // offset by error then multiply by gyro gain factor
+    gyro_y = (float)(gyro.g.y - gerry) * G_gain;
+    gyro_z = (float)(gyro.g.z - gerrz) * G_gain;
 
-  gyro_x = gyro_x * G_Dt; // Multiply the angular rate by the time interval
-  gyro_y = gyro_y * G_Dt;
-  gyro_z = gyro_z * G_Dt;
+    gyro_x = gyro_x * G_Dt; // Multiply the angular rate by the time interval
+    gyro_y = gyro_y * G_Dt;
+    gyro_z = gyro_z * G_Dt;
 
-  gyro_x += gyro_xold; // add the displacment(rotation) to the cumulative displacment
-  gyro_y += gyro_yold;
-  gyro_z += gyro_zold;
+    gyro_x += gyro_xold; // add the displacment(rotation) to the cumulative displacment
+    gyro_y += gyro_yold;
+    gyro_z += gyro_zold;
 
-  gyro_xold = gyro_x ; // Set the old gyro angle to the current gyro angle
-  gyro_yold = gyro_y ;
-  gyro_zold = gyro_z ;
+    gyro_xold = gyro_x ; // Set the old gyro angle to the current gyro angle
+    gyro_yold = gyro_y ;
+    gyro_zold = gyro_z ;
 
-  snprintf(report, sizeof(report), "A: %6d %6d %6d    M: %6d %6d %6d",
-           accel.a.x, accel.a.y, accel.a.z,
-           gyro_x, gyro_y, gyro_z);
-  Serial.println(report);
 
-  delay(100);
+  }
+
+  if ((millis() - timer1) >= 1000) // prints the gyro value once per second
+  {
+    timer1 = millis();
+    //    snprintf(report, sizeof(report), "A: %6d %6d %6d    M: %6d %6d %6d",
+    //             accel.a.x, accel.a.y, accel.a.z,
+    //             gyro_x, gyro_y, gyro_z);
+    //    Serial.println(report);
+    Serial.print("G ");
+    Serial.print("X: ");
+    Serial.print(gyro_x);
+    Serial.print(" Y: ");
+    Serial.print(gyro_y);
+    Serial.print(" Z: ");
+    Serial.print(gyro_z);
+    Serial.print(" A ");
+    Serial.print("X: ");
+    Serial.print(accel.a.x);
+    Serial.print(" Y: ");
+    Serial.print(accel.a.y);
+    Serial.print(" Z: ");
+    Serial.println(accel.a.z);
+
+
+  }
 }
+
+
 
 
