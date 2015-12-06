@@ -37,12 +37,9 @@
 
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
-
 #define fanPin 4
-
 #define leftMotorPin 8
 #define rightMotorPin 9
-
 #define ledPin 22
 
 //global variables
@@ -72,9 +69,9 @@ char str2[8];
 /*
  * Variables for driving straight
  */
-// initialize variables
 int masterPower = 60;
 int slavePower = 60;
+const int Stop = 90;
 boolean keepGoing = true;
 
 // set encoders and motors
@@ -82,7 +79,6 @@ boolean keepGoing = true;
 Encoder masterEnc(2, 3);    // interrupt pins available:
 Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19], free[20, 21]
 
-// prepare values for P
 // error: difference between master and slave encoders
 // + if slave needs to speed up, - for slow down, if at same speed, = 0
 double error = 0;
@@ -96,13 +92,12 @@ const double kp = 0.01;
 const double ki = 1.8;
 const double kd = 0.7;
 
+// distances in inches
 const float distanceToFrontWall = 7.0;
 const float distanceToRightWall = 6.0;
 
-const int Stop = 90;
-
-const int flameIsClose = 970; //flame sensor value if it's in the cone
-const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
+const int possibleFlame = 970; //flame sensor value if it's in the cone
+const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
 float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
@@ -142,8 +137,6 @@ void setup() {
   slaveEnc.write(0);
 
   //setup for gyro stuff
-
-
   if (!gyro.init()) // gyro init
   {
     while (1);
@@ -166,6 +159,8 @@ void setup() {
 
 //main loop
 void loop() {
+  Serial.print("fuck");
+  //findCandle();
 }
 
 /*
@@ -225,11 +220,11 @@ void findCandle()
         float flameSensorValue = analogRead(flameSensorPin);
         if (flameSensorValue < flameIsHere)
         {
-          state = 5; //the obstacle is the candle
+          state = 5;
         }
         else
         {
-          state = 7; //the obstacle is not the candle
+          state = 6;
         }
       }
     case 5: //it is the candle, blow out the candle
@@ -242,13 +237,13 @@ void findCandle()
       }
     case 7: //is there a gap to the right
       {
-        if (distanceRight >= distanceToRightWall) //if there is no obstacle 
+        if (distanceRight >= distanceToRightWall)
         {
           state = 2; //turn right
         }
         else
         {
-          state = 3; //turn left
+          state = 3;
         }
       }
 
