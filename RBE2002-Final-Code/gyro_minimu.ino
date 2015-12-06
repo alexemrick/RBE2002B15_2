@@ -30,15 +30,7 @@ float readGyro()
   if ((millis() - timer1) >= 1000) // prints the gyro value once per second
   {
     timer1 = millis();
-
-//    Serial.print("G ");
-//    Serial.print("X: ");
-//    Serial.print(gyro_x);
-//    Serial.print(" Y: ");
-//    Serial.print(gyro_y);
-//    Serial.print(" Z: ");
-//    Serial.println(gyro_z);
   }
-  return gyro_x;
+  return gyro_z;
 }
 
