@@ -124,7 +124,9 @@ void setup() {
 
 //main loop
 void loop() {
-  findCandle();
+  //findCandle();
+  //turnRobot(1, readGyro());
+  readGyro();
 }
 
 /*
