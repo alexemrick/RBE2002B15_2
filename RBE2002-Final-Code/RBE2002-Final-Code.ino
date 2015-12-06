@@ -166,8 +166,6 @@ void setup() {
 
 //main loop
 void loop() {
-  Serial.print("fuck");
-  //findCandle();
 }
 
 /*
@@ -227,11 +225,11 @@ void findCandle()
         float flameSensorValue = analogRead(flameSensorPin);
         if (flameSensorValue < flameIsHere)
         {
-          state = 5;
+          state = 5; //the obstacle is the candle
         }
         else
         {
-          state = 6;
+          state = 7; //the obstacle is not the candle
         }
       }
     case 5: //it is the candle, blow out the candle
@@ -244,13 +242,13 @@ void findCandle()
       }
     case 7: //is there a gap to the right
       {
-        if (distanceRight >= distanceToRightWall)
+        if (distanceRight >= distanceToRightWall) //if there is no obstacle 
         {
           state = 2; //turn right
         }
         else
         {
-          state = 3;
+          state = 3; //turn left
         }
       }
 
