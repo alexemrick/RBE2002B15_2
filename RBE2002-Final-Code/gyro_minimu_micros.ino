@@ -6,7 +6,6 @@
 // the maxiumum error observeded with a steady voltage was 1.3 degress per minute on a single axis over the 27 test.
 // Average error was .275 degrees per minute averaged across all 3 axis.
 
-
 float readGyro() {
 
   if ((micros() - timer) >= 5000) { // wait for 5000 microseconds

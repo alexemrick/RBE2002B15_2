@@ -34,7 +34,6 @@
 #include <LiquidCrystal.h> //include the LCD library
 #include <Wire.h>
 #include <L3G.h>
-
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 #define leftEncoderAPin 18
@@ -109,12 +108,16 @@ const int flameIsClose = 970; //flame sensor value if it's in the cone
 const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
+
 float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
 float G_gain = .0109375; // gyros gain factor for 250deg/sec
+//This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
+// if you rotate the gyro 180 degress and it only show 170 this could be the issue.
+
 float gyro_x; //gyro x val
 float gyro_y; //gyro x val
 float gyro_z; //gyro x val
@@ -123,8 +126,7 @@ float gyro_yold; //gyro cummulative y value
 float gyro_zold; //gyro cummulative z value
 float gerrx; // Gyro x error
 float gerry; // Gyro y error
-float gerrz; // Gyro 7 error
-
+float gerrz; // Gyro z error
 
 //initial setup
 void setup() {
@@ -181,8 +183,6 @@ void setup() {
 
 //main loop
 void loop() {
-  int currentAngle = (int)readGyro();
-  turnRobot(1,currentAngle);
 }
 
 /*
