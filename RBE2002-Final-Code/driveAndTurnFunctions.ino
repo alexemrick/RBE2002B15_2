@@ -9,7 +9,7 @@
  */
 void turnRobot (int turn, float angle)
 {
-  int ang = angle*100;
+  int ang = angle;
   switch (turn)
   {
     case 1: //turn right
