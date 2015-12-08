@@ -114,7 +114,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .00875; // gyros gain factor for 250deg/sec
+float G_gain = .0109375; // gyros gain factor for 250deg/sec
 float gyro_x; //gyro x val
 float gyro_y; //gyro x val
 float gyro_z; //gyro x val
@@ -128,8 +128,8 @@ float gerrz; // Gyro 7 error
 
 //initial setup
 void setup() {
-  Serial.begin(9600);
-  Serial3.begin(9600);
+  Serial.begin(115200);
+  Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
   pinMode(leftEncoderAPin, INPUT);
@@ -154,27 +154,35 @@ void setup() {
 
   if (!gyro.init()) // gyro init
   {
+    Serial.println("Failed to autodetect gyro type! not connected");
     while (1);
   }
-  timer = millis(); // init timer for first reading
+  delay(500);
+  timer = micros(); // init timer for first reading
   gyro.enableDefault(); // gyro init. default 250/deg/s
   delay(1000);// allow time for gyro to settle
-  for (int i = 0; i < 100; i++) { // takes 100 samples of the gyro
-    gyro.read();
-    gerrx += gyro.g.x;
+  Serial.println("starting zero, stay still for 10 seconds");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
     gerry += gyro.g.y;
     gerrz += gyro.g.z;
-    delay(25);
+    delay(5);
   }
 
-  gerrx = gerrx / 100; // average reading to obtain an error/offset
-  gerry = gerry / 100;
-  gerrz = gerrz / 100;
+  gerrx = gerrx / 2000; // average readings to obtain an error offset
+  gerry = gerry / 2000;
+  gerrz = gerrz / 2000;
+
+  Serial.println(gerrx); // print error vals
+  Serial.println(gerry);
+  Serial.println(gerrz);
 }
 
 //main loop
 void loop() {
- Serial.println(readGyro());
+  int currentAngle = (int)readGyro();
+  turnRobot(1,currentAngle);
 }
 
 /*
