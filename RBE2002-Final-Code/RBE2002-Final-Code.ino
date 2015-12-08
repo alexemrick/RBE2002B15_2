@@ -127,7 +127,7 @@ float gerrz; // Gyro z error
 //initial setup
 void setup() {
   Serial.begin(115200);
-  Serial3.begin(9600);
+  Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
   pinMode(leftEncoderAPin, INPUT);

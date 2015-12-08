@@ -89,8 +89,7 @@ void pid() {
 }
 
 void loop() {
-  old = distanceLeft;  //old is set to the distance from the left ultrasonic in setup, distanceLeft right now
-                       //is zero so I don't think you need this line
+  old = distanceLeft;  
  readUltrasonic();
   
   POUT = error * kp + DError * -kd + IError * ki;
@@ -99,7 +98,6 @@ void loop() {
  
   if(distanceLeft > old + 1 || distanceLeft < old - 1 ) //if the robot has deviated more than 1 inch
   {
-    //??
   }
          
 
