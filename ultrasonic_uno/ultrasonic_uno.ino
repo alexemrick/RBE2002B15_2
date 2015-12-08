@@ -15,7 +15,7 @@ UltrasonicSensor front(12);
 
 void setup() {
   // setup serial communication for print statements
-  Serial.begin(9600);
+  Serial.begin(115200);
   // Add each sensor to the UltrasonicSensorArray
   usa.addSensor(&left);
   usa.addSensor(&right);

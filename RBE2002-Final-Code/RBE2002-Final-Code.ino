@@ -34,7 +34,6 @@
 #include <LiquidCrystal.h> //include the LCD library
 #include <Wire.h>
 #include <L3G.h>
-
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 #define leftEncoderAPin 18
@@ -109,12 +108,12 @@ const int flameIsClose = 970; //flame sensor value if it's in the cone
 const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
-float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
-
-long timer = 0; //general purpose timer
-long timer1 = 0;
-
+float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 200Hz if possible
+long timer = 0; // timer for the gyro
+long timer1 = 0; //timer for printig
 float G_gain = .00875; // gyros gain factor for 250deg/sec
+//This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
+// if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 float gyro_x; //gyro x val
 float gyro_y; //gyro x val
 float gyro_z; //gyro x val
@@ -123,12 +122,11 @@ float gyro_yold; //gyro cummulative y value
 float gyro_zold; //gyro cummulative z value
 float gerrx; // Gyro x error
 float gerry; // Gyro y error
-float gerrz; // Gyro 7 error
-
+float gerrz; // Gyro z error
 
 //initial setup
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial3.begin(9600);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
@@ -154,27 +152,35 @@ void setup() {
 
   if (!gyro.init()) // gyro init
   {
+    Serial.println("Failed to autodetect gyro type! not connected");
     while (1);
   }
-  timer = millis(); // init timer for first reading
+  delay(500);
+  timer = micros(); // init timer for first reading
   gyro.enableDefault(); // gyro init. default 250/deg/s
   delay(1000);// allow time for gyro to settle
-  for (int i = 0; i < 100; i++) { // takes 100 samples of the gyro
-    gyro.read();
-    gerrx += gyro.g.x;
+  Serial.println("starting zero, stay still for 10 seconds");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
     gerry += gyro.g.y;
     gerrz += gyro.g.z;
-    delay(25);
+    delay(5);
   }
 
-  gerrx = gerrx / 100; // average reading to obtain an error/offset
-  gerry = gerry / 100;
-  gerrz = gerrz / 100;
+  gerrx = gerrx / 2000; // average readings to obtain an error offset
+  gerry = gerry / 2000;
+  gerrz = gerrz / 2000;
+
+  Serial.println(gerrx); // print error vals
+  Serial.println(gerry);
+  Serial.println(gerrz);
 }
 
 //main loop
 void loop() {
- Serial.println(readGyro());
+  float angle = readGyro();
+  Serial.println(angle);
 }
 
 /*
