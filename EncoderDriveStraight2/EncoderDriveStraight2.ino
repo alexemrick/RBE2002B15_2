@@ -19,7 +19,7 @@ int slavePower = 71;
 float distanceLeft;
 float distanceRight;
 float distanceFront;
-const float distanceR = 4;
+const float distanceR = 7;
 
 float lastTime;
 float currentTime;
@@ -37,9 +37,9 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 0.5; //0.01;
-double ki = 0; //0;
-double kd = 0.1; //1;
+double kp = 10; //0.01;
+double ki = 0.2; //0;
+double kd = 4.5; //1;
 
 float front;
 float old;
@@ -93,7 +93,7 @@ void loop() {
                        //is zero so I don't think you need this line
  readUltrasonic();
   
-  POUT = error * kp + DError * kd + IError * ki;
+  POUT = error * kp + DError * -kd + IError * ki;
   slaveMotor.write(slavePower - POUT);
   
  
