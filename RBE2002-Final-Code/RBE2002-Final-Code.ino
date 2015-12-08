@@ -25,14 +25,15 @@
  * - Right Encoder channel B on interrupt port 20
  * - Flame sensor on port A0
  *
-  */
+ */
 
 //libraries
 #include <Encoder.h>  //provided by Arduino
 #include <Servo.h>    //provided by Arduino
 #include <TimerOne.h> //provided by Arduino
 #include <LiquidCrystal.h> //include the LCD library
-
+#include <Wire.h>
+#include <L3G.h>
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 #define leftEncoderAPin 18
@@ -65,6 +66,8 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 Servo leftDrive;
 Servo rightDrive;
 Servo fan;
+
+L3G gyro;
 
 char str1[8]; //8?
 char str2[8];
@@ -101,12 +104,35 @@ const float distanceToRightWall = 6.0;
 
 const int Stop = 90;
 
-const int flameIsClose = 970;
-const int flameIsHere = 22;
+const int flameIsClose = 970; //flame sensor value if it's in the cone
+const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
+
+//variables for gyro
+
+float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
+
+long timer = 0; //general purpose timer
+long timer1 = 0;
+
+float G_gain = .0109375; // gyros gain factor for 250deg/sec
+//This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
+// if you rotate the gyro 180 degress and it only show 170 this could be the issue.
+
+float gyro_x; //gyro x val
+float gyro_y; //gyro x val
+float gyro_z; //gyro x val
+float gyro_xold; //gyro cummulative x value
+float gyro_yold; //gyro cummulative y value
+float gyro_zold; //gyro cummulative z value
+float gerrx; // Gyro x error
+float gerry; // Gyro y error
+float gerrz; // Gyro z error
+
 //initial setup
 void setup() {
-  Serial.begin(9600);
-  Serial3.begin(9600);
+  Serial.begin(115200);
+  Serial3.begin(115200);
+  Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
   pinMode(leftEncoderAPin, INPUT);
   pinMode(leftEncoderBPin, INPUT);
@@ -117,16 +143,46 @@ void setup() {
   fan.attach(fanPin);
 
   lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
 
-  Timer1.initialize(100000);
-  Timer1.attachInterrupt(readUltrasonic);
+//  Timer1.initialize(100000);
+//  Timer1.attachInterrupt(readUltrasonic);
+
+  masterEnc.write(0);
+  slaveEnc.write(0);
+
+  //setup for gyro stuff
+
+
+  if (!gyro.init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type! not connected");
+    while (1);
+  }
+  delay(500);
+  timer = micros(); // init timer for first reading
+  gyro.enableDefault(); // gyro init. default 250/deg/s
+  delay(1000);// allow time for gyro to settle
+  Serial.println("starting zero, stay still for 10 seconds");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
+    gerry += gyro.g.y;
+    gerrz += gyro.g.z;
+    delay(5);
+  }
+
+  gerrx = gerrx / 2000; // average readings to obtain an error offset
+  gerry = gerry / 2000;
+  gerrz = gerrz / 2000;
+
+  Serial.println(gerrx); // print error vals
+  Serial.println(gerry);
+  Serial.println(gerrz);
 }
 
 //main loop
 void loop() {
-  //findCandle();
-  //turnRobot(1, readGyro());
-  readGyro();
 }
 
 /*
@@ -140,19 +196,19 @@ void loop() {
 void findCandle()
 {
   readUltrasonic();
-  
+
   switch (state)
   {
     case 0:
       {
-       // driveStraightUltra;
+        // driveStraightUltra;
         /*
          * This chunk of code describes when the candle is in the 60 degree 15 inch cone
          * float flameSensorValue = analogRead(flameSensorPin);
-      if(flameClose(flameSensorValue)) 
-      {
-        rotateUntilHot();           
-      }
+        if(flameClose(flameSensorValue))
+        {
+        rotateUntilHot();
+        }
          */
         if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
         {
@@ -162,13 +218,13 @@ void findCandle()
       }
     case 1:
       {
-        if(distanceFront <= distanceToFrontWall)
+        if (distanceFront <= distanceToFrontWall)
         {
           state = 4;
         }
         else
         {
-          
+          state = 7;
         }
       }
     case 2: //turn right
@@ -182,57 +238,36 @@ void findCandle()
         state = 0;
       }
     case 4: //is it the candle
-    {
-      float flameSensorValue = analogRead(flameSensorPin);
-      if(flameSensorValue < flameIsHere)
       {
-        state = 5;
+        float flameSensorValue = analogRead(flameSensorPin);
+        if (flameSensorValue < flameIsHere)
+        {
+          state = 5; //the obstacle is the candle
+        }
+        else
+        {
+          state = 7; //the obstacle is not the candle
+        }
       }
-      else
-      {
-        state = 6;
-      }
-      
-
-    }
     case 5: //it is the candle, blow out the candle
-    {
-      
-    }
+      {
+        runFan();
+      }
     case 6: //it is not the candle, there is a wall in front of you
-    {
-      
-    }
-    case 7:
-    {
-       if(distanceRight >= distanceToRightWall) //can just be else
+      {
+        state = 7;
+      }
+    case 7: //is there a gap to the right
+      {
+        if (distanceRight >= distanceToRightWall) //if there is no obstacle 
         {
           state = 2; //turn right
         }
-    }
+        else
+        {
+          state = 3; //turn left
+        }
+      }
 
   }
 }
-
-/*
- * This function displays the total distance traveled as measured by the encoders onto the LCD.
- *
- * xDistanceTraveled and yDistanceTraveled are global variables that are set by the function that tracks the
- * dista
- *
- * inputs: none
- * outputs: none
- */
-void displayLCD()
-{
-  sprintf(str1, "%f", xDistanceTraveled);
-  lcd.print("X = ");
-  lcd.print(xDistanceTraveled);
-  lcd.setCursor(8, 2);
-  sprintf(str2, "%f", yDistanceTraveled);
-  lcd.print("Y = ");
-  lcd.print(yDistanceTraveled);
-  lcd.home();
-}
-
-

@@ -7,34 +7,39 @@
  * inputs: int turn - state for state machine, 1,2,3 for 90, -90, and 180 degrees respectively
  * outputs: none
  */
-void turnRobot (int turn, int angle)
+void turnRobot (int turn, float angle)
 {
+  int ang = angle;
+  int newAngle = readGyro(); //read the gyro
   switch (turn)
   {
     case 1: //turn right
-      {
-        float newAngle = 90; //MAKE THIS READ THE GYRO
-        while (newAngle < (angle - 90))
+      
+        while (newAngle > (ang - 90)) //while the gyro reading is less than 90 degrees to the left of the initial angle
+
         {
-          rotate(20);
+          rotate(73);  //turn right
+          newAngle = readGyro(); //read the gyro 
         }
-      }
+      break;
     case 2: //turn left
-      {
-        float newAngle = 90; //MAKE THIS READ THE GYRO
-        while (newAngle < (angle + 90))
+      
+        newAngle = (int)readGyro(); 
+        while (newAngle < (ang + 90))  //while the gyro reading is less than 90 degrees to the right of the initial angle
         {
-          rotate(160);
+          rotate(107); //turn left
+          newAngle = readGyro(); //read the gyro
         }
-      }
+      break;
     case 3: // u turn
-      {
-        float newAngle = 90; //MAKE THIS READ THE GYRO
-        while (newAngle < (angle - 180))
+
+        newAngle = (int)readGyro(); 
+        while (newAngle < (ang - 180))
         {
-          rotate(20);
+          rotate(73);
+          newAngle = readGyro(); //read the gyro
         }
-      }
+      break;
 
   }
 }
