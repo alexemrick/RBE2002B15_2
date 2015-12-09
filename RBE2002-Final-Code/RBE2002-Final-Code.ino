@@ -34,6 +34,7 @@
 #include <LiquidCrystal.h> //include the LCD library
 #include <Wire.h>
 #include <L3G.h>
+
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 #define leftEncoderAPin 18
@@ -103,7 +104,7 @@ const double kp = 0.01;
 const double ki = 1.8;
 const double kd = 0.7;
 
-const float distanceToFrontWall = 8.0;
+const float distanceToFrontWall = 14.0;
 const float distanceToRightWall = 7.0;
 
 const int Stop = 90;
@@ -209,12 +210,14 @@ void findCandle()
       rotateUntilHot();
       }
        */
+       //readUltrasonic();
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();
         state = 1;
       }
       break;
+      
     case 1:
 
       if (distanceFront <= distanceToFrontWall)
@@ -226,16 +229,19 @@ void findCandle()
         state = 6;
       }
       break;
+      
     case 2: //turn right
       angle = readGyro();
       turnRobot(1, angle);
       state = 0;
       break;
+      
     case 3: //turn left
       angle = readGyro();
       turnRobot(2, angle);
       state = 0;
       break;
+      
     case 4: //is it the candle
 
       if (analogRead(flameSensorPin) < flameIsHere)
@@ -247,10 +253,12 @@ void findCandle()
         state = 6; //the obstacle is not the candle
       }
       break;
+      
     case 5: //it is the candle, blow out the candle
 
       runFan();
       break;
+      
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
 
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
