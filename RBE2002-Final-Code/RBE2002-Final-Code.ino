@@ -103,7 +103,7 @@ const float distanceR = 4.0;
 const int Stop = 90;
 
 
-const int possibleFlame = 970; //flame sensor value if it's in the cone
+const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
