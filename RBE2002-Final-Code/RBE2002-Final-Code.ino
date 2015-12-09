@@ -60,8 +60,6 @@ float distanceFront;
 float distX;
 float distY;
 
-int state = 0;
-
 LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
@@ -103,17 +101,13 @@ double kp = 1.5; //0.01;
 double ki = 0.003; //0;
 double kd = -0.02; //1;
 
-const float distanceToFrontWall = 12.0;
+const float distanceToFrontWall = 10.0;
 const float distanceToRightWall = 20.0;
 const float distanceR = 4.0;
 
 const int Stop = 90;
 
-const int flameIsClose = 900; //flame sensor value if it's in the cone
-const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
-
-
-  const int possibleFlame = 900; //flame sensor value if it's in the cone
+const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
@@ -182,14 +176,14 @@ void setup() {
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
   //
-  //  leftDrive.write(masterPower);
-  //  rightDrive.write(slavePower);
+  leftDrive.write(masterPower);
+  rightDrive.write(slavePower);
 }
 
 //main loop
 void loop()
 {
- findCandle();
+  findCandle();
 }
 
 /*
@@ -202,7 +196,7 @@ void loop()
 */
 void findCandle()
 {
-  state = 0;
+  static int state = 0;
   float angle;
   readUltrasonic();
 
@@ -211,7 +205,7 @@ void findCandle()
     case 0:
 
       driveStraight();
-      delay(1100);
+      delay(500);
       /*
       * This chunk of code describes when the candle is in the 60 degree 15 inch cone
       * float flameSensorValue = analogRead(flameSensorPin);
@@ -221,7 +215,8 @@ void findCandle()
       }
       */
       readUltrasonic();
-      if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
+      delay(100); //maybe200
+      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
       {
         stopRobot();
         distOrientation(readGyro(), trackDistance());
@@ -246,7 +241,7 @@ void findCandle()
     case 2: //turn right
       angle = readGyro();
       turnRobot(1, angle);
-      state = 0;
+      state = 7;
       break;
 
     case 3: //turn left
@@ -257,7 +252,7 @@ void findCandle()
 
     case 4: //is it the candle
 
-      if (analogRead(flameSensorPin) < flameIsHere)
+      if (analogRead(flameSensorPin) < definiteFlame)
       {
         state = 5; //the obstacle is the candle
       }
@@ -268,7 +263,7 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
-
+      displayLCD();
       runFan();
       break;
 
@@ -276,7 +271,7 @@ void findCandle()
 
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
       {
-        state = 8; //state 2 plus if there is not wall
+        state = 2; //state 2 plus if there is not wall
       }
       else //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
@@ -285,12 +280,12 @@ void findCandle()
       }
       break;
 
-    case 8:
-      angle = readGyro();
-      turnRobot(1, angle);
+    case 7:
+      //      angle = readGyro();
+      //      turnRobot(1, angle);
       //runs both motors for a bit so it drives straight
-      rightDrive.write(0);
-      leftDrive.write(0);
+      rightDrive.write(70);
+      leftDrive.write(70);
       delay(5);
       turnRobot(1, angle);
 
@@ -298,4 +293,5 @@ void findCandle()
       break;
 
   }
+  delay(10);
 }

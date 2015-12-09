@@ -10,7 +10,7 @@
 boolean flameClose(int flameValue)
 {
   boolean present = false;
-  if(flameValue < flameIsClose)
+  if(flameValue < possibleFlame)
   {
     present = true;
   }
