@@ -37,9 +37,16 @@
 
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
+#define leftEncoderAPin 18
+#define leftEncoderBPin 19
+#define rightEncoderAPin 21
+#define rightEncoderBPin 20
+
 #define fanPin 4
+
 #define leftMotorPin 8
 #define rightMotorPin 9
+
 #define ledPin 22
 
 //global variables
@@ -69,15 +76,15 @@ char str2[8];
 /*
  * Variables for driving straight
  */
+// initialize variables
 int masterPower = 60;
 int slavePower = 60;
-const int Stop = 90;
 boolean keepGoing = true;
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
 Encoder masterEnc(2, 3);    // interrupt pins available:
-Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19], free[20, 21]
+Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19]
 
 float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393 / 300;
@@ -94,17 +101,16 @@ double DError, IError, POUT;
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
 double kp = 1.5; //0.01;
 double ki = 0.003; //0;
-double kd = 0.02; //1;
+double kd = -0.02; //1;
 
-const float distanceToFrontWall = 14.0;
-const float distanceToRightWall = 7.0;
+const float distanceToFrontWall = 12.0;
+const float distanceToRightWall = 20.0;
 const float distanceR = 4.0;
 
 const int Stop = 90;
 
-
-const int possibleFlame = 970; //flame sensor value if it's in the cone
-const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
+const int flameIsClose = 900; //flame sensor value if it's in the cone
+const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
 
@@ -147,8 +153,6 @@ void setup() {
   masterEnc.write(0);
   slaveEnc.write(0);
 
-  leftDrive.write(masterPower);
-  rightDrive.write(slavePower);
 
   //setup for gyro stuff
 
@@ -173,50 +177,55 @@ void setup() {
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
-
+//
+//  leftDrive.write(masterPower);
+//  rightDrive.write(slavePower);
 }
 
 //main loop
-void loop() {
-  readUltrasonic();
-  delay(100);
-  driveStraight();
-  Serial.println(distanceRight);
+void loop()
+{
+  float angle = readGyro();
+  turnRobot(1, angle);
+  Serial.println(angle);
 }
 
 /*
- * This function is the main state machine of the program represented by the Flow Chart in the drive entitled
- * "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
- * loop.
- *
- * inputs: none
- * outputs: none
- */
+* This function is the main state machine of the program represented by the Flow Chart in the drive entitled
+* "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
+* loop.
+*
+* inputs: none
+* outputs: none
+*/
 void findCandle()
 {
   state = 0;
-  float angle = readGyro();
+  float angle;
   readUltrasonic();
 
   switch (state)
   {
     case 0:
 
-       driveStraight();
+      driveStraight();
+      delay(1100);
       /*
-       * This chunk of code describes when the candle is in the 60 degree 15 inch cone
-       * float flameSensorValue = analogRead(flameSensorPin);
+      * This chunk of code describes when the candle is in the 60 degree 15 inch cone
+      * float flameSensorValue = analogRead(flameSensorPin);
       if(flameClose(flameSensorValue))
       {
       rotateUntilHot();
       }
-       */
+      */
       readUltrasonic();
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();
         state = 1;
       }
+      else
+        state = 0;
       break;
 
     case 1:
