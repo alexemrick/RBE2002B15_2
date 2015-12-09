@@ -60,21 +60,25 @@ void distOrientation(int gyro)
 void distOrientation(float gyro, float distance)
 {
   int angle = gyro;
-  if (angle > -10 && angle < 10) //if the robot is facing forward, the positive x direction
+  if ((angle > -10 && angle < 10) || (angle > 350 && angle < 370)) //if the robot is facing forward, the positive x direction
   {
     xDistanceTraveled += distance;
+    Serial.println("Positive X");
   }
-  else if (angle > 80 && angle < 100 ) //if the robot is facing left, the positive y direction
+  else if ((angle > 80 && angle < 100 ) || (angle > -280 && angle < -260) ) //if the robot is facing left, the positive y direction
   {
     yDistanceTraveled += distance;
+    Serial.println("Positive Y");
   }
-  else if (angle > -190 && angle < -170) //if the robot is facing backward, the negative x direction
+  else if ((angle > -190 && angle < -170) || (angle > 170 && angle < 190))//if the robot is facing backward, the negative x direction
   {
     xDistanceTraveled -= distance;
+    Serial.println("Negative X");
   }
-  else if (angle > -100 && angle < -80) //if the robot is facing right, the negative y direction
+  else if (angle > -100 && angle < -80) || (angle > 260 && angle < 280)) //if the robot is facing right, the negative y direction
   {
     yDistanceTraveled -= distance;
+    Serial.println("Negative Y");
   }
 }
 

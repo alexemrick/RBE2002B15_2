@@ -89,7 +89,6 @@ Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19], free[20, 21]
 float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393 / 300;
 
-
 // prepare values for P
 // error: difference between master and slave encoders
 // + if slave needs to speed up, - for slow down, if at same speed, = 0
@@ -181,7 +180,10 @@ void setup() {
 
 //main loop
 void loop() {
-  
+  xDistanceTraveled = 10;
+  yDistanceTraveled = 5;
+  float angle = readGyro();
+  distOrientation(angle, xDistanceTraveled);
 }
 
 /*
