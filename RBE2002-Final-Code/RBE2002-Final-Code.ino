@@ -37,10 +37,6 @@
 
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
-#define leftEncoderAPin 18
-#define leftEncoderBPin 19
-#define rightEncoderAPin 21
-#define rightEncoderBPin 20
 
 #define fanPin 4
 
@@ -137,10 +133,6 @@ void setup() {
   Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
-  pinMode(leftEncoderAPin, INPUT);
-  pinMode(leftEncoderBPin, INPUT);
-  pinMode(rightEncoderAPin, INPUT);
-  pinMode(rightEncoderBPin, INPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
   fan.attach(fanPin);
