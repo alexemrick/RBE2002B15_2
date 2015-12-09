@@ -22,7 +22,7 @@ void doTrig(float dist, float angle) //fix this, need to add tolerances, can't r
 
 }
 
-/* IF DOTRIG IS SCRAPPED, THIS FUNCTION HAS TO CHANGE TO USE SOMETHING OTHER THAN DISTX AND DISTY.
+/* IF DOTRIG IS SCRAPPED, USE THE OTHER DISTORIENTATION (NOT THIS ONE)
  *  
  * This function takes the distance traveled measured by the encoders and determines the orientation of the robot
  * and adds that distance to either the x or y global variable depending on the gyro.
@@ -35,24 +35,49 @@ void doTrig(float dist, float angle) //fix this, need to add tolerances, can't r
 void distOrientation(int gyro)
 {
   //add tolerances?? i don't think you need them
-  if (gyro > 0 && gyro < (PI / 2)) //if the robot is facing forward, the positive x direction
+  if (gyro > 0 && gyro < 90) //if the robot is facing forward, the positive x direction
   {
     xDistanceTraveled += distX;
     yDistanceTraveled += distY;
   }
-  else if (gyro > (PI / 2) && gyro < PI) //if the robot is facing left, the positive y direction
+  else if (gyro > 90 && gyro < 180) //if the robot is facing left, the positive y direction
   {
     xDistanceTraveled -= distX;
     yDistanceTraveled += distY;
   }
-  else if (gyro > PI && gyro < (3 * PI / 2)) //if the robot is facing backward, the negative x direction
+  else if (gyro > -90 && gyro < 0) //if the robot is facing backward, the negative x direction
   {
     xDistanceTraveled -= distX;
     yDistanceTraveled -= distY;
   }
-  else if (gyro > (3 * PI / 2) && gyro < (2 * PI)) //if the robot is facing right, the negative y direction
+  else if (gyro > -180 && gyro < -90) //if the robot is facing right, the negative y direction
   {
     xDistanceTraveled += distX;
     yDistanceTraveled -= distY;
   }
 }
+
+void distOrientation(float gyro, float distance)
+{
+  int angle = gyro;
+  if ((angle > -10 && angle < 10) || (angle > 350 && angle < 370)) //if the robot is facing forward, the positive x direction
+  {
+    xDistanceTraveled += distance;
+  }
+  else if ((angle > 80 && angle < 100 ) || (angle > -280 && angle < -260) ) //if the robot is facing left, the positive y direction
+  {
+    yDistanceTraveled += distance;
+  }
+  else if ((angle > -190 && angle < -170) || (angle > 170 && angle < 190))//if the robot is facing backward, the negative x direction
+  {
+    xDistanceTraveled -= distance;
+  }
+  else if ((angle > -100 && angle < -80) || (angle > 260 && angle < 280)) //if the robot is facing right, the negative y direction
+  {
+    yDistanceTraveled -= distance;
+  }
+  Serial.print(xDistanceTraveled);
+  Serial.print(", ");
+  Serial.println(yDistanceTraveled);
+}
+
