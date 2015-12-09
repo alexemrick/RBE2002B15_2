@@ -85,6 +85,11 @@ boolean keepGoing = true;
 Encoder masterEnc(2, 3);    // interrupt pins available:
 Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19], free[20, 21]
 
+
+float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
+float encoderConversion = 8.6393 / 300;
+
+
 // prepare values for P
 // error: difference between master and slave encoders
 // + if slave needs to speed up, - for slow down, if at same speed, = 0
@@ -145,14 +150,10 @@ void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-//  Timer1.initialize(100000);
-//  Timer1.attachInterrupt(readUltrasonic);
-
   masterEnc.write(0);
   slaveEnc.write(0);
 
   //setup for gyro stuff
-
 
   if (!gyro.init()) // gyro init
   {
@@ -176,13 +177,11 @@ void setup() {
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
 
-  Serial.println(gerrx); // print error vals
-  Serial.println(gerry);
-  Serial.println(gerrz);
 }
 
 //main loop
 void loop() {
+  
 }
 
 /*
@@ -200,74 +199,69 @@ void findCandle()
   switch (state)
   {
     case 0:
-      {
-        // driveStraightUltra;
-        /*
-         * This chunk of code describes when the candle is in the 60 degree 15 inch cone
-         * float flameSensorValue = analogRead(flameSensorPin);
-        if(flameClose(flameSensorValue))
-        {
-        rotateUntilHot();
-        }
-         */
-        if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
-        {
-          stopRobot();
-          state = 1;
-        }
-      }
-    case 1:
-      {
-        if (distanceFront <= distanceToFrontWall)
-        {
-          state = 4;
-        }
-        else
-        {
-          state = 7;
-        }
-      }
-    case 2: //turn right
-      {
-        turnRobot(1, 90);
-        state = 0;
-      }
-    case 3: //turn left
-      {
-        turnRobot(2, 90);
-        state = 0;
-      }
-    case 4: //is it the candle
-      {
-        float flameSensorValue = analogRead(flameSensorPin);
-        if (flameSensorValue < flameIsHere)
-        {
-          state = 5; //the obstacle is the candle
-        }
-        else
-        {
-          state = 7; //the obstacle is not the candle
-        }
-      }
-    case 5: //it is the candle, blow out the candle
-      {
-        runFan();
-      }
-    case 6: //it is not the candle, there is a wall in front of you
-      {
-        state = 7;
-      }
-    case 7: //is there a gap to the right
-      {
-        if (distanceRight >= distanceToRightWall) //if there is no obstacle 
-        {
-          state = 2; //turn right
-        }
-        else
-        {
-          state = 3; //turn left
-        }
-      }
 
+      // driveStraightUltra;
+      /*
+       * This chunk of code describes when the candle is in the 60 degree 15 inch cone
+       * float flameSensorValue = analogRead(flameSensorPin);
+      if(flameClose(flameSensorValue))
+      {
+      rotateUntilHot();
+      }
+       */
+      if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
+      {
+        stopRobot();
+        state = 1;
+      }
+      break;
+    case 1:
+
+      if (distanceFront <= distanceToFrontWall)
+      {
+        state = 4;
+      }
+      else
+      {
+        state = 6;
+      }
+      break;
+    case 2: //turn right
+
+      turnRobot(1, 90);
+      state = 0;
+      break;
+    case 3: //turn left
+
+      turnRobot(2, 90);
+      state = 0;
+      break;
+    case 4: //is it the candle
+
+      if (analogRead(flameSensorPin) < flameIsHere)
+      {
+        state = 5; //the obstacle is the candle
+      }
+      else
+      {
+        state = 6; //the obstacle is not the candle
+      }
+      break;
+    case 5: //it is the candle, blow out the candle
+
+      runFan();
+      break;
+    case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
+
+      if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
+      {
+        state = 2; //turn right
+      }
+      else //if there is an obstacle to the right
+        //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
+      {
+        state = 3; //turn left
+      }
+      break;
   }
 }
