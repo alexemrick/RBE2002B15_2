@@ -75,8 +75,8 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 60;
-int slavePower = 60;
+int masterPower = 65;
+int slavePower = 65;
 boolean keepGoing = true;
 
 // set encoders and motors
@@ -183,7 +183,7 @@ void setup() {
 //main loop
 void loop()
 {
-  findCandle();
+  driveStraight();
 }
 
 /*
