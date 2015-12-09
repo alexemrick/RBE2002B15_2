@@ -265,7 +265,7 @@ void findCandle()
 
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
       {
-        state = 2; //turn right
+        state = 8; //state 2 plus if there is not wall
       }
       else //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
@@ -273,5 +273,18 @@ void findCandle()
         state = 3; //turn left
       }
       break;
+
+      case 8:
+      angle = readGyro();
+      turnRobot(1, angle);
+      //runs both motors for a bit so it drives straight
+      rightDrive.write(0);
+      leftDrive.write(0);
+      delay(5);
+      turnRobot(1, angle);
+      
+      state = 0;
+      break;
+      
   }
 }
