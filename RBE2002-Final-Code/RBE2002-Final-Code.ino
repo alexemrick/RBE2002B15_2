@@ -215,6 +215,7 @@ void findCandle()
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();
+        distOrientation(readUltrasonic(), trackDistance());
         state = 1;
       }
       break;
