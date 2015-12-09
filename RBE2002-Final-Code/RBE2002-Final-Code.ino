@@ -103,8 +103,8 @@ const double kp = 0.01;
 const double ki = 1.8;
 const double kd = 0.7;
 
-const float distanceToFrontWall = 7.0;
-const float distanceToRightWall = 6.0;
+const float distanceToFrontWall = 8.0;
+const float distanceToRightWall = 7.0;
 
 const int Stop = 90;
 
@@ -180,10 +180,7 @@ void setup() {
 
 //main loop
 void loop() {
-  xDistanceTraveled = 10;
-  yDistanceTraveled = 5;
-  float angle = readGyro();
-  distOrientation(angle, xDistanceTraveled);
+  findCandle();
 }
 
 /*
@@ -196,13 +193,14 @@ void loop() {
  */
 void findCandle()
 {
+  float angle;
   readUltrasonic();
 
   switch (state)
   {
     case 0:
 
-      // driveStraightUltra;
+      // driveStraight();
       /*
        * This chunk of code describes when the candle is in the 60 degree 15 inch cone
        * float flameSensorValue = analogRead(flameSensorPin);
@@ -229,13 +227,13 @@ void findCandle()
       }
       break;
     case 2: //turn right
-
-      turnRobot(1, 90);
+      angle = readGyro();
+      turnRobot(1, angle);
       state = 0;
       break;
     case 3: //turn left
-
-      turnRobot(2, 90);
+      angle = readGyro();
+      turnRobot(2, angle);
       state = 0;
       break;
     case 4: //is it the candle
