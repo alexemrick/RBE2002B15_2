@@ -109,14 +109,12 @@ const float distanceR = 4.0;
 
 const int Stop = 90;
 
-<<<<<<< HEAD
 const int flameIsClose = 900; //flame sensor value if it's in the cone
 const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
-=======
 
-const int possibleFlame = 900; //flame sensor value if it's in the cone
+
+  const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
->>>>>>> origin/master
 
 //variables for gyro
 
@@ -183,17 +181,15 @@ void setup() {
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
-//
-//  leftDrive.write(masterPower);
-//  rightDrive.write(slavePower);
+  //
+  //  leftDrive.write(masterPower);
+  //  rightDrive.write(slavePower);
 }
 
 //main loop
 void loop()
 {
-  float angle = readGyro();
-  turnRobot(1, angle);
-  Serial.println(angle);
+ findCandle();
 }
 
 /*
@@ -228,7 +224,7 @@ void findCandle()
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();
-        distOrientation(readUltrasonic(), trackDistance());
+        distOrientation(readGyro(), trackDistance());
         state = 1;
       }
       else
@@ -289,7 +285,7 @@ void findCandle()
       }
       break;
 
-      case 8:
+    case 8:
       angle = readGyro();
       turnRobot(1, angle);
       //runs both motors for a bit so it drives straight
@@ -297,9 +293,9 @@ void findCandle()
       leftDrive.write(0);
       delay(5);
       turnRobot(1, angle);
-      
+
       state = 0;
       break;
-      
+
   }
 }
