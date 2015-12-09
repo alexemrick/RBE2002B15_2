@@ -98,10 +98,7 @@ double kd = 0.02; //1;
 
 const float distanceToFrontWall = 14.0;
 const float distanceToRightWall = 7.0;
-const float distanceR = 4;
-
-const int masterPower = 60;
-const int slavePower = 60;
+const float distanceR = 4.0;
 
 const int Stop = 90;
 
@@ -150,7 +147,6 @@ void setup() {
   masterEnc.write(0);
   slaveEnc.write(0);
 
-
   leftDrive.write(masterPower);
   rightDrive.write(slavePower);
 
@@ -182,7 +178,10 @@ void setup() {
 
 //main loop
 void loop() {
-  findCandle();
+  readUltrasonic();
+  delay(100);
+  driveStraight();
+  Serial.println(distanceRight);
 }
 
 /*
@@ -195,14 +194,15 @@ void loop() {
  */
 void findCandle()
 {
-  float angle;
+  state = 0;
+  float angle = readGyro();
   readUltrasonic();
 
   switch (state)
   {
     case 0:
 
-      // driveStraight();
+       driveStraight();
       /*
        * This chunk of code describes when the candle is in the 60 degree 15 inch cone
        * float flameSensorValue = analogRead(flameSensorPin);
@@ -211,7 +211,7 @@ void findCandle()
       rotateUntilHot();
       }
        */
-      //readUltrasonic();
+      readUltrasonic();
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();

@@ -18,23 +18,20 @@
 
 // initialize timer & attach interrupt
 
+void driveStraight() {
+  if (Serial3.available()) {
+    pid();
+    readUltrasonic();
+    POUT = error * kp + DError * kd + IError * ki;
+    rightDrive.write(slavePower + POUT);
+  }
+}
 
 void pid() {
   error = distanceRight - distanceR;
   DError = error - oldError;
   IError += error;
   oldError = error;
-}
-
-void driveStraight() {
-  if (Serial3.available()) {
-    pid();
-    readUltrasonic();
-
-    POUT = error * kp + DError * kd + IError * ki;
-    rightDrive.write(slavePower + POUT);
-
-  }
 }
 
 
