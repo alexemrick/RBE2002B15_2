@@ -92,13 +92,19 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-const double kp = 0.01;
-const double ki = 1.8;
-const double kd = 0.7;
+double kp = 1.5; //0.01;
+double ki = 0.003; //0;
+double kd = 0.02; //1;
 
-// distances in inches
-const float distanceToFrontWall = 7.0;
-const float distanceToRightWall = 6.0;
+const float distanceToFrontWall = 14.0;
+const float distanceToRightWall = 7.0;
+const float distanceR = 4;
+
+const int masterPower = 60;
+const int slavePower = 60;
+
+const int Stop = 90;
+
 
 const int possibleFlame = 970; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
@@ -143,6 +149,10 @@ void setup() {
 
   masterEnc.write(0);
   slaveEnc.write(0);
+
+
+  leftDrive.write(masterPower);
+  rightDrive.write(slavePower);
 
   //setup for gyro stuff
 
@@ -201,14 +211,14 @@ void findCandle()
       rotateUntilHot();
       }
        */
-       //readUltrasonic();
+      //readUltrasonic();
       if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
       {
         stopRobot();
         state = 1;
       }
       break;
-      
+
     case 1:
 
       if (distanceFront <= distanceToFrontWall)
@@ -220,19 +230,19 @@ void findCandle()
         state = 6;
       }
       break;
-      
+
     case 2: //turn right
       angle = readGyro();
       turnRobot(1, angle);
       state = 0;
       break;
-      
+
     case 3: //turn left
       angle = readGyro();
       turnRobot(2, angle);
       state = 0;
       break;
-      
+
     case 4: //is it the candle
 
       if (analogRead(flameSensorPin) < flameIsHere)
@@ -244,12 +254,12 @@ void findCandle()
         state = 6; //the obstacle is not the candle
       }
       break;
-      
+
     case 5: //it is the candle, blow out the candle
 
       runFan();
       break;
-      
+
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
 
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
