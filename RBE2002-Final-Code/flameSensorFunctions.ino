@@ -30,17 +30,17 @@ boolean flameClose(int flameValue)
  */
 void rotateUntilHot()
 {
-  int kp = 0;
-  int ki = 0;
-  int kd = 0;
-  float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
-  pid();
+  float POUT = 0;
+  pidForFlame();
 //  delay(200); //this delay may need to be altered or removed
 //  rotate(10);
 
-  POUT = error * kp + DError * kd + IError * ki;
-  rotate(90 - POUT);
-  if(flameSensorValue <= 50 && flameSensorValue >= 35) stopRobot();
+  Serial.println(POUT);
+//  rotate(90 - POUT);
+//  if(flameSensorValue <= 50 && flameSensorValue >= 35) {
+//    Serial.println("Stopped");
+//    stopRobot();
+//  }
     
 //  //if smaller = the candle is closer, keep turning
 //  if(flameSensorValue > analogRead(flameSensorPin)) rotate(10);
@@ -53,9 +53,15 @@ void rotateUntilHot()
   //back to that flame sensor value. just an idea.
 
 // helper PID function for rotateUntilHot()
-void pid() {
+float pidForFlame() {
+  int kp = 1;
+  int ki = 0;
+  int kd = 0;
+  int error, DError, IError, oldError;
+  float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
   error = flameSensorValue - 50; // what we want the robot to stop at 
   DError = error - oldError;
   IError += error;
   oldError = error;
+  return POUT = error * kp + DError * kd + IError * ki;
 }

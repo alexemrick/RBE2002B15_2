@@ -38,7 +38,7 @@
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 
-#define fanPin 4
+#define fanPin 24
 
 #define leftMotorPin 8
 #define rightMotorPin 9
@@ -60,7 +60,6 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-Servo fan;
 
 L3G gyro;
 
@@ -93,17 +92,17 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = .5;//1.75;
-double ki = 0;//0.003;
-double kd = -0.005;//-0.03;
+double kp = 1.5; //0.01;
+double ki = 0.003; //0;
+double kd = -0.02; //1;
 
-const float distanceToFrontWall = 4.0;
+const float distanceToFrontWall = 10.0;
 const float distanceToRightWall = 20.0;
+const float distanceR = 4.0;
 
-float distanceR;
 const int Stop = 90;
 
-const int possibleFlame = 900; //flame sensor value if it's in the cone
+const int possibleFlame = 970; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
@@ -135,7 +134,6 @@ void setup() {
   pinMode(fanPin, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
-  fan.attach(fanPin);
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
@@ -175,27 +173,7 @@ void setup() {
 //main loop
 void loop()
 {
-  driveForward(73,73);
-  readUltrasonic();
-  delay(100);
-  if (distanceFront <= distanceToFrontWall)
-  {
-    stopRobot();
-    turnRobot(1,readGyro());
-  }
-  
-  if (Serial3.available()) {
-    pid();
-    distanceFront = Serial3.readStringUntil(',').toFloat();
-    distanceLeft = Serial3.readStringUntil(',').toFloat();
-    distanceR = Serial3.readStringUntil('\n').toFloat();
-    delay(100); //maybe200
-    readUltrasonic();
-
-    POUT = error * kp + DError * kd + IError * ki;
-    rightDrive.write(slavePower + POUT);
-    Serial.println(distanceRight);
-  }
+  driveStraight();
 }
 
 /*
