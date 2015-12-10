@@ -93,14 +93,14 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 1.5; //0.01;
-double ki = 0.003; //0;
-double kd = -0.02; //1;
+double kp = .5;//1.75;
+double ki = 0;//0.003;
+double kd = -0.005;//-0.03;
 
-const float distanceToFrontWall = 10.0;
+const float distanceToFrontWall = 4.0;
 const float distanceToRightWall = 20.0;
-const float distanceR = 4.0;
 
+float distanceR;
 const int Stop = 90;
 
 const int possibleFlame = 900; //flame sensor value if it's in the cone
@@ -175,7 +175,27 @@ void setup() {
 //main loop
 void loop()
 {
-  driveStraight();
+  driveForward(73,73);
+  readUltrasonic();
+  delay(100);
+  if (distanceFront <= distanceToFrontWall)
+  {
+    stopRobot();
+    turnRobot(1,readGyro());
+  }
+  
+  if (Serial3.available()) {
+    pid();
+    distanceFront = Serial3.readStringUntil(',').toFloat();
+    distanceLeft = Serial3.readStringUntil(',').toFloat();
+    distanceR = Serial3.readStringUntil('\n').toFloat();
+    delay(100); //maybe200
+    readUltrasonic();
+
+    POUT = error * kp + DError * kd + IError * ki;
+    rightDrive.write(slavePower + POUT);
+    Serial.println(distanceRight);
+  }
 }
 
 /*
