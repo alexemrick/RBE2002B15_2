@@ -42,5 +42,5 @@ void rotateUntilHot()
 }
   //save the higher flame sensor value and make that the setpoint in a PID loop. use the loop to turn the robot 
   //back to that flame sensor value. just an idea.
-}
+
 
