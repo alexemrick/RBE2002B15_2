@@ -177,6 +177,7 @@ void setup() {
 //main loop
 void loop()
 {
+  findCandle();
 
 }
 
