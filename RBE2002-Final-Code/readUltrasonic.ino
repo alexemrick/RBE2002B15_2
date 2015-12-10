@@ -8,10 +8,9 @@
  *
  */
 void readUltrasonic() {
-  if (Serial.available())
-  {
+  delay(100);
     distanceFront = Serial3.readStringUntil(',').toFloat();
     distanceLeft = Serial3.readStringUntil(',').toFloat();
     distanceRight = Serial3.readStringUntil('\n').toFloat();
-  }
+  
 }

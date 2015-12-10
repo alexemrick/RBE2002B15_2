@@ -34,14 +34,11 @@
 #include <LiquidCrystal.h> //include the LCD library
 #include <Wire.h>
 #include <L3G.h>
+
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
-#define leftEncoderAPin 18
-#define leftEncoderBPin 19
-#define rightEncoderAPin 21
-#define rightEncoderBPin 20
 
-#define fanPin 4
+#define fanPin 24
 
 #define leftMotorPin 8
 #define rightMotorPin 9
@@ -59,13 +56,10 @@ float distanceFront;
 float distX;
 float distY;
 
-int state = 0;
-
 LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-Servo fan;
 
 L3G gyro;
 
@@ -76,14 +70,17 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 60;
-int slavePower = 60;
+int masterPower = 65;
+int slavePower = 65;
 boolean keepGoing = true;
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
 Encoder masterEnc(2, 3);    // interrupt pins available:
-Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19], free[20, 21]
+Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19]
+
+float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
+float encoderConversion = 8.6393 / 300;
 
 // prepare values for P
 // error: difference between master and slave encoders
@@ -95,25 +92,32 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-const double kp = 0.01;
-const double ki = 1.8;
-const double kd = 0.7;
+double kp = .90;//1.75;
+double ki = 0.0002;//0.003;
+double kd = -0.003;//-0.03;
+const float distanceToFrontWall = 10.0;
+const float distanceToRightWall = 20.0;
+const float distanceR = 4.0;
 
-const float distanceToFrontWall = 7.0;
-const float distanceToRightWall = 6.0;
 
+int i;
+float distanceR;
 const int Stop = 90;
 
-const int flameIsClose = 970; //flame sensor value if it's in the cone
-const int flameIsHere = 22;  //flame sensor value if it's in line up to 8" away
+const int possibleFlame = 970; //flame sensor value if it's in the cone
+const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
-float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 200Hz if possible
-long timer = 0; // timer for the gyro
-long timer1 = 0; //timer for printig
-float G_gain = .00875; // gyros gain factor for 250deg/sec
+
+float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
+
+long timer = 0; //general purpose timer
+long timer1 = 0;
+
+float G_gain = .0109375; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
+
 float gyro_x; //gyro x val
 float gyro_y; //gyro x val
 float gyro_z; //gyro x val
@@ -130,25 +134,17 @@ void setup() {
   Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
-  pinMode(leftEncoderAPin, INPUT);
-  pinMode(leftEncoderBPin, INPUT);
-  pinMode(rightEncoderAPin, INPUT);
-  pinMode(rightEncoderBPin, INPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
-  fan.attach(fanPin);
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-//  Timer1.initialize(100000);
-//  Timer1.attachInterrupt(readUltrasonic);
-
   masterEnc.write(0);
   slaveEnc.write(0);
 
-  //setup for gyro stuff
 
+  //setup for gyro stuff
 
   if (!gyro.init()) // gyro init
   {
@@ -172,100 +168,154 @@ void setup() {
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
 
-  Serial.println(gerrx); // print error vals
-  Serial.println(gerry);
-  Serial.println(gerrz);
+  leftDrive.write(masterPower);
+  rightDrive.write(slavePower);
+  //
 }
 
 //main loop
-void loop() {
-  float angle = readGyro();
-  Serial.println(angle);
+void loop()
+{
+//  driveForward(73, 69);
+//  readUltrasonic();
+//  Serial.print(distanceFront);
+//  Serial.print(", ");
+//  Serial.println(distanceRight);
+//  readUltrasonic();
+//  if (distanceFront <= distanceToFrontWall)
+//  {
+//    stopRobot();
+//    delay(100);
+//    turnRobot(2, readGyro());
+//    stopRobot();
+//    delay(1000);
+//  }
+
+
+  readUltrasonic();
+
+  if (Serial3.available()) {
+    pid();
+//    distanceFront = Serial3.readStringUntil(',').toFloat();
+//    distanceLeft = Serial3.readStringUntil(',').toFloat();
+//    distanceR = Serial3.readStringUntil('\n').toFloat();
+//    delay(100); //maybe200
+    readUltrasonic();
+    delay(100);
+
+    POUT = error * kp + DError * kd + IError * ki;
+    rightDrive.write(slavePower + POUT);
+    Serial.println(distanceRight);
+    //  }
+  }
 }
 
 /*
- * This function is the main state machine of the program represented by the Flow Chart in the drive entitled
- * "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
- * loop.
- *
- * inputs: none
- * outputs: none
- */
+* This function is the main state machine of the program represented by the Flow Chart in the drive entitled
+* "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
+* loop.
+*
+* inputs: none
+* outputs: none
+*/
 void findCandle()
 {
+  static int state = 0;
+  float angle;
   readUltrasonic();
 
   switch (state)
   {
     case 0:
+
+      driveStraight();
+      delay(500);
+      /*
+      * This chunk of code describes when the candle is in the 60 degree 15 inch cone
+      * float flameSensorValue = analogRead(flameSensorPin);
+      if(flameClose(flameSensorValue))
       {
-        // driveStraightUltra;
-        /*
-         * This chunk of code describes when the candle is in the 60 degree 15 inch cone
-         * float flameSensorValue = analogRead(flameSensorPin);
-        if(flameClose(flameSensorValue))
-        {
-        rotateUntilHot();
-        }
-         */
-        if (distanceFront <= distanceToFrontWall || distanceRight >= distanceToRightWall)
-        {
-          stopRobot();
-          state = 1;
-        }
+      rotateUntilHot();
       }
+      */
+      readUltrasonic();
+      delay(100); //maybe200
+      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
+      {
+        stopRobot();
+        distOrientation(readGyro(), trackDistance());
+        state = 1;
+      }
+      else
+        state = 0;
+      break;
+
     case 1:
+
+      if (distanceFront <= distanceToFrontWall)
       {
-        if (distanceFront <= distanceToFrontWall)
-        {
-          state = 4;
-        }
-        else
-        {
-          state = 7;
-        }
+        state = 4;
       }
+      else
+      {
+        state = 6;
+      }
+      break;
+
     case 2: //turn right
-      {
-        turnRobot(1, 90);
-        state = 0;
-      }
+      angle = readGyro();
+      turnRobot(1, angle);
+      state = 7;
+      break;
+
     case 3: //turn left
-      {
-        turnRobot(2, 90);
-        state = 0;
-      }
+      angle = readGyro();
+      turnRobot(2, angle);
+      state = 0;
+      break;
+
     case 4: //is it the candle
+
+      if (analogRead(flameSensorPin) < definiteFlame)
       {
-        float flameSensorValue = analogRead(flameSensorPin);
-        if (flameSensorValue < flameIsHere)
-        {
-          state = 5; //the obstacle is the candle
-        }
-        else
-        {
-          state = 7; //the obstacle is not the candle
-        }
+        state = 5; //the obstacle is the candle
       }
+      else
+      {
+        state = 6; //the obstacle is not the candle
+      }
+      break;
+
     case 5: //it is the candle, blow out the candle
+      displayLCD();
+      runFan();
+      break;
+
+    case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
+
+      if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
       {
-        runFan();
+        state = 2; //state 2 plus if there is not wall
       }
-    case 6: //it is not the candle, there is a wall in front of you
+      else //if there is an obstacle to the right
+        //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
-        state = 7;
+        state = 3; //turn left
       }
-    case 7: //is there a gap to the right
-      {
-        if (distanceRight >= distanceToRightWall) //if there is no obstacle 
-        {
-          state = 2; //turn right
-        }
-        else
-        {
-          state = 3; //turn left
-        }
-      }
+      break;
+
+    case 7:
+      //      angle = readGyro();
+      //      turnRobot(1, angle);
+      //runs both motors for a bit so it drives straight
+      rightDrive.write(70);
+      leftDrive.write(70);
+      delay(5);
+      turnRobot(1, angle);
+
+      state = 0;
+      break;
 
   }
+  delay(10);
 }

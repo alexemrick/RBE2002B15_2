@@ -44,6 +44,6 @@ float readGyro() {
     Serial.print(" Z: ");
     Serial.println(gyro_z);
   }
-  return gyro_z;
+return gyro_z;
 }
 

@@ -10,36 +10,35 @@
 void turnRobot (int turn, float angle)
 {
   int ang = angle;
+  int newAngle; //read the gyro
   switch (turn)
   {
     case 1: //turn right
-      {
-        int newAngle = (int)readGyro();
-        //if(
-        while (ang > (newAngle - 90)) //while the gyro reading is less than 90 degrees to the left of the initial angle
+      newAngle = (int)readGyro();
+        while (newAngle > (ang - 90)) //while the gyro reading is less than 90 degrees to the left of the initial angle
         {
-          rotate(73);  //turn right
+          rotate(65);  //turn right
           newAngle = readGyro(); //read the gyro 
         }
-      }
+      break;
     case 2: //turn left
-      {
-        int newAngle = (int)readGyro(); 
+      
+        newAngle = (int)readGyro(); 
         while (newAngle < (ang + 90))  //while the gyro reading is less than 90 degrees to the right of the initial angle
         {
-          rotate(107); //turn left
+          rotate(115); //turn left
           newAngle = readGyro(); //read the gyro
         }
-      }
+      break;
     case 3: // u turn
-      {
-        int newAngle = (int)readGyro(); 
+
+        newAngle = (int)readGyro(); 
         while (newAngle < (ang - 180))
         {
-          rotate(73);
+          rotate(65);
           newAngle = readGyro(); //read the gyro
         }
-      }
+      break;
 
   }
 }
