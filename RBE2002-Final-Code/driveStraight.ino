@@ -26,6 +26,7 @@ void driveStraight() {
     rightDrive.write(slavePower + POUT);
     doTrig(trackDistance(), readGyro());
     distOrientation(readGyro());
+    displayLCD();
   }
 }
 
