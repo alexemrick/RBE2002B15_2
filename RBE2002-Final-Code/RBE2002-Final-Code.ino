@@ -294,9 +294,10 @@ void findCandle()
         turnRobot(2, readGyro());
         stopRobot();
         delay(1000);
+        
       }
       state = 0;
-
+break;
 
   }
   delay(10);
