@@ -97,7 +97,7 @@ double ki = 0.0002;//0.003;
 double kd = -0.003;//-0.03;
 const float distanceToFrontWall = 10.0;
 const float distanceToRightWall = 20.0;
-const float distanceR = 4.0;
+const float distanceR = 7.5;
 
 
 int i;
