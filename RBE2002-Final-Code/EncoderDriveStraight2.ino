@@ -16,12 +16,11 @@ double DErrorE, IErrorE, POUTE;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kpE = 0.01;
-double kiE = 1.8;
-double kdE = 0.7;
+const float kpE = 0.01;
+const float kiE = 1.8;
+const float kdE = 0.7;
 
 void setup() {
-
   // initialize timer & attach interrupt
   Timer1.initialize(100000);
   Timer1.attachInterrupt(pidEncoders);
@@ -38,7 +37,7 @@ void pidEncoders() {
   slaveEnc.write(0);
 }
 
-void loop() {
+void encoderDriveStraight() {
   // calculates the PID
   POUTE = errorE * kpE + DError * kdE + IError * kiE;
   
