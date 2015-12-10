@@ -24,8 +24,9 @@ void driveStraight() {
     readUltrasonic();
     POUT = error * kp + DError * kd + IError * ki;
     rightDrive.write(slavePower + POUT);
-    trackDistance();
-    dist
+
+    doTrig(trackdistance(), readGyro());
+    distOrientation(readGyro());
   }
 }
 
