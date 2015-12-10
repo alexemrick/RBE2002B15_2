@@ -12,6 +12,9 @@
 void runFan()
 {
   float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
-  while(flameSensorValue < definiteFlame + 28 && flameSensorValue > definiteFlame - 22) fan.write(0);  // or HIGH if we do it that way
-  fan.write(90);
+  if(flameSensorValue < definiteFlame + 48 && flameSensorValue > definiteFlame - 42) {
+    digitalWrite(fanPin, HIGH);
+    delay(5000);
+  }
+  else digitalWrite(fanPin, LOW);
 }

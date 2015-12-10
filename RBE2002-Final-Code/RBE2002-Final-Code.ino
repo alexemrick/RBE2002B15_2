@@ -38,7 +38,7 @@
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
 
-#define fanPin 4
+#define fanPin 24
 
 #define leftMotorPin 8
 #define rightMotorPin 9
@@ -60,7 +60,6 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-Servo fan;
 
 L3G gyro;
 
@@ -96,15 +95,16 @@ double DError, IError, POUT;
 double kp = .90;//1.75;
 double ki = 0.0002;//0.003;
 double kd = -0.003;//-0.03;
-
 const float distanceToFrontWall = 10.0;
 const float distanceToRightWall = 20.0;
+const float distanceR = 4.0;
+
 
 int i;
 float distanceR;
 const int Stop = 90;
 
-const int possibleFlame = 900; //flame sensor value if it's in the cone
+const int possibleFlame = 970; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
@@ -136,7 +136,6 @@ void setup() {
   pinMode(fanPin, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
-  fan.attach(fanPin);
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
