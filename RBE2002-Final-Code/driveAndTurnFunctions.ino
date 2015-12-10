@@ -26,9 +26,15 @@ void turnRobot (int turn, float angle)
         newAngle = (int)readGyro(); 
         while (newAngle < (ang + 90))  //while the gyro reading is less than 90 degrees to the right of the initial angle
         {
-          rotate(115); //turn left
+          rotate(111); //turn left
           newAngle = readGyro(); //read the gyro
         }
+
+//        while(newAngle < 90)
+//        {
+//          rotate(111);
+//          newAngle = readGyro();
+//        }
       break;
     case 3: // u turn
 

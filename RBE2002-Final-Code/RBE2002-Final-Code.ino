@@ -92,16 +92,17 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = .90;//1.75;
-double ki = 0.0002;//0.003;
-double kd = -0.003;//-0.03;
+double kp = 1.0;//1.75;
+double ki = 0.0003;//0.003;
+double kd = -0.01;//-0.03;
+
+
 const float distanceToFrontWall = 10.0;
 const float distanceToRightWall = 20.0;
-const float distanceR = 4.0;
+const float distanceR = 7.5;
 
 
 int i;
-float distanceR;
 const int Stop = 90;
 
 const int possibleFlame = 970; //flame sensor value if it's in the cone
@@ -176,38 +177,7 @@ void setup() {
 //main loop
 void loop()
 {
-//  driveForward(73, 69);
-//  readUltrasonic();
-//  Serial.print(distanceFront);
-//  Serial.print(", ");
-//  Serial.println(distanceRight);
-//  readUltrasonic();
-//  if (distanceFront <= distanceToFrontWall)
-//  {
-//    stopRobot();
-//    delay(100);
-//    turnRobot(2, readGyro());
-//    stopRobot();
-//    delay(1000);
-//  }
 
-
-  readUltrasonic();
-
-  if (Serial3.available()) {
-    pid();
-//    distanceFront = Serial3.readStringUntil(',').toFloat();
-//    distanceLeft = Serial3.readStringUntil(',').toFloat();
-//    distanceR = Serial3.readStringUntil('\n').toFloat();
-//    delay(100); //maybe200
-    readUltrasonic();
-    delay(100);
-
-    POUT = error * kp + DError * kd + IError * ki;
-    rightDrive.write(slavePower + POUT);
-    Serial.println(distanceRight);
-    //  }
-  }
 }
 
 /*
@@ -220,14 +190,14 @@ void loop()
 */
 void findCandle()
 {
-  static int state = 0;
+
+  static int state = 8;
   float angle;
   readUltrasonic();
 
   switch (state)
   {
     case 0:
-
       driveStraight();
       delay(500);
       /*
@@ -243,7 +213,7 @@ void findCandle()
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
       {
         stopRobot();
-        distOrientation(readGyro(), trackDistance());
+        //distOrientation(readGyro(), trackDistance());
         state = 1;
       }
       else
@@ -315,6 +285,19 @@ void findCandle()
 
       state = 0;
       break;
+    case 8:
+      driveForward(73, 69);
+      readUltrasonic();
+      if (distanceFront <= distanceToFrontWall)
+      {
+        stopRobot();
+        delay(100);
+        turnRobot(2, readGyro());
+        stopRobot();
+        delay(1000);
+      }
+      state = 0;
+
 
   }
   delay(10);
