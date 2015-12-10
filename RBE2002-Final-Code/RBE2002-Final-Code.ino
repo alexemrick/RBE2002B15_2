@@ -213,7 +213,6 @@ void findCandle()
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
       {
         stopRobot();
-        //distOrientation(readGyro(), trackDistance());
         state = 1;
       }
       else
@@ -278,8 +277,7 @@ void findCandle()
       //      angle = readGyro();
       //      turnRobot(1, angle);
       //runs both motors for a bit so it drives straight
-      rightDrive.write(70);
-      leftDrive.write(70);
+      driveForward(73, 69);
       delay(5);
       turnRobot(1, angle);
 

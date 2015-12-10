@@ -20,11 +20,11 @@ const float kpE = 0.01;
 const float kiE = 1.8;
 const float kdE = 0.7;
 
-void setup() {
-  // initialize timer & attach interrupt
-  Timer1.initialize(100000);
-  Timer1.attachInterrupt(pidEncoders);
-}
+//void setup() {
+//  // initialize timer & attach interrupt
+//  Timer1.initialize(100000);
+//  Timer1.attachInterrupt(pidEncoders);
+//}
 
 void pidEncoders() {
   errorE = masterEnc.read() - slaveEnc.read();

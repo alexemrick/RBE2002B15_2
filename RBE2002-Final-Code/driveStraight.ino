@@ -20,7 +20,7 @@
 
 void driveStraight() {
   if (Serial3.available()) {
-    pid();
+    pidUltrasonic();
     readUltrasonic();
     POUT = error * kp + DError * kd + IError * ki;
     rightDrive.write(slavePower + POUT);
