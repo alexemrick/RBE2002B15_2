@@ -29,7 +29,7 @@ void driveStraight() {
   }
 }
 
-void pid() {
+void pidUltrasonic() {
   error = distanceRight - distanceR;
   DError = error - oldError;
   IError += error;
