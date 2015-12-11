@@ -19,32 +19,40 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
-
-  if (Serial3.available()) {
-    rightDrive.write(slavePower + POUT);
+  // initializes values
+  for(int i = 0; i < 1; i++) {
+    rightDrive.write(masterPower);
     leftDrive.write(slavePower);
-    readUltrasonic();
-    pidUltrasonic();
-    POUT = error * kp + DError * kd + IError * ki;
-    if (POUT + slavePower > 80)
-    {
-      rightDrive.write(79);
-    }
-    else
-    {
-      rightDrive.write(slavePower + POUT);
-    }
-    doTrig(trackDistance(), readGyro());
-    distOrientation(readGyro());
-    displayLCD();
   }
+
+//  if (Serial3.available()) {
+    // **********************ultrasonic values are janky************************************
+    pidUltrasonic();
+//    Serial.println(POUT);
+//    Serial.println("Front: ");
+//    Serial.println(distanceFront);
+//    Serial.println("Right: ");
+//    Serial.println(distanceRight);
+//    Serial.println("Left: ");
+//    Serial.println(distanceLeft);
+    
+//    if (POUT + slavePower > 80) rightDrive.write(79);
+    rightDrive.write(masterPower + POUT);
+    Serial.println(rightDrive.read());
+    
+//    doTrig(trackDistance(), readGyro());
+//    distOrientation(readGyro());
+//    displayLCD();
+//  }
 }
 
 void pidUltrasonic() {
-  error = distanceRight - distanceR;
+  readUltrasonic();
+  error = distanceRight - distanceR;  // distanceRight - 7.5
   DError = error - oldError;
   IError += error;
   oldError = error;
+  POUT = error * kp + DError * kd + IError * ki;
 }
 
 
