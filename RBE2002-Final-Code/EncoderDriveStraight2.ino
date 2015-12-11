@@ -3,7 +3,7 @@
  */
 
 /*
- * ISR for drive straight
+ * "ISR" for drive straight
  */
 void pidEncoders() { 
   error = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
@@ -21,33 +21,19 @@ void pidEncoders() {
  */
 void encoderDriveStraight() {
   // sets up timer and interrupt
-  for (int i; i < 1; i++) {
-    // reset boolean
-//    keepGoing = true;
+  for (int i = 0; i < 1; i++) {
     // reset encoders
     masterEnc.write(0);
     slaveEnc.write(0);
 
     // run motors
-    leftDrive.write(masterPower);
-    rightDrive.write(slavePower);
-
-    // initialize timer & attach interrupt
-    Timer1.restart();
-    Timer1.initialize(100000);
-    Timer1.attachInterrupt(pidStraight);
+    leftDrive.write(slavePower);
+    rightDrive.write(masterPower);
   }
   
   // calculates the PID
-  POUT = error * kp + DError * kd + IError * ki;
+  POUT = error * kp - DError * kd + IError * ki;
   leftDrive.write(slavePower + POUT);
-}
-
-/*
- *  This function stops the interrupt from enc drive straight
- */
-void stopEncDriveStr()
-{
-  Timer1.detachInterrupt();
-  Timer1.stop();
+//  delay(100);
+  pidEncoders();
 }

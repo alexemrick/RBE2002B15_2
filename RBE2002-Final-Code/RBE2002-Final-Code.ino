@@ -76,10 +76,10 @@ boolean keepGoing = true;
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
-Encoder masterEnc(2, 3);    // interrupt pins available:
-Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19]
+Encoder masterEnc(18, 19);    // interrupt pins available:
+Encoder slaveEnc(2, 3);   // used[2, 3, 18, 19]
 
-float slaveEncValue = 0, masterEncValue = 0, distanceTraveled = 0;
+float slaveEncValue = 0, masterEncValue = 0, previousMaster = 0, previousSlave = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393 / 300;
 
 // prepare values for P
@@ -92,7 +92,7 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 0.01.0;//1.75;
+double kp = 0.01;//1.75;
 double ki = 1.8;//0.003;
 double kd = 0.7;//-0.03;
 
@@ -102,7 +102,7 @@ const float distanceToRightWall = 20.0;
 const float distanceR = 7.5;
 
 
-int i;
+//int i;
 const int Stop = 90;
 
 const int possibleFlame = 970; //flame sensor value if it's in the cone
@@ -141,10 +141,6 @@ void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-//  masterEnc.write(0);
-//  slaveEnc.write(0);
-
-
   //setup for gyro stuff
 
   if (!gyro.init()) // gyro init
@@ -168,17 +164,13 @@ void setup() {
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
-
-//  leftDrive.write(masterPower);
-//  rightDrive.write(slavePower);
-  //
 }
 
 //main loop
 void loop()
 {
-  findCandle();
-
+//  findCandle();
+  encoderDriveStraight();
 }
 
 /*
