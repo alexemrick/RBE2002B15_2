@@ -2,44 +2,52 @@
  * Drives robot straight; 2 wheels, encoder on each
  */
 
-// initialize variables
-
-// set encoders and motors
-// master on left; slave on right; for robot front faces away from you
-
-// prepare values for P
-// error: difference between master and slave encoders
-// + if slave needs to speed up, - for slow down, if at same speed, = 0
-double errorE = 0;
-double oldErrorE = 0;
-double DErrorE, IErrorE, POUTE;
-// decides how much the difference in encoder values effects
-// the final power change to the motor
-// final values: kp = 0.01; ki = 1.8; kd = 0.7;
-const float kpE = 0.01;
-const float kiE = 1.8;
-const float kdE = 0.7;
-
-//void setup() {
-//  // initialize timer & attach interrupt
-//  Timer1.initialize(100000);
-//  Timer1.attachInterrupt(pidEncoders);
-//}
-
-void pidEncoders() {
-  errorE = masterEnc.read() - slaveEnc.read();
-  DErrorE = errorE - oldError;
-  IErrorE += errorE;
-  oldErrorE = errorE;
+/*
+ * ISR for drive straight
+ */
+void pidEncoders() { 
+  error = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
+  DError = error - oldError;
+  IError += error;
+  oldError = error;
   
   // reset encoders so we have fresh values every loop
-  masterEnc.write(0);
-  slaveEnc.write(0);
+  previousMaster = masterEnc.read();
+  previousSlave = slaveEnc.read();
 }
 
+/*
+ * This function drives the robot straight
+ */
 void encoderDriveStraight() {
-  // calculates the PID
-  POUTE = errorE * kpE + DError * kdE + IError * kiE;
+  // sets up timer and interrupt
+  for (int i; i < 1; i++) {
+    // reset boolean
+//    keepGoing = true;
+    // reset encoders
+    masterEnc.write(0);
+    slaveEnc.write(0);
+
+    // run motors
+    leftDrive.write(masterPower);
+    rightDrive.write(slavePower);
+
+    // initialize timer & attach interrupt
+    Timer1.restart();
+    Timer1.initialize(100000);
+    Timer1.attachInterrupt(pidStraight);
+  }
   
-  rightDrive.write(slavePower + POUTE);
+  // calculates the PID
+  POUT = error * kp + DError * kd + IError * ki;
+  leftDrive.write(slavePower + POUT);
+}
+
+/*
+ *  This function stops the interrupt from enc drive straight
+ */
+void stopEncDriveStr()
+{
+  Timer1.detachInterrupt();
+  Timer1.stop();
 }

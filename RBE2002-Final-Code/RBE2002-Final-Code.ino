@@ -70,8 +70,8 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 65;
-int slavePower = 65;
+int masterPower = 60;
+int slavePower = 60;
 boolean keepGoing = true;
 
 // set encoders and motors
@@ -92,9 +92,9 @@ double DError, IError, POUT;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 1.0;//1.75;
-double ki = 0.0003;//0.003;
-double kd = -0.01;//-0.03;
+double kp = 0.01.0;//1.75;
+double ki = 1.8;//0.003;
+double kd = 0.7;//-0.03;
 
 
 const float distanceToFrontWall = 10.0;
@@ -141,8 +141,8 @@ void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-  masterEnc.write(0);
-  slaveEnc.write(0);
+//  masterEnc.write(0);
+//  slaveEnc.write(0);
 
 
   //setup for gyro stuff
@@ -169,8 +169,8 @@ void setup() {
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
 
-  leftDrive.write(masterPower);
-  rightDrive.write(slavePower);
+//  leftDrive.write(masterPower);
+//  rightDrive.write(slavePower);
   //
 }
 
