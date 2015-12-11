@@ -113,6 +113,10 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
+// LED
+int ledState = LOW;             // ledState used to set the LED
+const long interval = 500;
+
 float G_gain = .0109375; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
@@ -133,14 +137,15 @@ void setup() {
   Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-  //  masterEnc.write(0);
-  //  slaveEnc.write(0);
+  // sets led on for looking for candle
+  digitalWrite(ledPin, HIGH);
 
   pinMode(13, OUTPUT);
 
@@ -192,6 +197,7 @@ void findCandle()
 
   switch (state)
   {
+    // wall follow
     case 0:
       digitalWrite(27, HIGH);
       driveStraight();
@@ -216,8 +222,8 @@ void findCandle()
         state = 0;
       break;
 
+    // choose next case?
     case 1:
-      digitalWrite(27, HIGH);
       if (distanceFront <= distanceToFrontWall)
       {
         state = 4;
@@ -261,9 +267,10 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
+      blinkLED();
       displayLCD();
       runFan();
-      digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
+      digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
 
       break;
 
@@ -272,17 +279,16 @@ void findCandle()
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
 
       {
-        digitalWrite(27, HIGH);
         state = 2; //state 2 plus if there is not wall
       }
       else //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
-        digitalWrite(27, HIGH);
         state = 3; //turn left
       }
       break;
 
+    // driving stuff?
     case 7:
       //      angle = readGyro();
       //      turnRobot(1, angle);
@@ -290,11 +296,11 @@ void findCandle()
       driveForward(73, 69);
       delay(5);
       turnRobot(1, angle);
-      digitalWrite(27, HIGH);
       state = 0;
       break;
+
+    // more driving? start?
     case 8:
-      digitalWrite(27, HIGH);
       encoderDriveStraight();
       readUltrasonic();
       if (distanceFront <= distanceToFrontWall)
