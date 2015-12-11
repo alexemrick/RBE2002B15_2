@@ -133,6 +133,7 @@ void setup() {
   Serial3.begin(115200);
   Wire.begin(); // i2c begin
   pinMode(fanPin, OUTPUT);
+  pinMode(27, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
 
@@ -176,7 +177,7 @@ void loop()
  // encoderDriveStraight();
 }
 
-/*
+/*Nathan Ferron
 * This function is the main state machine of the program represented by the Flow Chart in the drive entitled
 * "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
 * loop.
@@ -193,7 +194,7 @@ void findCandle()
   switch (state)
   {
     case 0:
-      digitalWrite(27, HIGH);
+      digitalWrite(27 , HIGH);
       driveStraight();
       delay(500);
       /*
