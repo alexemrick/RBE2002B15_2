@@ -43,7 +43,7 @@
 #define leftMotorPin 8
 #define rightMotorPin 9
 
-#define ledPin 22
+#define ledPin 27
 
 //global variables
 float xDistanceTraveled = 0;

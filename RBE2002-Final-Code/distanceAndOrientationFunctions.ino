@@ -13,11 +13,7 @@ void doTrig(float dist, float angle) //fix this, need to add tolerances, can't r
 {
  // int ang = angle*100;
  int ang = angle;
-  if ((ang % 180) < 5 || (ang % 180) > 175) //if the angle is close to a multiple of 180 or 90
-  {
     distX = (dist * (sin((PI / 2) - (ang * (PI / 90))))); //robot is in the x direction
-  }
-  else
     distY = (dist * (sin((ang * (PI / 90))))); //otherwise robot is in the y direction
 
 }
