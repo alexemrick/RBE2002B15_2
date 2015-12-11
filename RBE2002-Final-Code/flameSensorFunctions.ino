@@ -30,24 +30,29 @@ boolean flameClose(int flameValue)
  */
 void rotateUntilHot()
 {
-  float POUT = 0;
-  pidForFlame();
+  // method 1
+//  float POUT = 0;
+//  pidForFlame();
 //  delay(200); //this delay may need to be altered or removed
 //  rotate(10);
 
-  Serial.println(POUT);
+//  Serial.println(POUT);
 //  rotate(90 - POUT);
 //  if(flameSensorValue <= 50 && flameSensorValue >= 35) {
 //    Serial.println("Stopped");
 //    stopRobot();
 //  }
-    
-//  //if smaller = the candle is closer, keep turning
-//  if(flameSensorValue > analogRead(flameSensorPin)) rotate(10);
-//  //if larger = the candle is farther away
-//  else if(flameSensorValue < analogRead(flameSensorPin)) rotate(170);
-//  //if at certain flame sensor value away from candle, stop
-//  else if((flameSensorValue < (analogRead(flameSensorPin)) - 10)) stopRobot();
+
+  // method 2
+  float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
+  float pastSensorValue = 0;
+  //if smaller = the candle is closer, keep turning
+  if(flameSensorValue > pastSensorValue) rotate(60);
+  //if larger = the candle is farther away
+  else if(flameSensorValue < pastSensorValue) rotate(120);
+  //if at certain flame sensor value away from candle, stop
+  else if(flameSensorValue <= 50 && flameSensorValue >= 35) stopRobot();
+  pastSensorValue = flameSensorValue;
 }
   //save the higher flame sensor value and make that the setpoint in a PID loop. use the loop to turn the robot 
   //back to that flame sensor value. just an idea.

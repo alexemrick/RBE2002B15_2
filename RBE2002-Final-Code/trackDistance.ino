@@ -26,7 +26,7 @@ float trackDistance()
 {
   // master on left; slave on right; for robot front faces away from you
   // 1 rev = 90 ticks; circum. of wheel = 8.639 in.
-   masterEncValue = -((float)masterEnc.read()*encoderConversion);
+  masterEncValue = -((float)masterEnc.read()*encoderConversion);
   slaveEncValue = -((float)slaveEnc.read()*encoderConversion);
   return (masterEncValue + slaveEncValue) / 2;
 }
