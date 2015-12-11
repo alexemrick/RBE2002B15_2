@@ -19,16 +19,21 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
-  for (int i = 0; i < 1; i++) {
-    // run motors
-    leftDrive.write(slavePower);
-    rightDrive.write(masterPower);
-  }
+
   if (Serial3.available()) {
-    pidUltrasonic();
-    readUltrasonic();
-    POUT = error * kp + DError * kd + IError * ki;
     rightDrive.write(slavePower + POUT);
+    leftDrive.write(slavePower);
+    readUltrasonic();
+    pidUltrasonic();
+    POUT = error * kp + DError * kd + IError * ki;
+    if (POUT + slavePower > 80)
+    {
+      rightDrive.write(79);
+    }
+    else
+    {
+      rightDrive.write(slavePower + POUT);
+    }
     doTrig(trackDistance(), readGyro());
     distOrientation(readGyro());
     displayLCD();
