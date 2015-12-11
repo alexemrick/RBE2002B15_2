@@ -19,6 +19,11 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
+  for (int i = 0; i < 1; i++) {
+    // run motors
+    leftDrive.write(slavePower);
+    rightDrive.write(masterPower);
+  }
   if (Serial3.available()) {
     pidUltrasonic();
     readUltrasonic();

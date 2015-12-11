@@ -97,12 +97,10 @@ double ki = 1.8;//0.003;
 double kd = 0.7;//-0.03;
 
 
-const float distanceToFrontWall = 10.0;
+const float distanceToFrontWall = 12.0;
 const float distanceToRightWall = 20.0;
 const float distanceR = 7.5;
 
-
-//int i;
 const int Stop = 90;
 
 const int possibleFlame = 970; //flame sensor value if it's in the cone
@@ -141,11 +139,11 @@ void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
-//  masterEnc.write(0);
-//  slaveEnc.write(0);
+  //  masterEnc.write(0);
+  //  slaveEnc.write(0);
 
- pinMode(13, OUTPUT);
- 
+  pinMode(13, OUTPUT);
+
   //setup for gyro stuff
 
   if (!gyro.init()) // gyro init
@@ -174,8 +172,8 @@ void setup() {
 //main loop
 void loop()
 {
-//  findCandle();
-  encoderDriveStraight();
+    findCandle();
+ // encoderDriveStraight();
 }
 
 /*
@@ -188,7 +186,6 @@ void loop()
 */
 void findCandle()
 {
-
   static int state = 8;
   float angle;
   readUltrasonic();
@@ -196,7 +193,7 @@ void findCandle()
   switch (state)
   {
     case 0:
-    digitalWrite(27, HIGH);  
+      digitalWrite(27, HIGH);
       driveStraight();
       delay(500);
       /*
@@ -208,10 +205,10 @@ void findCandle()
       }
       */
       readUltrasonic();
-      delay(100); //maybe200
+      delay(100); //maybe200or0
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
       {
-        digitalWrite(27, HIGH);  
+        digitalWrite(27, HIGH);
         stopRobot();
         state = 1;
       }
@@ -220,7 +217,7 @@ void findCandle()
       break;
 
     case 1:
-digitalWrite(27, HIGH);  
+      digitalWrite(27, HIGH);
       if (distanceFront <= distanceToFrontWall)
       {
         state = 4;
@@ -232,14 +229,14 @@ digitalWrite(27, HIGH);
       break;
 
     case 2: //turn right
-    digitalWrite(27, HIGH);  
+      digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(1, angle);
       state = 7;
       break;
 
     case 3: //turn left
-    digitalWrite(27, HIGH);  
+      digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
       state = 0;
@@ -250,38 +247,38 @@ digitalWrite(27, HIGH);
       if (analogRead(flameSensorPin) < definiteFlame)
       {
         state = 5; //the obstacle is the candle
-       digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
-       delay(1000);              // wait for a second
-       digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
-       delay(1000); 
+        digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
+        delay(1000);              // wait for a second
+        digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
+        delay(1000);
       }
       else
       {
-        digitalWrite(27, HIGH);  
+        digitalWrite(27, HIGH);
         state = 6; //the obstacle is not the candle
-         
+
       }
       break;
 
     case 5: //it is the candle, blow out the candle
       displayLCD();
       runFan();
-       digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
-     
+      digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
+
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
 
       if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
-      
+
       {
-        digitalWrite(27, HIGH);  
+        digitalWrite(27, HIGH);
         state = 2; //state 2 plus if there is not wall
       }
       else //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
-        digitalWrite(27, HIGH);  
+        digitalWrite(27, HIGH);
         state = 3; //turn left
       }
       break;
@@ -293,12 +290,12 @@ digitalWrite(27, HIGH);
       driveForward(73, 69);
       delay(5);
       turnRobot(1, angle);
-      digitalWrite(27, HIGH);  
+      digitalWrite(27, HIGH);
       state = 0;
       break;
     case 8:
-    digitalWrite(27, HIGH);  
-      driveForward(73, 69);
+      digitalWrite(27, HIGH);
+      encoderDriveStraight();
       readUltrasonic();
       if (distanceFront <= distanceToFrontWall)
       {
@@ -306,7 +303,7 @@ digitalWrite(27, HIGH);
         delay(100);
         turnRobot(2, readGyro());
         stopRobot();
-        delay(1000);
+        delay(500);
 
       }
       state = 0;
