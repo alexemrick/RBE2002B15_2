@@ -74,6 +74,8 @@ int masterPower = 60;
 int slavePower = 60;
 boolean keepGoing = true;
 
+int state = 8;
+
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
 Encoder masterEnc(18, 19);    // interrupt pins available:
@@ -89,21 +91,28 @@ double error = 0;
 double oldError = 0;
 double DError, IError, POUT;
 
+double errorE = 0;
+double oldErrorE = 0;
+double DErrorE, IErrorE, POUTE;
+
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 0.01;//1.75;
-double ki = 1.8;//0.003;
-double kd = 0.7;//-0.03;
+const float kpE = 0.01;//1.75;
+const float kiE = 1.8;//0.003;
+const float kdE = 0.7;//-0.03;
 
+const float kp = 1;
+const float ki = 0.0001;
+const float kd = -0.0065;
 
 const float distanceToFrontWall = 12.0;
-const float distanceToRightWall = 20.0;
+const float rightObstacleDistance = 20.0;
 const float distanceR = 7.5;
 
 const int Stop = 90;
 
-const int possibleFlame = 970; //flame sensor value if it's in the cone
+const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
@@ -113,7 +122,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .0109375; // gyros gain factor for 250deg/sec
+float G_gain = .010936; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 
@@ -139,11 +148,6 @@ void setup() {
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
-
-  //  masterEnc.write(0);
-  //  slaveEnc.write(0);
-
-  pinMode(13, OUTPUT);
 
   //setup for gyro stuff
 
@@ -173,11 +177,11 @@ void setup() {
 //main loop
 void loop()
 {
-    findCandle();
- // encoderDriveStraight();
+  driveStraight();
+  //findCandle();
 }
 
-/*Nathan Ferron
+/*
 * This function is the main state machine of the program represented by the Flow Chart in the drive entitled
 * "Find Candle". It incorporates all of the helper functions written in this file and will be called in the main
 * loop.
@@ -187,7 +191,6 @@ void loop()
 */
 void findCandle()
 {
-  static int state = 8;
   float angle;
   readUltrasonic();
 
@@ -196,7 +199,6 @@ void findCandle()
     case 0:
       digitalWrite(27 , HIGH);
       driveStraight();
-      delay(500);
       /*
       * This chunk of code describes when the candle is in the 60 degree 15 inch cone
       * float flameSensorValue = analogRead(flameSensorPin);
@@ -206,93 +208,129 @@ void findCandle()
       }
       */
       readUltrasonic();
-      delay(100); //maybe200or0
-      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= distanceToRightWall))
+      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance))
       {
         digitalWrite(27, HIGH);
         stopRobot();
         state = 1;
       }
       else
+      {
         state = 0;
+      }
+      Serial.println(state);
       break;
 
     case 1:
+      readUltrasonic();
       digitalWrite(27, HIGH);
-      if (distanceFront <= distanceToFrontWall)
-      {
-        state = 4;
-      }
-      else
+      if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
         state = 6;
       }
+      else if (distanceFront <= distanceToFrontWall) //there is an obstacle in front
+      {
+        state = 4;
+      }
+      
+      else
+      {
+        state = 0;
+      }
+      Serial.println(state);
       break;
 
     case 2: //turn right
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(1, angle);
+      stopRobot();
       state = 7;
+      Serial.println(state);
       break;
 
     case 3: //turn left
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
+      stopRobot();
       state = 0;
+      Serial.println(state);
       break;
 
     case 4: //is it the candle
 
       if (analogRead(flameSensorPin) < definiteFlame)
       {
-        state = 5; //the obstacle is the candle
         digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
         delay(1000);              // wait for a second
         digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
         delay(1000);
+        state = 5; //the obstacle is the candle
       }
       else
       {
         digitalWrite(27, HIGH);
         state = 6; //the obstacle is not the candle
-
       }
+
+      Serial.println(state);
       break;
 
     case 5: //it is the candle, blow out the candle
       displayLCD();
       runFan();
       digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
+      state = 9;
 
+      Serial.println(state);
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
 
-      if (distanceRight >= distanceToRightWall) //if there is no obstacle to the right
-
+      if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
         digitalWrite(27, HIGH);
         state = 2; //state 2 plus if there is not wall
       }
-      else //if there is an obstacle to the right
+      else if (distanceFront > distanceToFrontWall)
+      {
+        state = 0;
+      }
+      else if ((distanceFront <= distanceToFrontWall) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
         digitalWrite(27, HIGH);
         state = 3; //turn left
       }
+
+
+
+      Serial.println(state);
       break;
 
     case 7:
       //      angle = readGyro();
       //      turnRobot(1, angle);
       //runs both motors for a bit so it drives straight
-      driveForward(73, 69);
-      delay(5);
-      turnRobot(1, angle);
-      digitalWrite(27, HIGH);
-      state = 0;
+      readUltrasonic();
+      if (distanceRight >= rightObstacleDistance)
+      {
+        digitalWrite(27, HIGH);
+        encoderDriveStraight();
+        delay(2000);
+        stopRobot();
+        turnRobot(1, angle);
+        stopRobot();
+      }
+        state = 0;
+//      }
+//      else
+//      {
+//        state = 0;
+//      }
+
+      Serial.println(state);
       break;
     case 8:
       digitalWrite(27, HIGH);
@@ -308,7 +346,13 @@ void findCandle()
 
       }
       state = 0;
+
+      Serial.println(state);
       break;
+    case 9:
+      stopRobot();
+
+      Serial.println(state);
 
   }
   delay(10);

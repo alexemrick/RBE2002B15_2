@@ -6,10 +6,10 @@
  * "ISR" for drive straight
  */
 void pidEncoders() { 
-  error = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
-  DError = error - oldError;
-  IError += error;
-  oldError = error;
+  errorE= (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
+  DErrorE = errorE - oldErrorE;
+  IErrorE += errorE;
+  oldErrorE = errorE;
   
   // reset encoders so we have fresh values every loop
   previousMaster = masterEnc.read();
@@ -32,8 +32,8 @@ void encoderDriveStraight() {
   }
   
   // calculates the PID
-  POUT = error * kp - DError * kd + IError * ki;
-  leftDrive.write(slavePower + POUT);
+  POUTE = errorE * kpE - DErrorE * kdE + IErrorE * kiE;
+  leftDrive.write(slavePower + POUTE);
 //  delay(100);
   pidEncoders();
 }
