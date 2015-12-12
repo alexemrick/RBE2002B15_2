@@ -22,18 +22,36 @@ void pidEncoders() {
 void encoderDriveStraight() {
   // sets up timer and interrupt
   for (int i = 0; i < 1; i++) {
-    // reset encoders
     masterEnc.write(0);
     slaveEnc.write(0);
 
     // run motors
-    leftDrive.write(slavePower);
-    rightDrive.write(masterPower);
+    leftDrive.write(masterPower);
+    rightDrive.write(slavePower);
+
+    // initialize timer & attach interrupt
+//    Timer1.restart();
+//    Timer1.initialize(100000);
+//    Timer1.attachInterrupt(pidStraight);
   }
   
   // calculates the PID
-  POUTE = errorE * kpE - DErrorE * kdE + IErrorE * kiE;
+//<<<<<<< HEAD
+  POUTE = errorE * kpE + DErrorE * kdE + IErrorE * kiE;
   leftDrive.write(slavePower + POUTE);
 //  delay(100);
   pidEncoders();
+//=======
+//  POUT = error * kp + DError * kd + IError * ki;
+//  leftDrive.write(slavePower + POUT);
+//}
+//
+///*
+// *  This function stops the interrupt from enc drive straight
+// */
+//void stopEncDriveStr()
+//{
+//  Timer1.detachInterrupt();
+//  Timer1.stop();
+//>>>>>>> parent of 8898495... Working encoder drive straight-ish code
 }
