@@ -177,8 +177,19 @@ void setup() {
 //main loop
 void loop()
 {
-  driveStraight();
-  //findCandle();
+  turnRobot(1,readGyro());
+  stopRobot();
+  delay(800);
+  turnRobot(1,readGyro());
+  stopRobot();
+  delay(800);
+  turnRobot(1,readGyro());
+  stopRobot();
+  delay(800);
+  turnRobot(1,readGyro());
+  stopRobot();
+  delay(800);
+  
 }
 
 /*
