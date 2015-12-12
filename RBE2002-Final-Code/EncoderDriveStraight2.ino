@@ -6,10 +6,14 @@
  * "ISR" for drive straight
  */
 void pidEncoders() { 
+  delay(10);
   errorE= (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
   DErrorE = errorE - oldErrorE;
   IErrorE += errorE;
   oldErrorE = errorE;
+
+  delay(100);
+  POUTE = errorE * kpE + DErrorE * kdE + IErrorE * kiE;
   
   // reset encoders so we have fresh values every loop
   previousMaster = masterEnc.read();
@@ -32,18 +36,18 @@ void encoderDriveStraight() {
     // initialize timer & attach interrupt
 //    Timer1.restart();
 //    Timer1.initialize(100000);
-//    Timer1.attachInterrupt(pidStraight);
+//    Timer1.attachInterrupt(pidEncoders);
   }
   
   // calculates the PID
-//<<<<<<< HEAD
-  POUTE = errorE * kpE + DErrorE * kdE + IErrorE * kiE;
-  leftDrive.write(slavePower + POUTE);
-//  delay(100);
+////<<<<<<< HEAD
+//  POUTE = errorE * kpE + DErrorE * kdE + IErrorE * kiE;
+//  leftDrive.write(slavePower + POUTE);
+////  delay(100);
   pidEncoders();
+  Serial.println(POUTE);
 //=======
-//  POUT = error * kp + DError * kd + IError * ki;
-//  leftDrive.write(slavePower + POUT);
+  leftDrive.write(slavePower + POUTE);
 //}
 //
 ///*

@@ -25,8 +25,7 @@ void driveStraight() {
     leftDrive.write(slavePower);
   }
 
-//  if (Serial3.available()) {
-    // **********************ultrasonic values are janky************************************
+  if (Serial3.available()) {
     pidUltrasonic();
 //    Serial.println(POUT);
 //    Serial.println("Front: ");
@@ -43,7 +42,7 @@ void driveStraight() {
 //    doTrig(trackDistance(), readGyro());
 //    distOrientation(readGyro());
 //    displayLCD();
-//  }
+  }
 }
 
 void pidUltrasonic() {

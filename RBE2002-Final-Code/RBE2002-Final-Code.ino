@@ -78,8 +78,8 @@ int state = 8;
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
-Encoder masterEnc(18, 19);    // interrupt pins available:
-Encoder slaveEnc(2, 3);   // used[2, 3, 18, 19]
+Encoder masterEnc(2, 3);    // interrupt pins available:
+Encoder slaveEnc(18, 19);   // used[2, 3, 18, 19]
 
 float slaveEncValue = 0, masterEncValue = 0, previousMaster = 0, previousSlave = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393 / 300;
@@ -98,9 +98,9 @@ double DErrorE, IErrorE, POUTE;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kp = 0.01.0;//1.75;
-double ki = 1.8;//0.003;
-double kd = 0.7;//-0.03;
+double kpE = 0.01;//1.75;
+double kiE = 1.8;//0.003;
+double kdE = 0.7;//-0.03;
 
 const float kp = 1;
 const float ki = 0.0001;
@@ -180,17 +180,14 @@ void setup() {
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
   gerrz = gerrz / 2000;
-
-//  leftDrive.write(masterPower);
-//  rightDrive.write(slavePower);
-  //
 }
 
 //main loop
 void loop()
 {
-  driveStraight();
+//  driveStraight();
   //findCandle();
+//  encoderDriveStraight();
 }
 
 /*
@@ -292,7 +289,7 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
-      blinkLED();
+//      blinkLED();
       displayLCD();
       runFan();
 
