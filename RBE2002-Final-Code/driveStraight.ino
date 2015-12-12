@@ -38,7 +38,7 @@ void driveStraight() {
     
 //    if (POUT + slavePower > 80) rightDrive.write(79);
     rightDrive.write(masterPower + POUT);
-    Serial.println(rightDrive.read());
+//    Serial.println(rightDrive.read());
     
 //    doTrig(trackDistance(), readGyro());
 //    distOrientation(readGyro());
