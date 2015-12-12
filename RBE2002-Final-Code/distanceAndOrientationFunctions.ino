@@ -2,7 +2,7 @@
 /* THIS FUNCTION IS USELESS IF WE GO PERFECTLY STRAIGHT
  * 
  * The trigonometry functions change depending on which way the robot is facing. To
- * accurately add the calculated displacements in each axis, this function is used.
+ * accurately add the calculated displacements in each axis, thZis function is used.
  * This function finds the displacement in the x or y direction that the robot traveled using trigonometry.
  * This function decomposes the distance read from the encoders into its x and y components.
  * 
@@ -11,10 +11,9 @@
  */
 void doTrig(float dist, float angle) //fix this, need to add tolerances, can't really use mod
 {
- // int ang = angle*100;
  int ang = angle;
     distX = (dist * (sin((PI / 2) - (ang * (PI / 90))))); //robot is in the x direction
-    distY = (dist * (sin((ang * (PI / 90))))); //otherwise robot is in the y direction
+    distY = (dist * (sin((ang * (PI / 90)))));  //otherwise robot is in the y direction
 
 }
 
