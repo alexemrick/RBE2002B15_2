@@ -73,8 +73,9 @@ float pidForFlame() {
 }
 
 void blinkLED() {
+  unsigned long previousMillis;
   unsigned long currentMillis = millis();
-  if(currentMillis - previousMillis >= interval) {
+  if(currentMillis - previousMillis >= timeInterval) {
     // save the last time you blinked the LED 
     previousMillis = currentMillis;   
 

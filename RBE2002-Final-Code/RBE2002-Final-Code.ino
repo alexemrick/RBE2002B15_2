@@ -112,6 +112,9 @@ const float distanceR = 7.5;
 
 const int Stop = 90;
 
+int ledState = LOW;             // ledState used to set the LED
+const long timeInterval = 500;
+
 const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
