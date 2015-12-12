@@ -88,4 +88,3 @@ float pidForFlame() {
 //    digitalWrite(ledPin, ledState);
 //  }
 //}
-
