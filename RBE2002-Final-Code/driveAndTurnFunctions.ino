@@ -48,6 +48,14 @@ void turnRobot (int turn, float angle)
         }
       
       }
+      else if(newAngle > 350 && newAngle < 370)
+      {
+        while(newAngle > 270)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
       break;
     case 2: //turn left
 
