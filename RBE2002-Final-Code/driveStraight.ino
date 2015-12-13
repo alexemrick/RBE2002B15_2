@@ -26,7 +26,7 @@ void driveStraight() {
     readUltrasonic();
     pidUltrasonic();
     POUT = error * kp + DError * kd + IError * ki;
-    if (POUT + slavePower > 80)
+    if (POUT > 20)
     {
       rightDrive.write(79);
     }
@@ -36,7 +36,7 @@ void driveStraight() {
     }
     doTrig(trackDistance(), readGyro());
     distOrientation(readGyro());
-    displayLCD();
+  //  displayLCD();
   }
 }
 
