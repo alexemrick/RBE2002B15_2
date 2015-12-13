@@ -7,6 +7,8 @@
  * inputs: int turn - state for state machine, 1,2,3 for 90, -90, and 180 degrees respectively
  * outputs: none
  */
+
+ //TYPEDEF THIS SHIT. THIS IS SO HITEOUS.
 void turnRobot (int turn, float angle)
 {
   int ang = angle;
@@ -15,7 +17,7 @@ void turnRobot (int turn, float angle)
   {
     case 1: //turn right
       newAngle = (int)readGyro();
-      if (newAngle > -10 && newAngle < 10)
+      if (newAngle > -10 && newAngle < 10) //this one should never happen
       {
         while (newAngle > -90)
         {
@@ -46,11 +48,26 @@ void turnRobot (int turn, float angle)
           rotate(69); //turn right
           newAngle = readGyro(); //read the gyro
         }
-      
       }
-      else if(newAngle > 350 && newAngle < 370)
+      else if (newAngle > 350 && newAngle < 370)
       {
-        while(newAngle > 270)
+        while (newAngle > 270)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+      else if (newAngle > -190 && newAngle < -170)
+      {
+        while (newAngle > -270)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+      else if (newAngle > -280 && newAngle < -260)
+      {
+        while (newAngle > -360)
         {
           rotate(69);
           newAngle = readGyro();
@@ -87,6 +104,30 @@ void turnRobot (int turn, float angle)
       else if (newAngle < -80 && newAngle > -100)
       {
         while (newAngle < 0)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 190 && newAngle > 170)
+      {
+        while (newAngle < 270)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 280 && newAngle > 260)
+      {
+        while (newAngle < 360)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 370 && newAngle > 350)
+      {
+        while (newAngle < 450)
         {
           rotate(111); //turn left
           newAngle = readGyro(); //read the gyro
