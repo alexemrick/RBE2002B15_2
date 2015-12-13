@@ -185,7 +185,8 @@ void setup() {
 //main loop
 void loop()
 {
-  findCandle();
+  // findCandle();
+  driveStraight();
 }
 
 /*
@@ -229,7 +230,7 @@ void findCandle()
       Serial.println(state);
       break;
 
-    
+
     case 1:  //if the robot is stopped
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
@@ -241,7 +242,7 @@ void findCandle()
       {
         state = 4;
       }
-      
+
       else
       {
         state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
@@ -287,7 +288,7 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
-//      blinkLED();
+      //      blinkLED();
       displayLCD();
       runFan();
 
@@ -318,32 +319,25 @@ void findCandle()
       Serial.println(state);
       break;
 
-    // driving stuff?
+    // driving around a wall, aka driving when there's no fall to follow
     case 7:
-      //      angle = readGyro();
-      //      turnRobot(1, angle);
-      //runs both motors for a bit so it drives straight
+      angle = readGyro();
       readUltrasonic();
       if (distanceRight >= rightObstacleDistance)
       {
         digitalWrite(27, HIGH);
         encoderDriveStraight();
-        delay(2000);
+        delay(2000); //just timing drive straight for now
         stopRobot();
-        turnRobot(1, angle);
+        turnRobot(1, angle); //turn right
         stopRobot();
       }
-        state = 0;
-//      }
-//      else
-//      {
-//        state = 0;
-//      }
+      state = 0; //start wall following again
 
       Serial.println(state);
       break;
 
-    // more driving? start?
+    // start, drive towards the wall in order to follow from a set distance
     case 8:
       encoderDriveStraight();
       readUltrasonic();
