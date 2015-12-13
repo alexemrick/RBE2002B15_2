@@ -122,7 +122,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .01093; // gyros gain factor for 250deg/sec
+float G_gain = .010936; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 
@@ -177,22 +177,7 @@ void setup() {
 //main loop
 void loop()
 {
-  turnRobot(1,readGyro());
-  stopRobot();
-  delay(800);
-  readGyro();
-  turnRobot(1,readGyro());
-  stopRobot();
-  delay(800);
-  readGyro();
-  turnRobot(1,readGyro());
-  stopRobot();
-  delay(800);
-  readGyro();
-  turnRobot(1,readGyro());
-  stopRobot();
-  delay(800);
-  readGyro();
+  findCandle();
   
 }
 
