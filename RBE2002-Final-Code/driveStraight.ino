@@ -20,23 +20,31 @@
 
 void driveStraight() {
   // initializes values
-  for(int i = 0; i < 1; i++) {
-    rightDrive.write(masterPower);
-    leftDrive.write(slavePower);
-  }
+    for(int i = 0; i < 1; i++) {
+      rightDrive.write(masterPower);
+     // leftDrive.write(slavePower);
+    }
 
-  if (Serial3.available()) {
+  //if (Serial3.available()) {
+    leftDrive.write(slavePower);
+//    rightDrive.write(masterPower + POUT);
+   // readUltrasonic();
     pidUltrasonic();
-    
-//    if (POUT + slavePower > 80) rightDrive.write(79);
-    rightDrive.write(masterPower + POUT);
-//    Serial.println(rightDrive.read());
-    
-//    doTrig(trackDistance(), readGyro());
-//    distOrientation(readGyro());
-//    displayLCD();
-  }
+
+    if (POUT  > 20) 
+    {
+      rightDrive.write(69);
+    }
+    else
+    {
+      rightDrive.write(masterPower + POUT);
+    }
+    doTrig(trackDistance(), readGyro());
+    distOrientation(readGyro());
+    //    displayLCD();
+ // }
 }
+
 
 void pidUltrasonic() {
   readUltrasonic();

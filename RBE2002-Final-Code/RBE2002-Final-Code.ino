@@ -102,9 +102,9 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-const float kp = 1;
+const float kp = 5;
 const float ki = 0.0001;
-const float kd = -0.0065;
+const float kd = -.001;
 
 const float distanceToFrontWall = 12.0;
 const float rightObstacleDistance = 20.0;
@@ -185,8 +185,8 @@ void setup() {
 //main loop
 void loop()
 {
-  // findCandle();
-  driveStraight();
+  findCandle();
+  
 }
 
 /*
