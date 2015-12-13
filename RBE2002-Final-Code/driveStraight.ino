@@ -27,13 +27,6 @@ void driveStraight() {
 
   if (Serial3.available()) {
     pidUltrasonic();
-//    Serial.println(POUT);
-//    Serial.println("Front: ");
-//    Serial.println(distanceFront);
-//    Serial.println("Right: ");
-//    Serial.println(distanceRight);
-//    Serial.println("Left: ");
-//    Serial.println(distanceLeft);
     
 //    if (POUT + slavePower > 80) rightDrive.write(79);
     rightDrive.write(masterPower + POUT);
