@@ -98,9 +98,9 @@ double DErrorE, IErrorE, POUTE;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-double kpE = 0.01;//1.75;
-double kiE = 1.8;//0.003;
-double kdE = 0.7;//-0.03;
+const float kpE = 0.01;//1.75;
+const float kiE = 1.8;//0.003;
+const float kdE = 0.7;//-0.03;
 
 const float kp = 1;
 const float ki = 0.0001;
@@ -185,9 +185,7 @@ void setup() {
 //main loop
 void loop()
 {
-//  driveStraight();
-  //findCandle();
-//  encoderDriveStraight();
+  findCandle();
 }
 
 /*
@@ -218,22 +216,22 @@ void findCandle()
       }
       */
       readUltrasonic();
-      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance))
+      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
-        digitalWrite(27, HIGH);
-        stopRobot();
+        digitalWrite(27, HIGH); //turn on the LED
+        stopRobot(); //stop the robot
         state = 1;
       }
       else
       {
-        state = 0;
+        state = 0; //keep following the wall
       }
       Serial.println(state);
       break;
 
-    // choose next case?
-    case 1:
-      readUltrasonic();
+    
+    case 1:  //if the robot is stopped
+      readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
       if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
@@ -246,7 +244,7 @@ void findCandle()
       
       else
       {
-        state = 0;
+        state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
       }
       Serial.println(state);
       break;
