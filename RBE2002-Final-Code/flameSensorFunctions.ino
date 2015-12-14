@@ -34,8 +34,7 @@ void rotateUntilHot()
   int pastSensorValue = flameSensorValue;
   
   rotate(70);
-  
   // If at certain flame sensor value away from candle, stop
-  if(flameSensorValue <= 80 && flameSensorValue >= 0) stopRobot();
+  if(flameSensorValue <= 860 && flameSensorValue >= 0) stopRobot();
 }
 
