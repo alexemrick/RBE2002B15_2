@@ -106,7 +106,7 @@ const float kp = 1;
 const float ki = 0.00001;
 const float kd = -.0065;
 
-const float distanceToFrontWall = 12.0;
+const float distanceToFrontWall = 7.5;
 const float rightObstacleDistance = 20.0;
 const float distanceR = 7.5;
 
@@ -125,7 +125,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .010936; // gyros gain factor for 250deg/sec
+float G_gain = .008925; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 
@@ -206,6 +206,7 @@ void findCandle()
   {
     // wall follow
     case 0:
+    
       digitalWrite(27 , HIGH);
       driveStraight();
       /*
@@ -220,7 +221,9 @@ void findCandle()
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
-        stopRobot(); //stop the robot
+        stopRobot();
+        delay(100);//stop the robot
+   
         state = 1;
       }
       else
@@ -232,6 +235,7 @@ void findCandle()
 
 
     case 1:  //if the robot is stopped
+    
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
       if (distanceRight >= rightObstacleDistance) //there is a gap to the right
@@ -248,28 +252,33 @@ void findCandle()
         state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
       }
       Serial.println(state);
+     
       break;
 
     case 2: //turn right
+
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
       state = 7;
       Serial.println(state);
+    
       break;
 
     case 3: //turn left
+  
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
       stopRobot();
       state = 0;
       Serial.println(state);
+  
       break;
 
     case 4: //is it the candle
-
+    
       if (analogRead(flameSensorPin) < definiteFlame)
       {
         digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
@@ -285,10 +294,12 @@ void findCandle()
       }
 
       Serial.println(state);
+      
       break;
 
     case 5: //it is the candle, blow out the candle
       //      blinkLED();
+      
       displayLCD();
       runFan();
 
@@ -296,9 +307,11 @@ void findCandle()
       state = 9;
 
       Serial.println(state);
+      
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
+    
 
       if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
@@ -317,10 +330,12 @@ void findCandle()
 
 
       Serial.println(state);
+    
       break;
 
     // driving around a wall, aka driving when there's no fall to follow
     case 7:
+
       angle = readGyro();
       readUltrasonic();
       if (distanceRight >= rightObstacleDistance)
@@ -335,11 +350,14 @@ void findCandle()
       state = 0; //start wall following again
 
       Serial.println(state);
+    
       break;
 
     // start, drive towards the wall in order to follow from a set distance
     case 8:
-      encoderDriveStraight();
+    
+      //encoderDriveStraight();
+      driveForward(75,75);
       readUltrasonic();
       if (distanceFront <= distanceToFrontWall)
       {
@@ -353,11 +371,14 @@ void findCandle()
       state = 0;
 
       Serial.println(state);
+    
       break;
     case 9:
+    
       stopRobot();
 
       Serial.println(state);
+   
 
   }
   delay(10);
