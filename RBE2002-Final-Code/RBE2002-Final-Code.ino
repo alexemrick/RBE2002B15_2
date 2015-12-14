@@ -62,7 +62,7 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-
+Servo fan;
 L3G gyro;
 
 char str1[8]; //8?
@@ -76,7 +76,7 @@ int masterPower = 65;
 int slavePower = 65;
 boolean keepGoing = true;
 
-int state = 0; //8
+int state = 8; //8
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -100,15 +100,15 @@ double DErrorE, IErrorE, POUTE;
 // decides how much the difference in encoder values effects
 // the final power change to the motor
 // final values: kp = 0.01; ki = 1.8; kd = 0.7;
-const float kpE = 0.01;//1.75;
-const float kiE = 1.8;//0.003;
-const float kdE = 0.7;//-0.03;
+const float kpE = 8.0;//.01
+const float kiE = 0;//1.8
+const float kdE = -1.4;//-.3;//0.7;
 
 const float kp = 1.0;//0.5;
 const float ki = 0.0;//0.0;
 const float kd = -0.005;//0;
 
-//NEVER FUCKING TOUCH THESE NEXT THREE NUMBERS
+//NEVER  TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
 const float rightObstacleDistance = 40.0;
 const float distanceR = 7.5;
@@ -162,23 +162,23 @@ void setup() {
 
   //setup for gyro stuff
 
-  if (!gyro.init()) // gyro init
-  {
-    Serial.println("Failed to autodetect gyro type! not connected");
-    while (1);
-  }
-  delay(500);
-  timer = micros(); // init timer for first reading
-  gyro.enableDefault(); // gyro init. default 250/deg/s
-  delay(1000);// allow time for gyro to settle
-  Serial.println("starting zero, stay still for 10 seconds");
-  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-    gyro.read(); // read gyro I2C call
-    gerrx += gyro.g.x; // add all the readings
-    gerry += gyro.g.y;
-    gerrz += gyro.g.z;
-    delay(5);
-  }
+//  if (!gyro.init()) // gyro init
+//  {
+//    Serial.println("Failed to autodetect gyro type! not connected");
+//    while (1);
+//  }
+//  delay(500);
+//  timer = micros(); // init timer for first reading
+//  gyro.enableDefault(); // gyro init. default 250/deg/s
+//  delay(1000);// allow time for gyro to settle
+//  Serial.println("starting zero, stay still for 10 seconds");
+//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+//    gyro.read(); // read gyro I2C call
+//    gerrx += gyro.g.x; // add all the readings
+//    gerry += gyro.g.y;
+//    gerrz += gyro.g.z;
+//    delay(5);
+//  }
 
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
@@ -188,8 +188,13 @@ void setup() {
 //main loop
 void loop()
 {
-  findCandle();
-  //Serial.println( flameClose(analogRead(flameSensorPin)));
+  encoderDriveStraight();
+  //findCandle();
+//  //Serial.println( flameClose(analogRead(flameSensorPin)));
+//  readUltrasonic();
+//  Serial.print(distanceFront);
+//  Serial.print(", ");
+//  Serial.println(distanceRight);
 }
 
 /*
@@ -225,8 +230,6 @@ void findCandle()
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
-
-
         state = 1;
       }
 
@@ -267,13 +270,17 @@ lcd.print("TURN RIGHT");
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
- //     state = 7;
+     // state = 7;
 
       
       break;
     case 3: //turn left
       lcd.print("TURN LEFT");
       lcd.setCursor(0, 0);
+      if ( flameClose(analogRead(flameSensorPin))) {
+
+        state = 10;
+      }
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
@@ -373,7 +380,7 @@ lcd.print("TURN RIGHT");
       lcd.print("CASE 8");
       lcd.setCursor(0, 0);
       //encoderDriveStraight();
-      driveForward(70, 74);
+      driveForward(70, 70);
       readUltrasonic();
       if (distanceFront <= 7.5)
       {
@@ -388,16 +395,17 @@ lcd.print("TURN RIGHT");
       Serial.println(state);
 
       break;
+       case 9:
+      lcd.print("DONE");
+      lcd.setCursor(0, 0);
+      stopRobot();
     case 10:
       lcd.print("CANDLE CLOSE");
       lcd.setCursor(0, 0);
       rotateUntilHot();
-      state = 6;
+      state = 5;
 
-    case 9:
-      lcd.print("DONE");
-      lcd.setCursor(0, 0);
-      stopRobot();
+   
   }
   delay(10);
 }
