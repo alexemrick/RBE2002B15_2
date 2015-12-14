@@ -70,8 +70,8 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 70;
-int slavePower = 70;
+int masterPower = 67;
+int slavePower = 67;
 boolean keepGoing = true;
 
 int state = 0;
@@ -102,7 +102,7 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-const float kp = 1.0;
+const float kp = 5.0;
 const float ki = 0.00001;
 const float kd = -.008;
 
