@@ -353,7 +353,7 @@ void findCandle()
           //encoderDriveStraight();
           driveForward(75,72);
           readUltrasonic();
-          if (distanceFront <= distanceToFront)
+          if (distanceFront <= 7.5)
           {
             stopRobot();
             delay(100);
