@@ -28,7 +28,7 @@ void driveStraight() {
     POUT = error * kp + DError * kd + IError * ki;
     if (POUT > 20)
     {
-      rightDrive.write(79);
+      rightDrive.write(69);
     }
     else
     {
@@ -36,7 +36,7 @@ void driveStraight() {
     }
     doTrig(trackDistance(), readGyro());
     distOrientation(readGyro());
-  //  displayLCD();
+    displayLCD();
   }
 }
 

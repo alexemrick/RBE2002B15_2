@@ -70,8 +70,8 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 60;
-int slavePower = 60;
+int masterPower = 65;
+int slavePower = 65;
 boolean keepGoing = true;
 
 int state = 8;
@@ -103,12 +103,12 @@ const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
 const float kp = 1;
-const float ki = 0.0001;
-const float kd = -0.0065;
+const float ki = 0.0;
+const float kd = -0.005;
 
-const float distanceToFrontWall = 12.0;
-const float rightObstacleDistance = 20.0;
-const float distanceR = 7.5;
+const float distanceToFront = 10.0;
+const float rightObstacleDistance = 40.0;
+const float distanceR = 10.0;
 
 const int Stop = 90;
 
@@ -208,7 +208,7 @@ void findCandle()
       }
       */
       readUltrasonic();
-      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance))
+      if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance))
       {
         digitalWrite(27, HIGH);
         stopRobot();
@@ -228,7 +228,7 @@ void findCandle()
       {
         state = 6;
       }
-      else if (distanceFront <= distanceToFrontWall) //there is an obstacle in front
+      else if (distanceFront <= distanceToFront) //there is an obstacle in front
       {
         state = 4;
       }
@@ -293,11 +293,11 @@ void findCandle()
         digitalWrite(27, HIGH);
         state = 2; //state 2 plus if there is not wall
       }
-      else if (distanceFront > distanceToFrontWall)
+      else if (distanceFront > distanceToFront)
       {
         state = 0;
       }
-      else if ((distanceFront <= distanceToFrontWall) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
+      else if ((distanceFront <= distanceToFront) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
         digitalWrite(27, HIGH);
@@ -334,9 +334,10 @@ void findCandle()
       break;
     case 8:
       digitalWrite(27, HIGH);
-      encoderDriveStraight();
+    //  encoderDriveStraight();
+    driveForward(70,72);
       readUltrasonic();
-      if (distanceFront <= distanceToFrontWall)
+      if (distanceFront <= distanceToFront)
       {
         stopRobot();
         delay(100);
