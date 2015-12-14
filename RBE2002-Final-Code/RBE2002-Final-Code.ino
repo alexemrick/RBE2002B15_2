@@ -70,11 +70,11 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 60;
-int slavePower = 60;
+int masterPower = 70;
+int slavePower = 70;
 boolean keepGoing = true;
 
-int state = 8;
+int state = 0;
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -102,12 +102,12 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-const float kp = 1;
+const float kp = 1.0;
 const float ki = 0.00001;
-const float kd = -.0065;
+const float kd = -.008;
 
 const float distanceToFrontWall = 7.5;
-const float rightObstacleDistance = 20.0;
+const float rightObstacleDistance = 30.0;
 const float distanceR = 7.5;
 
 const int Stop = 90;
@@ -153,7 +153,7 @@ void setup() {
   lcd.setCursor(0, 0);
 
   // sets led on for looking for candle
-  digitalWrite(ledPin, HIGH);
+  //digitalWrite(ledPin, HIGH);
 
   pinMode(13, OUTPUT);
 
@@ -218,12 +218,12 @@ void findCandle()
       }
       */
       readUltrasonic();
+      delay(100);
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
-   
         state = 1;
       }
       else
@@ -354,25 +354,25 @@ void findCandle()
       break;
 
     // start, drive towards the wall in order to follow from a set distance
-    case 8:
-    
-      //encoderDriveStraight();
-      driveForward(75,75);
-      readUltrasonic();
-      if (distanceFront <= distanceToFrontWall)
-      {
-        stopRobot();
-        delay(100);
-        turnRobot(2, readGyro());
-        stopRobot();
-        delay(500);
-
-      }
-      state = 0;
-
-      Serial.println(state);
-    
-      break;
+//    case 8:
+//    
+//      //encoderDriveStraight();
+//      driveForward(75,75);
+//      readUltrasonic();
+//      if (distanceFront <= distanceToFrontWall)
+//      {
+//        stopRobot();
+//        delay(100);
+//        turnRobot(2, readGyro());
+//        stopRobot();
+//        delay(500);
+//
+//      }
+//      state = 0;
+//
+//      Serial.println(state);
+//    
+//      break;
     case 9:
     
       stopRobot();

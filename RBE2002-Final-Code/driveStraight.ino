@@ -20,13 +20,14 @@
 
 void driveStraight() {
   // initializes values
-    for(int i = 0; i < 1; i++) {
-      rightDrive.write(masterPower);
-     // leftDrive.write(slavePower);
-    }
+//    for(int i = 0; i < 1; i++) {
+//      rightDrive.write(masterPower);
+//     // leftDrive.write(slavePower);
+//    }
 
   //if (Serial3.available()) {
     leftDrive.write(slavePower);
+  //  rightDrive.write(masterPower + POUT);
 //    rightDrive.write(masterPower + POUT);
    // readUltrasonic();
     pidUltrasonic();
