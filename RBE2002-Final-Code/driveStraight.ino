@@ -42,7 +42,7 @@ void driveStraight() {
   }
   doTrig(trackDistance(), readGyro());
   distOrientation(readGyro());
- // displayLCD();
+  displayLCD();
   // }
 
 
