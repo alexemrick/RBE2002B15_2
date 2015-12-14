@@ -19,7 +19,7 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
-  // initializes values
+    // initializes values
 //    for(int i = 0; i < 1; i++) {
 //      rightDrive.write(masterPower);
 //     // leftDrive.write(slavePower);
@@ -45,6 +45,7 @@ void driveStraight() {
     //    displayLCD();
  // }
 }
+
 
 
 void pidUltrasonic() {

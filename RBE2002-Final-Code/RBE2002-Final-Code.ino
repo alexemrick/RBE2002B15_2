@@ -185,7 +185,27 @@ void setup() {
 //main loop
 void loop()
 {
-  findCandle();
+  // findCandle();
+  digitalWrite(27 , HIGH);
+  driveStraight();
+  /*
+  * This chunk of code describes when the candle is in the 60 degree 15 inch cone
+  * float flameSensorValue = analogRead(flameSensorPin);
+  if(flameClose(flameSensorValue))
+  {
+  rotateUntilHot();
+  }
+  */
+
+  readUltrasonic();
+  delay(100);
+  if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  {
+    digitalWrite(27, HIGH); //turn on the LED
+    stopRobot();
+    delay(100);//stop the robot
+ //   state = 1;
+  }
   
 }
 
@@ -206,7 +226,7 @@ void findCandle()
   {
     // wall follow
     case 0:
-    
+
       digitalWrite(27 , HIGH);
       driveStraight();
       /*
@@ -217,9 +237,9 @@ void findCandle()
       rotateUntilHot();
       }
       */
-      delay(100);
+
       readUltrasonic();
-      
+      delay(100);
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
@@ -231,29 +251,27 @@ void findCandle()
       {
         state = 0; //keep following the wall
       }
-      Serial.println(state);
       break;
     case 1:  //if the robot is stopped
-    
+
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
       if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
-//        driveForward(70,70);
-//        delay(100);
+        //        driveForward(70,70);
+        //        delay(100);
         state = 6;
       }
       else if (distanceFront <= distanceToFrontWall) //there is an obstacle in front
       {
         state = 4;
       }
-
       else
       {
         state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
       }
-      Serial.println(state);
-     
+      //   Serial.println(state);
+
       break;
 
     case 2: //turn right
@@ -263,43 +281,45 @@ void findCandle()
       turnRobot(1, angle);
       stopRobot();
       state = 7;
-      Serial.println(state);
-    
+      //   Serial.println(state);
+
       break;
 
     case 3: //turn left
-  
+
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
       stopRobot();
       state = 0;
-      Serial.println(state);
-  
       break;
 
     case 4: //is it the candle
-    
-      if (analogRead(flameSensorPin) < definiteFlame)
+      readUltrasonic();
+      if (distanceFront <= distanceToFrontWall)
       {
-        digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
-        delay(1000);              // wait for a second
-        digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
-        delay(1000);
-        state = 5; //the obstacle is the candle
+        if (analogRead(flameSensorPin) < definiteFlame)
+        {
+          digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
+          delay(1000);              // wait for a second
+          digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
+          delay(1000);
+          state = 5; //the obstacle is the candle
+        }
+        else
+        {
+          digitalWrite(27, HIGH);
+          state = 6; //the obstacle is not the candle
+        }
       }
       else
       {
-        digitalWrite(27, HIGH);
-        state = 6; //the obstacle is not the candle
+        state = 1;
       }
 
-      Serial.println(state);
-      
       break;
 
     case 5: //it is the candle, blow out the candle
-//            blinkLED();
       digitalWrite(27, LOW);
       delay(1000);
       digitalWrite(27, HIGH);
@@ -307,15 +327,11 @@ void findCandle()
       digitalWrite(27, LOW);
       displayLCD();
       runFan();
-
-          // turn the LED off by making the voltage LOW
       state = 9;
-
-      Serial.println(state);
-      
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
+      //    readUltrasonic();
       if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
         state = 2; //state 2 plus if there is not wall
@@ -329,8 +345,6 @@ void findCandle()
       {
         state = 3; //turn left
       }
-      Serial.println(state);
-    
       break;
 
     // driving around a wall, aka driving when there's no fall to follow
@@ -341,7 +355,8 @@ void findCandle()
       if (distanceRight >= rightObstacleDistance)
       {
         digitalWrite(27, HIGH);
-        encoderDriveStraight();
+        //  encoderDriveStraight();
+        driveForward(70, 70);
         delay(2000); //just timing drive straight for now
         stopRobot();
         turnRobot(1, angle); //turn right
@@ -349,36 +364,36 @@ void findCandle()
       }
       state = 0; //start wall following again
 
-      Serial.println(state);
-    
+      //     Serial.println(state);
+
       break;
 
     // start, drive towards the wall in order to follow from a set distance
-//    case 8:
-//    
-//      //encoderDriveStraight();
-//      driveForward(75,75);
-//      readUltrasonic();
-//      if (distanceFront <= distanceToFrontWall)
-//      {
-//        stopRobot();
-//        delay(100);
-//        turnRobot(2, readGyro());
-//        stopRobot();
-//        delay(500);
-//
-//      }
-//      state = 0;
-//
-//      Serial.println(state);
-//    
-//      break;
+    //    case 8:
+    //
+    //      //encoderDriveStraight();
+    //      driveForward(75,75);
+    //      readUltrasonic();
+    //      if (distanceFront <= distanceToFrontWall)
+    //      {
+    //        stopRobot();
+    //        delay(100);
+    //        turnRobot(2, readGyro());
+    //        stopRobot();
+    //        delay(500);
+    //
+    //      }
+    //      state = 0;
+    //
+    //      Serial.println(state);
+    //
+    //      break;
     case 9:
-    
+
       stopRobot();
 
-      Serial.println(state);
-   
+      //   Serial.println(state);
+
 
   }
   delay(10);
