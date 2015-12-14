@@ -104,14 +104,14 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-double kp = 1.0;//0.5;
-double ki = 0.0;//0.0;
-double kd = -.005;//0;
+const float kp = 1.0;//0.5;
+const float ki = 0.0;//0.0;
+const float kd = -.005;//0;
 
 //NEVER FUCKING TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
 const float rightObstacleDistance = 40.0;
-const float distanceR = 10.0;
+const float distanceR = 7.5;
 
 const int Stop = 90;
 
@@ -210,19 +210,31 @@ void findCandle()
     case 0:
       digitalWrite(27 , HIGH);
       driveStraight();
+    if( flameClose(analogRead(flameSensorPin))){
+
+      state = 10;
+    }
+      
+                  
+                 
       readUltrasonic();
       delay(100);
-      if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      
+     if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
+         
+  
         state = 1;
       }
+      
       else
       {
         state = 0; //keep following the wall
       }
+        
       break;
     case 1:  //if the robot is stopped
 
@@ -351,10 +363,13 @@ void findCandle()
     
           }
           state = 0;
-    
           Serial.println(state);
     
           break;
+     case 10:
+      rotateUntilHot();
+      state = 6;
+     
     case 9:
 
       stopRobot();
