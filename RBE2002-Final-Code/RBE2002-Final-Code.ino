@@ -388,12 +388,13 @@ lcd.print("TURN RIGHT");
       Serial.println(state);
 
       break;
+      //when the candle is within the cone, turn straight towards it
     case 10:
       lcd.print("CANDLE CLOSE");
       lcd.setCursor(0, 0);
       rotateUntilHot();
       state = 6;
-
+    //stop robot when we are done, stays here forever
     case 9:
       lcd.print("DONE");
       lcd.setCursor(0, 0);
