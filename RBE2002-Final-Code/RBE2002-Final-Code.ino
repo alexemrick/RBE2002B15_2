@@ -76,7 +76,7 @@ int masterPower = 65;
 int slavePower = 65;
 boolean keepGoing = true;
 
-int state = 8; //8
+int state = 8; //0
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -162,23 +162,23 @@ void setup() {
 
   //setup for gyro stuff
 
-//  if (!gyro.init()) // gyro init
-//  {
-//    Serial.println("Failed to autodetect gyro type! not connected");
-//    while (1);
-//  }
-//  delay(500);
-//  timer = micros(); // init timer for first reading
-//  gyro.enableDefault(); // gyro init. default 250/deg/s
-//  delay(1000);// allow time for gyro to settle
-//  Serial.println("starting zero, stay still for 10 seconds");
-//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-//    gyro.read(); // read gyro I2C call
-//    gerrx += gyro.g.x; // add all the readings
-//    gerry += gyro.g.y;
-//    gerrz += gyro.g.z;
-//    delay(5);
-//  }
+  if (!gyro.init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type! not connected");
+    while (1);
+  }
+  delay(500);
+  timer = micros(); // init timer for first reading
+  gyro.enableDefault(); // gyro init. default 250/deg/s
+  delay(1000);// allow time for gyro to settle
+  Serial.println("starting zero, stay still for 10 seconds");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
+    gerry += gyro.g.y;
+    gerrz += gyro.g.z;
+    delay(5);
+  }
 
   gerrx = gerrx / 2000; // average readings to obtain an error offset
   gerry = gerry / 2000;
@@ -188,13 +188,8 @@ void setup() {
 //main loop
 void loop()
 {
-  encoderDriveStraight();
-  //findCandle();
-//  //Serial.println( flameClose(analogRead(flameSensorPin)));
-//  readUltrasonic();
-//  Serial.print(distanceFront);
-//  Serial.print(", ");
-//  Serial.println(distanceRight);
+//  state= 8;
+  findCandle();
 }
 
 /*
@@ -371,16 +366,14 @@ lcd.print("TURN RIGHT");
       }
       state = 0; //start wall following again
 
-      //     Serial.println(state);
-
       break;
 
     // start, drive towards the wall in order to follow from a set distance
     case 8:
       lcd.print("CASE 8");
       lcd.setCursor(0, 0);
-      //encoderDriveStraight();
-      driveForward(70, 70);
+      encoderDriveStraight();
+      //driveForward(70, 70);
       readUltrasonic();
       if (distanceFront <= 7.5)
       {
@@ -392,7 +385,6 @@ lcd.print("TURN RIGHT");
 
       }
       state = 0;
-      Serial.println(state);
 
       break;
        case 9:
