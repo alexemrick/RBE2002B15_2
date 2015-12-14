@@ -38,18 +38,22 @@ void driveStraight() {
   }
   else
   {
-    rightDrive.write(masterPower + POUT);
+    rightDrive.write(masterPower - POUT);
   }
-//  doTrig(trackDistance(), readGyro());
+  doTrig(trackDistance(), readGyro());
   distOrientation(readGyro());
   displayLCD();
   // }
+
+
+
+  
 }
 
 
 void pidUltrasonic() {
   readUltrasonic();
-  error = distanceRight - distanceR;  // distanceRight - 7.5
+  error = distanceRight1 - distanceRight2;  // distanceRight - 7.5
   DError = error - oldError;
   IError += error;
   oldError = error;
