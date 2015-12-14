@@ -74,7 +74,7 @@ int masterPower = 67;
 int slavePower = 67;
 boolean keepGoing = true;
 
-int state = 0;
+int state = 8; //0
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -102,13 +102,14 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-const float kp = 5.0;
+const float kp = .8;
 const float ki = 0.00001;
-const float kd = -.008;
+const float kd = -0.008;
 
-const float distanceToFrontWall = 7.5;
+//NEVER FUCKING TOUCH THESE NEXT THREE NUMBERS
+const float distanceToFront = 10.0;
 const float rightObstacleDistance = 40.0;
-const float distanceR = 7.5;
+const float distanceR = 9.0;
 
 const int Stop = 90;
 
@@ -125,7 +126,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .008925; // gyros gain factor for 250deg/sec
+float G_gain = .010936; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 
@@ -185,28 +186,8 @@ void setup() {
 //main loop
 void loop()
 {
-  // findCandle();
-  digitalWrite(27 , HIGH);
-  driveStraight();
-  /*
-  * This chunk of code describes when the candle is in the 60 degree 15 inch cone
-  * float flameSensorValue = analogRead(flameSensorPin);
-  if(flameClose(flameSensorValue))
-  {
-  rotateUntilHot();
-  }
-  */
+  findCandle();
 
-  readUltrasonic();
-  delay(100);
-  if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
-  {
-    digitalWrite(27, HIGH); //turn on the LED
-    stopRobot();
-    delay(100);//stop the robot
- //   state = 1;
-  }
-  
 }
 
 /*
@@ -224,23 +205,14 @@ void findCandle()
 
   switch (state)
   {
-    // wall follow
+    //  follow
     case 0:
 
       digitalWrite(27 , HIGH);
       driveStraight();
-      /*
-      * This chunk of code describes when the candle is in the 60 degree 15 inch cone
-      * float flameSensorValue = analogRead(flameSensorPin);
-      if(flameClose(flameSensorValue))
-      {
-      rotateUntilHot();
-      }
-      */
-
       readUltrasonic();
       delay(100);
-      if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
@@ -262,7 +234,7 @@ void findCandle()
         //        delay(100);
         state = 6;
       }
-      else if (distanceFront <= distanceToFrontWall) //there is an obstacle in front
+      else if (distanceFront <= distanceToFront) //there is an obstacle in front
       {
         state = 4;
       }
@@ -270,8 +242,6 @@ void findCandle()
       {
         state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
       }
-      //   Serial.println(state);
-
       break;
 
     case 2: //turn right
@@ -281,8 +251,6 @@ void findCandle()
       turnRobot(1, angle);
       stopRobot();
       state = 7;
-      //   Serial.println(state);
-
       break;
 
     case 3: //turn left
@@ -296,7 +264,7 @@ void findCandle()
 
     case 4: //is it the candle
       readUltrasonic();
-      if (distanceFront <= distanceToFrontWall)
+      if (distanceFront <= distanceToFront)
       {
         if (analogRead(flameSensorPin) < definiteFlame)
         {
@@ -331,16 +299,16 @@ void findCandle()
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
-      //    readUltrasonic();
+          readUltrasonic();
       if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
         state = 2; //state 2 plus if there is not wall
       }
-      else if (distanceFront > distanceToFrontWall)
+      else if (distanceFront > distanceToFront)
       {
         state = 0;
       }
-      else //if ((distanceFront <= distanceToFrontWall) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
+      else //if ((distanceFront <= distanceToFront) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
         state = 3; //turn left
@@ -349,15 +317,14 @@ void findCandle()
 
     // driving around a wall, aka driving when there's no fall to follow
     case 7:
-
       angle = readGyro();
       readUltrasonic();
       if (distanceRight >= rightObstacleDistance)
       {
         digitalWrite(27, HIGH);
         //  encoderDriveStraight();
-        driveForward(70, 70);
-        delay(2000); //just timing drive straight for now
+        driveForward(70, 67);
+        delay(3000); //just timing drive straight for now
         stopRobot();
         turnRobot(1, angle); //turn right
         stopRobot();
@@ -369,32 +336,28 @@ void findCandle()
       break;
 
     // start, drive towards the wall in order to follow from a set distance
-    //    case 8:
-    //
-    //      //encoderDriveStraight();
-    //      driveForward(75,75);
-    //      readUltrasonic();
-    //      if (distanceFront <= distanceToFrontWall)
-    //      {
-    //        stopRobot();
-    //        delay(100);
-    //        turnRobot(2, readGyro());
-    //        stopRobot();
-    //        delay(500);
-    //
-    //      }
-    //      state = 0;
-    //
-    //      Serial.println(state);
-    //
-    //      break;
+        case 8:
+    
+          //encoderDriveStraight();
+          driveForward(75,75);
+          readUltrasonic();
+          if (distanceFront <= distanceToFront)
+          {
+            stopRobot();
+            delay(100);
+            turnRobot(2, readGyro());
+            stopRobot();
+            delay(500);
+    
+          }
+          state = 0;
+    
+          Serial.println(state);
+    
+          break;
     case 9:
 
       stopRobot();
-
-      //   Serial.println(state);
-
-
   }
   delay(10);
 }

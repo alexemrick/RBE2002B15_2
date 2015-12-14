@@ -34,13 +34,13 @@ void driveStraight() {
 
   if (POUT  > 23)
   {
-    rightDrive.write(69);
+    rightDrive.write(masterPower);
   }
   else
   {
     rightDrive.write(masterPower + POUT);
   }
-  doTrig(trackDistance(), readGyro());
+//  doTrig(trackDistance(), readGyro());
   distOrientation(readGyro());
   displayLCD();
   // }
