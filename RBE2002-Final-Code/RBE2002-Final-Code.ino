@@ -52,6 +52,8 @@ float yDistanceTraveled = 0;
 float distanceRight2;
 float distanceRight1;
 float distanceFront;
+float distanceRight;
+float distanceLeft;
 
 float distX;
 float distY;
@@ -102,13 +104,14 @@ const float kpE = 0.01;//1.75;
 const float kiE = 1.8;//0.003;
 const float kdE = 0.7;//-0.03;
 
-const float kp = 0.7;
-const float ki = 0.0;
-const float kd = 0;
+double kp = 1.0;//0.5;
+double ki = 0.0;//0.0;
+double kd = -.005;//0;
 
 //NEVER FUCKING TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
 const float rightObstacleDistance = 40.0;
+const float distanceR = 10.0;
 
 const int Stop = 90;
 
@@ -186,7 +189,6 @@ void setup() {
 void loop()
 {
   findCandle();
-
 }
 
 /*
@@ -206,12 +208,11 @@ void findCandle()
   {
     //  follow
     case 0:
-
       digitalWrite(27 , HIGH);
       driveStraight();
       readUltrasonic();
       delay(100);
-      if ((distanceFront <= distanceToFront) || (distanceRight1 >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
@@ -227,7 +228,7 @@ void findCandle()
 
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
-      if (distanceRight1 >= rightObstacleDistance) //there is a gap to the right
+      if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
         //        driveForward(70,70);
         //        delay(100);
@@ -299,7 +300,7 @@ void findCandle()
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
           readUltrasonic();
-      if (distanceRight1 >= rightObstacleDistance) //if there is no obstacle to the right
+      if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
         state = 2; //state 2 plus if there is not wall
       }
@@ -318,7 +319,7 @@ void findCandle()
     case 7:
       angle = readGyro();
       readUltrasonic();
-      if (distanceRight1 >= rightObstacleDistance)
+      if (distanceRight >= rightObstacleDistance)
       {
         digitalWrite(27, HIGH);
         //  encoderDriveStraight();
@@ -334,26 +335,26 @@ void findCandle()
 
       break;
 
-//    // start, drive towards the wall in order to follow from a set distance
-//        case 8:
-//    
-//          //encoderDriveStraight();
-//          driveForward(75,72);
-//          readUltrasonic();
-//          if (distanceFront <= distanceToFront)
-//          {
-//            stopRobot();
-//            delay(100);
-//            turnRobot(2, readGyro());
-//            stopRobot();
-//            delay(500);
-//    
-//          }
-//          state = 0;
-//    
-//          Serial.println(state);
-//    
-//          break;
+    // start, drive towards the wall in order to follow from a set distance
+        case 8:
+    
+          //encoderDriveStraight();
+          driveForward(75,72);
+          readUltrasonic();
+          if (distanceFront <= distanceToFront)
+          {
+            stopRobot();
+            delay(100);
+            turnRobot(2, readGyro());
+            stopRobot();
+            delay(500);
+    
+          }
+          state = 0;
+    
+          Serial.println(state);
+    
+          break;
     case 9:
 
       stopRobot();

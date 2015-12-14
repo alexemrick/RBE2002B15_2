@@ -38,7 +38,7 @@ void driveStraight() {
   }
   else
   {
-    rightDrive.write(masterPower - POUT);
+    rightDrive.write(masterPower + POUT); //- with 2 ultras
   }
   doTrig(trackDistance(), readGyro());
   distOrientation(readGyro());
@@ -53,7 +53,8 @@ void driveStraight() {
 
 void pidUltrasonic() {
   readUltrasonic();
-  error = distanceRight1 - distanceRight2;  // distanceRight - 7.5
+ // error = distanceRight1 - distanceRight2;  // distanceRight - 7.5
+  error = distanceRight - distanceR;
   DError = error - oldError;
   IError += error;
   oldError = error;
