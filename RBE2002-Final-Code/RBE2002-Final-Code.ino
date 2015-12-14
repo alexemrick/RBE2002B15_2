@@ -76,7 +76,7 @@ int masterPower = 67;
 int slavePower = 67;
 boolean keepGoing = true;
 
-int state = 0; //0
+int state = 0; //8
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -348,7 +348,6 @@ void findCandle()
       break;
 
     // start, drive towards the wall in order to follow from a set distance
-<<<<<<< HEAD
     case 8:
       lcd.print("CASE 8");
       lcd.setCursor(0, 0);
@@ -375,32 +374,7 @@ void findCandle()
       rotateUntilHot();
       state = 6;
     //stop robot when we are done, stays here forever
-=======
-        case 8:
-    
-          //encoderDriveStraight();
-          driveForward(75,72);
-          readUltrasonic();
-          if (distanceFront <= 7.5)
-          {
-            stopRobot();
-            delay(100);
-            turnRobot(2, readGyro());
-            stopRobot();
-            delay(500);
-    
-          }
-          state = 0;
-          Serial.println(state);
-    
-          break;
-     case 10:
-      rotateUntilHot();
-      state = 6;
-     
->>>>>>> parent of 33b2fa7... GET RID OF BABY DICKS
     case 9:
-
       stopRobot();
   }
   delay(10);
