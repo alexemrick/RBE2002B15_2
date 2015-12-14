@@ -7,7 +7,7 @@
  */
 void pidEncoders() {
   delay(10);
-  errorE = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
+ errorE = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
   DErrorE = errorE - oldErrorE;
   IErrorE += errorE;
   oldErrorE = errorE;
@@ -47,5 +47,4 @@ void encoderDriveStraight() {
   {
     leftDrive.write(masterPower - POUTE); //- with 2 ultras
   }
-}
 }
