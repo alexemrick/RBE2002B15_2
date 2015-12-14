@@ -107,7 +107,7 @@ const float ki = 0.00001;
 const float kd = -.008;
 
 const float distanceToFrontWall = 7.5;
-const float rightObstacleDistance = 30.0;
+const float rightObstacleDistance = 40.0;
 const float distanceR = 7.5;
 
 const int Stop = 90;
@@ -217,8 +217,9 @@ void findCandle()
       rotateUntilHot();
       }
       */
-      readUltrasonic();
       delay(100);
+      readUltrasonic();
+      
       if ((distanceFront <= distanceToFrontWall) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
@@ -232,14 +233,14 @@ void findCandle()
       }
       Serial.println(state);
       break;
-
-
     case 1:  //if the robot is stopped
     
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
       if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
+//        driveForward(70,70);
+//        delay(100);
         state = 6;
       }
       else if (distanceFront <= distanceToFrontWall) //there is an obstacle in front
@@ -298,12 +299,16 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
-      //      blinkLED();
-      
+//            blinkLED();
+      digitalWrite(27, LOW);
+      delay(1000);
+      digitalWrite(27, HIGH);
+      delay(1000);
+      digitalWrite(27, LOW);
       displayLCD();
       runFan();
 
-      digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
+          // turn the LED off by making the voltage LOW
       state = 9;
 
       Serial.println(state);
@@ -311,8 +316,6 @@ void findCandle()
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
-    
-
       if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
         state = 2; //state 2 plus if there is not wall
@@ -321,14 +324,11 @@ void findCandle()
       {
         state = 0;
       }
-      else if ((distanceFront <= distanceToFrontWall) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
+      else //if ((distanceFront <= distanceToFrontWall) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
         state = 3; //turn left
       }
-
-
-
       Serial.println(state);
     
       break;
