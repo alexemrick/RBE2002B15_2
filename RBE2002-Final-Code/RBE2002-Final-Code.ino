@@ -72,11 +72,11 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 67;
-int slavePower = 67;
+int masterPower = 65;
+int slavePower = 65;
 boolean keepGoing = true;
 
-int state = 0; //0
+int state = 0; //8
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -106,7 +106,7 @@ const float kdE = 0.7;//-0.03;
 
 const float kp = 1.0;//0.5;
 const float ki = 0.0;//0.0;
-const float kd = -.005;//0;
+const float kd = -0.005;//0;
 
 //NEVER FUCKING TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
@@ -189,6 +189,7 @@ void setup() {
 void loop()
 {
   findCandle();
+  //Serial.println( flameClose(analogRead(flameSensorPin)));
 }
 
 /*
@@ -208,38 +209,40 @@ void findCandle()
   {
     //  follow
     case 0:
+    lcd.print("WALL FOLLOW");
+      lcd.setCursor(0, 0);
       digitalWrite(27 , HIGH);
       driveStraight();
-    if( flameClose(analogRead(flameSensorPin))){
+      if ( flameClose(analogRead(flameSensorPin))) {
 
-      state = 10;
-    }
-      
-                  
-                 
+        state = 10;
+      }
       readUltrasonic();
       delay(100);
-      
-     if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+
+      if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
-         
-  
+
+
         state = 1;
       }
-      
+
       else
       {
         state = 0; //keep following the wall
       }
-        
+      
+
       break;
     case 1:  //if the robot is stopped
-
+      lcd.print("STOP");
+      lcd.setCursor(0, 0);
       readUltrasonic(); //update front and right distance values
       digitalWrite(27, HIGH);
+      readUltrasonic();
       if (distanceRight >= rightObstacleDistance) //there is a gap to the right
       {
         //        driveForward(70,70);
@@ -252,29 +255,36 @@ void findCandle()
       }
       else
       {
+
         state = 0; //if the robot got to case 1 on accident, keep driving straight (double checks ultrasonics
       }
       break;
 
     case 2: //turn right
-
+lcd.print("TURN RIGHT");
+      lcd.setCursor(0, 0);
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
-      state = 7;
+ //     state = 7;
+
+      
       break;
-
     case 3: //turn left
-
+      lcd.print("TURN LEFT");
+      lcd.setCursor(0, 0);
       digitalWrite(27, HIGH);
       angle = readGyro();
       turnRobot(2, angle);
       stopRobot();
       state = 0;
+
       break;
 
     case 4: //is it the candle
+      lcd.print("FRONT OBSTACLE");
+      lcd.setCursor(0, 0);
       readUltrasonic();
       if (distanceFront <= distanceToFront)
       {
@@ -300,6 +310,8 @@ void findCandle()
       break;
 
     case 5: //it is the candle, blow out the candle
+      lcd.print("CANDLE FOUND");
+      lcd.setCursor(0, 0);
       digitalWrite(27, LOW);
       delay(1000);
       digitalWrite(27, HIGH);
@@ -311,27 +323,36 @@ void findCandle()
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
-          readUltrasonic();
+      readUltrasonic();
       if (distanceRight >= rightObstacleDistance) //if there is no obstacle to the right
       {
+        lcd.print("RIGHT GAP");
+        lcd.setCursor(0, 0);
         state = 2; //state 2 plus if there is not wall
+
       }
       else if (distanceFront > distanceToFront)
       {
+        lcd.print("FRONT GAP");
+        lcd.setCursor(0, 0);
         state = 0;
       }
-      else //if ((distanceFront <= distanceToFront) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
+      else if ((distanceFront <= distanceToFront) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
         //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
       {
+        lcd.print("RIGHT&FRONT OBSTACLES");
+        lcd.setCursor(0, 0);
         state = 3; //turn left
       }
       break;
 
     // driving around a wall, aka driving when there's no fall to follow
     case 7:
+      lcd.print("BABY DICK WALL");
+      lcd.setCursor(0, 0);
       angle = readGyro();
       readUltrasonic();
-      if (distanceRight >= rightObstacleDistance)
+      if (distanceLeft >= rightObstacleDistance)
       {
         digitalWrite(27, HIGH);
         //  encoderDriveStraight();
@@ -348,30 +369,34 @@ void findCandle()
       break;
 
     // start, drive towards the wall in order to follow from a set distance
-        case 8:
-    
-          //encoderDriveStraight();
-          driveForward(75,72);
-          readUltrasonic();
-          if (distanceFront <= 7.5)
-          {
-            stopRobot();
-            delay(100);
-            turnRobot(2, readGyro());
-            stopRobot();
-            delay(500);
-    
-          }
-          state = 0;
-          Serial.println(state);
-    
-          break;
-     case 10:
+    case 8:
+      lcd.print("CASE 8");
+      lcd.setCursor(0, 0);
+      //encoderDriveStraight();
+      driveForward(70, 74);
+      readUltrasonic();
+      if (distanceFront <= 7.5)
+      {
+        stopRobot();
+        delay(100);
+        turnRobot(2, readGyro());
+        stopRobot();
+        delay(500);
+
+      }
+      state = 0;
+      Serial.println(state);
+
+      break;
+    case 10:
+      lcd.print("CANDLE CLOSE");
+      lcd.setCursor(0, 0);
       rotateUntilHot();
       state = 6;
-     
-    case 9:
 
+    case 9:
+      lcd.print("DONE");
+      lcd.setCursor(0, 0);
       stopRobot();
   }
   delay(10);
