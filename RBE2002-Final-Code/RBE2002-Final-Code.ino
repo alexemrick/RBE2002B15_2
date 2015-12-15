@@ -39,8 +39,8 @@
 
 #define fanPin 24
 
-#define leftMotorPin 8
-#define rightMotorPin 9
+#define leftMotorPin 5
+#define rightMotorPin 4
 
 #define ledPin 27
 
@@ -61,6 +61,7 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
+Servo testDrive;
 
 Servo fan;
 L3G gyro;
@@ -72,8 +73,8 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 65;
-int slavePower = 65;
+int masterPower = 35;
+int slavePower = 35;
 boolean keepGoing = true;
 
 int state = 8; //0
@@ -91,7 +92,7 @@ float encoderConversion = 8.6393 / 300;
 // + if slave needs to speed up, - for slow down, if at same speed, = 0
 double error = 0;
 double oldError = 0;
-double DError, IError, POUT;
+double DError, IError, POUT = 0;
 
 double errorE = 0;
 double oldErrorE = 0;
@@ -104,7 +105,7 @@ const float kpE = 8.0;//.01
 const float kiE = 0;//1.8
 const float kdE = -1.4;//-.3;//0.7;
 
-const float kp = 9.8; //4.45;//0.5;
+const float kp = 10.1; //4.45;//0.5;
 const float ki = 0; //0.1;//0.0;
 const float kd = 0; //-4.0;//0;
 
@@ -145,58 +146,64 @@ float gerrz; // Gyro z error
 //initial setup
 void setup() {
   Serial.begin(115200);
-  Serial3.begin(115200);
+  //Serial3.begin(115200);
   Wire.begin(); // i2c begin
-  pinMode(fanPin, OUTPUT);
-  pinMode(ledPin, OUTPUT);
+  //pinMode(fanPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
+  //testDrive.attach(6,1000,2000);
 
-  lcd.begin(16, 2);
-  lcd.setCursor(0, 0);
+  //lcd.begin(16, 2);
+  //lcd.setCursor(0, 0);
 
   // sets led on for looking for candle
   //digitalWrite(ledPin, HIGH);
 
-  pinMode(13, OUTPUT);
+  //pinMode(13, OUTPUT);
 
   //setup for gyro stuff
 
-  if (!gyro.init()) // gyro init
-  {
-    Serial.println("Failed to autodetect gyro type! not connected");
-    lcd.print("FAIL");
-    while (1);
-  }
-  delay(500);
-  timer = micros(); // init timer for first reading
-  gyro.enableDefault(); // gyro init. default 250/deg/s
-  delay(1000);// allow time for gyro to settle
-  Serial.println("starting zero, stay still for 10 seconds");
-  lcd.print("INIT");
-  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-    gyro.read(); // read gyro I2C call
-    gerrx += gyro.g.x; // add all the readings
-    gerry += gyro.g.y;
-    gerrz += gyro.g.z;
-    delay(5);
-  }
-
-  gerrx = gerrx / 2000; // average readings to obtain an error offset
-  gerry = gerry / 2000;
-  gerrz = gerrz / 2000;
-  lcd.setCursor(0, 0);
-  lcd.print("INIT COMPLETE");
-  lcd.clear();
+//  if (!gyro.init()) // gyro init
+//  {
+//    Serial.println("Failed to autodetect gyro type! not connected");
+//    lcd.print("FAIL");
+//    while (1);
+//  }
+//  delay(500);
+//  timer = micros(); // init timer for first reading
+//  gyro.enableDefault(); // gyro init. default 250/deg/s
+//  delay(1000);// allow time for gyro to settle
+//  Serial.println("starting zero, stay still for 10 seconds");
+//  lcd.print("INIT");
+//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+//    gyro.read(); // read gyro I2C call
+//    gerrx += gyro.g.x; // add all the readings
+//    gerry += gyro.g.y;
+//    gerrz += gyro.g.z;
+//    delay(5);
+//  }
+//
+//  gerrx = gerrx / 2000; // average readings to obtain an error offset
+//  gerry = gerry / 2000;
+//  gerrz = gerrz / 2000;
+ // lcd.setCursor(0, 0);
+  //lcd.print("INIT COMPLETE");
+  //lcd.clear();
 }
 
 //main loop
 void loop()
 {
   //  state = 8;
-  //findCandle();
-   driveStraight();
-
+//  findCandle();
+  // driveStraight();
+leftDrive.write(90+35);
+  rightDrive.write(90+35); 
+  Serial.println(slavePower);
+  Serial.println(masterPower);
+  //testDrive.write(90+masterPower);
+  delay(20);
 }
 
 /*
@@ -390,7 +397,7 @@ void findCandle()
       stopRobot();
       turnRobot(1, angle); //turn right
       stopRobot();
-      //      }
+          }
       state = 0; //start wall following again
 
       break;

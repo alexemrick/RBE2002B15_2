@@ -19,37 +19,27 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
-  // initializes values
-  //    for(int i = 0; i < 1; i++) {
-  //      rightDrive.write(masterPower);
-  //     // leftDrive.write(slavePower);
-  //    }
-
-  //if (Serial3.available()) {
-  leftDrive.write(slavePower);
-  //  rightDrive.write(masterPower + POUT);
-  //    rightDrive.write(masterPower + POUT);
-  // readUltrasonic();
+  
+  leftDrive.write(slavePower+POUT);
+  rightDrive.write(masterPower-POUT); 
   pidUltrasonic();
-
-  if (POUT  > 34)
-  {
-    rightDrive.write(masterPower);
-  }
-  else
-  {
-    rightDrive.write(masterPower - POUT); 
-  }
-  doTrig(trackDistance(), readGyro());
-  distOrientation(readGyro());
-  displayLCD();
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print(masterPower + POUT);
+  lcd.setCursor(0,8);
+  lcd.println(slavePower);
+  
+//  doTrig(trackDistance(), readGyro());
+//  distOrientation(readGyro());
+//  displayLCD();
   // }
+  delay(20);
 }
 
 
 void pidUltrasonic() {
   readUltrasonic();
-  error = (distanceRight - distanceLeft)/2;  // distanceRight - 7.5
+  error = distanceRight - distanceLeft;//- distanceR;  // distanceRight - 7.5
   //error = distanceRight - distanceR;
   DError = error - oldError;
   IError += error;
