@@ -104,7 +104,7 @@ const float kpE = 8.0;//.01
 const float kiE = 0;//1.8
 const float kdE = -1.4;//-.3;//0.7;
 
-const float kp = 9.95; //4.45;//0.5;
+const float kp = 9.8; //4.45;//0.5;
 const float ki = 0; //0.1;//0.0;
 const float kd = 0; //-4.0;//0;
 
