@@ -72,7 +72,7 @@ char str2[8];
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 68;
+int masterPower = 67;
 int slavePower = 67;
 boolean keepGoing = true;
 
@@ -104,7 +104,7 @@ const float kpE = 8.0;//.01
 const float kiE = 0;//1.8
 const float kdE = -1.4;//-.3;//0.7;
 
-const float kp = 5.0;//5.0;//5.95; //4.45;//0.5;
+const float kp = 9.8; //4.45;//0.5;
 const float ki = 0; //0.1;//0.0;
 const float kd = 0; //-4.0;//0;
 
@@ -162,29 +162,29 @@ void setup() {
 
   //setup for gyro stuff
 
-//  if (!gyro.init()) // gyro init
-//  {
-//    Serial.println("Failed to autodetect gyro type! not connected");
-//    lcd.print("FAIL");
-//    while (1);
-//  }
-//  delay(500);
-//  timer = micros(); // init timer for first reading
-//  gyro.enableDefault(); // gyro init. default 250/deg/s
-//  delay(1000);// allow time for gyro to settle
-//  Serial.println("starting zero, stay still for 10 seconds");
-//  lcd.print("INIT");
-//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-//    gyro.read(); // read gyro I2C call
-//    gerrx += gyro.g.x; // add all the readings
-//    gerry += gyro.g.y;
-//    gerrz += gyro.g.z;
-//    delay(5);
-//  }
-//
-//  gerrx = gerrx / 2000; // average readings to obtain an error offset
-//  gerry = gerry / 2000;
-//  gerrz = gerrz / 2000;
+  if (!gyro.init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type! not connected");
+    lcd.print("FAIL");
+    while (1);
+  }
+  delay(500);
+  timer = micros(); // init timer for first reading
+  gyro.enableDefault(); // gyro init. default 250/deg/s
+  delay(1000);// allow time for gyro to settle
+  Serial.println("starting zero, stay still for 10 seconds");
+  lcd.print("INIT");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
+    gerry += gyro.g.y;
+    gerrz += gyro.g.z;
+    delay(5);
+  }
+
+  gerrx = gerrx / 2000; // average readings to obtain an error offset
+  gerry = gerry / 2000;
+  gerrz = gerrz / 2000;
   lcd.setCursor(0, 0);
   lcd.print("INIT COMPLETE");
   lcd.clear();
@@ -196,7 +196,6 @@ void loop()
   //  state = 8;
   //findCandle();
    driveStraight();
-   delay(100);
 
 }
 

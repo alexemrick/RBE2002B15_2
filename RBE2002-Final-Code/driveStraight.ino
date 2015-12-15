@@ -19,22 +19,31 @@
 // initialize timer & attach interrupt
 
 void driveStraight() {
-  leftDrive.write(slavePower + POUT);
+  // initializes values
+  //    for(int i = 0; i < 1; i++) {
+  //      rightDrive.write(masterPower);
+  //     // leftDrive.write(slavePower);
+  //    }
+
+  //if (Serial3.available()) {
+  leftDrive.write(slavePower);
+  //  rightDrive.write(masterPower + POUT);
+  //    rightDrive.write(masterPower + POUT);
+  // readUltrasonic();
   pidUltrasonic();
-  Serial.println(error);
-//  if (POUT  > 34)
-//  {
-//    rightDrive.write(masterPower);
-//  }
-//  else
-//  {
+
+  if (POUT  > 34)
+  {
+    rightDrive.write(masterPower);
+  }
+  else
+  {
     rightDrive.write(masterPower - POUT); 
-//  }
-  //doTrig(trackDistance(), readGyro());
-  //distOrientation(readGyro());
-  //displayLCD();
+  }
+  doTrig(trackDistance(), readGyro());
+  distOrientation(readGyro());
+  displayLCD();
   // }
-  //delay(100);
 }
 
 
