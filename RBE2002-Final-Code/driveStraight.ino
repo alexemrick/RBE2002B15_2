@@ -32,7 +32,7 @@ void driveStraight() {
   // readUltrasonic();
   pidUltrasonic();
 
-  if (POUT  > 34)
+  if (POUT  > 34 || POUT < 20)
   {
     rightDrive.write(masterPower);
   }

@@ -1,4 +1,3 @@
-
 /*
  * This program was written to operate the final robot for team 2 in RBE 2002 B term 2015. The robot drives forward
  * until an ultrasonic sensor senses an object. It uses the flame sensor to determine if the object is the candle
@@ -105,7 +104,7 @@ const float kpE = 8.0;//.01
 const float kiE = 0;//1.8
 const float kdE = -1.4;//-.3;//0.7;
 
-const float kp = 8.8; //4.45;//0.5;
+const float kp = 9.95; //4.45;//0.5;
 const float ki = 0; //0.1;//0.0;
 const float kd = 0; //-4.0;//0;
 
@@ -129,7 +128,7 @@ float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integr
 long timer = 0; //general purpose timer
 long timer1 = 0;
 
-float G_gain = .010936; // gyros gain factor for 250deg/sec
+float G_gain = .010932; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
 
@@ -163,29 +162,29 @@ void setup() {
 
   //setup for gyro stuff
 
-//  if (!gyro.init()) // gyro init
-//  {
-//    Serial.println("Failed to autodetect gyro type! not connected");
-//    lcd.print("FAIL");
-//    while (1);
-//  }
-//  delay(500);
-//  timer = micros(); // init timer for first reading
-//  gyro.enableDefault(); // gyro init. default 250/deg/s
-//  delay(1000);// allow time for gyro to settle
-//  Serial.println("starting zero, stay still for 10 seconds");
-//  lcd.print("INIT");
-//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-//    gyro.read(); // read gyro I2C call
-//    gerrx += gyro.g.x; // add all the readings
-//    gerry += gyro.g.y;
-//    gerrz += gyro.g.z;
-//    delay(5);
-//  }
-//
-//  gerrx = gerrx / 2000; // average readings to obtain an error offset
-//  gerry = gerry / 2000;
-//  gerrz = gerrz / 2000;
+  if (!gyro.init()) // gyro init
+  {
+    Serial.println("Failed to autodetect gyro type! not connected");
+    lcd.print("FAIL");
+    while (1);
+  }
+  delay(500);
+  timer = micros(); // init timer for first reading
+  gyro.enableDefault(); // gyro init. default 250/deg/s
+  delay(1000);// allow time for gyro to settle
+  Serial.println("starting zero, stay still for 10 seconds");
+  lcd.print("INIT");
+  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+    gyro.read(); // read gyro I2C call
+    gerrx += gyro.g.x; // add all the readings
+    gerry += gyro.g.y;
+    gerrz += gyro.g.z;
+    delay(5);
+  }
+
+  gerrx = gerrx / 2000; // average readings to obtain an error offset
+  gerry = gerry / 2000;
+  gerrz = gerrz / 2000;
   lcd.setCursor(0, 0);
   lcd.print("INIT COMPLETE");
   lcd.clear();
@@ -194,12 +193,9 @@ void setup() {
 //main loop
 void loop()
 {
-//  state = 8;
- // findCandle();
-  //encoderDriveStraight();
-driveStraight();
-// readUltrasonic();
-// Serial.println(distanceLeft);
+  //  state = 8;
+  //findCandle();
+   driveStraight();
 
 }
 
@@ -225,11 +221,11 @@ void findCandle()
 
       digitalWrite(27 , HIGH);
       driveStraight();
-      if (flameClose(analogRead(flameSensorPin))) {
-        state = 10;
-      }
+//      if (flameClose(analogRead(flameSensorPin))) {
+//        state = 10;
+//      }
       readUltrasonic();
-    //  driveStraight();
+      //  driveStraight();
       if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
@@ -273,17 +269,17 @@ void findCandle()
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
+      delay(100);
       encoderDriveStraight(); //NEW
       delay(1000);
       if (flameClose(analogRead(flameSensorPin))) {
-
         state = 10;
       }
       else
       {
         state = 0;
       }
-
+//state = 7?
       break;
 
     case 3: //turn left
@@ -294,7 +290,6 @@ void findCandle()
       turnRobot(2, angle);
       stopRobot();
       if (flameClose(analogRead(flameSensorPin))) {
-
         state = 10;
       }
       else
@@ -326,7 +321,7 @@ void findCandle()
       }
       else
       {
-        state = 0;
+        state = 1; //0?
       }
 
       break;
@@ -347,10 +342,15 @@ void findCandle()
 
     case 6: //it is not the candle, there is a wall in front of you AND/OR there is a gap to the right
       lcd.setCursor(0, 0);
-      lcd.print("WALL!!");
+      lcd.print("WALL!!/GAP!!");
 
       readUltrasonic();
-      if (distanceLeft >= rightObstacleDistance) //if there is no obstacle to the right
+      if ((distanceFront <= distanceToFront) && (distanceLeft < rightObstacleDistance)) //if you're in a corner
+        //this is sorta redundant, double check the ultrasonic values
+      {
+        state = 3; //turn left
+      }
+     else if (distanceLeft >= rightObstacleDistance) //if there is no obstacle to the right, 
       {
         state = 2; //state 2 plus if there is not wall
         //        stopRobot();
@@ -359,14 +359,10 @@ void findCandle()
         //
         //state = 0;
       }
-      else if ((distanceFront <= distanceToFront) && (distanceRight < rightObstacleDistance)) //if there is an obstacle to the right
-        //maybe also check left just to be sure/faster. this will just turn 90 twice instead of 180
-      {
-        state = 3; //turn left
-      }
+  //this case is just a double check, should not happen
       else if (distanceFront <= distanceToFront)
       {
-        state = 2;
+        state = 3;
       }
 
       break;
@@ -374,42 +370,35 @@ void findCandle()
 
     // driving around a wall, aka driving when there's no fall to follow
     case 7:
-      lcd.setCursor(0, 0);
-      lcd.print("BABY WALL");
-
-      angle = readGyro();
-      readUltrasonic();
-      //      if (distanceRight >= rightObstacleDistance)
-      //      {
-      digitalWrite(27, HIGH);
-      encoderDriveStraight();// turning left instead of driving straight after baby wall
-
-      //  driveForward(70, 67);
-      delay(3000); //just timing drive straight for now
-      stopRobot();
-      turnRobot(1, angle); //turn right
-      stopRobot();
-      //      }
+//      lcd.setCursor(0, 0);
+//      lcd.print("BABY WALL");
+//
+//      angle = readGyro();
+//      readUltrasonic();
+//      //      if (distanceRight >= rightObstacleDistance)
+//      //      {
+//      digitalWrite(27, HIGH);
+//      encoderDriveStraight();// turning left instead of driving straight after baby wall
+//      if (flameClose(analogRead(flameSensorPin))) {
+//        state = 10;
+//      }
+//      delay(3000); //just timing drive straight for now
+//      stopRobot();
+//      turnRobot(1, angle); //turn right
+//      stopRobot();
+//      //      }
       state = 0; //start wall following again
 
       break;
 
     // start, drive towards the wall in order to follow from a set distance
     case 8:
-      // lcd.clear();
-      // lcd.setCursor(0, 1);
-      //     Serial.println("case 8");
       lcd.setCursor(0, 0);
       lcd.print("CASE 8");
-
-      //      encoderDriveStraight();
-      //driveForward(70, 70);
-      //    delay(500);
       readUltrasonic();
-      // Serial.println(distanceFront);
-      while (distanceFront > 7.5)
+      while (distanceFront > 7.5) //while the robot is at least 7.5 inches away from the wall
       {
-        encoderDriveStraight();
+        encoderDriveStraight(); //drive forward
         readUltrasonic();
       }
       stopRobot();
@@ -418,19 +407,6 @@ void findCandle()
       stopRobot();
       delay(500);
       state = 0;
-
-
-      //            if (distanceFront <= 7.5)
-      //            {
-      //              stopRobot();
-      //              delay(100);
-      //              turnRobot(2, readGyro());
-      //              stopRobot();
-      //              delay(500);
-      //              state = 0;
-      //            }
-
-
       break;
     //stop robot when we are done, stays here forever
     case 9:
@@ -447,8 +423,6 @@ void findCandle()
       rotateUntilHot();
       state = 5;
       break;
-
-
   }
   delay(10);
 }

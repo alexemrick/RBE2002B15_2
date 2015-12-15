@@ -47,7 +47,4 @@ void encoderDriveStraight() {
   {
     leftDrive.write(masterPower - POUTE); //- with 2 ultras
   }
-  if (flameClose(analogRead(flameSensorPin))) {
-    state = 10;
-  }
 }
