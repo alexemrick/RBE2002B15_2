@@ -8,7 +8,8 @@
  *
  */
 void readUltrasonic() {
-  while (!Serial3.available()) {}
+  while (!Serial3.available()) {Serial.println("you suck");}
+  
   distanceFront = Serial3.readStringUntil(',').toFloat();
   //    distanceRight2 = Serial3.readStringUntil(',').toFloat();
   //    distanceRight1 = Serial3.readStringUntil('\n').toFloat();

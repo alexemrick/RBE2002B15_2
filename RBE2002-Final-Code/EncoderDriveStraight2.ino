@@ -7,7 +7,7 @@
  */
 void pidEncoders() {
   delay(10);
- errorE = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
+  errorE = (masterEnc.read() - previousMaster) - (slaveEnc.read() - previousSlave);
   DErrorE = errorE - oldErrorE;
   IErrorE += errorE;
   oldErrorE = errorE;
@@ -37,7 +37,7 @@ void encoderDriveStraight() {
   // calculates the PID
   pidEncoders();
   Serial.println(POUTE);
-  leftDrive.write(slavePower - POUTE);
+  // leftDrive.write(slavePower - POUTE);
 
   if (POUTE  > 23)
   {
@@ -46,5 +46,8 @@ void encoderDriveStraight() {
   else
   {
     leftDrive.write(masterPower - POUTE); //- with 2 ultras
+  }
+  if (flameClose(analogRead(flameSensorPin))) {
+    state = 10;
   }
 }

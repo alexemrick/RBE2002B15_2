@@ -11,11 +11,11 @@
  */
 void displayLCD()
 {
-  lcd.setCursor(0,2);
+  lcd.setCursor(0,1);
   sprintf(str1, "%f", xDistanceTraveled);
   lcd.print("X = ");
   lcd.print(xDistanceTraveled);
-  lcd.setCursor(8, 2);
+  lcd.setCursor(8, 1);
   sprintf(str2, "%f", yDistanceTraveled);
   lcd.print("Y = ");
   lcd.print(yDistanceTraveled);

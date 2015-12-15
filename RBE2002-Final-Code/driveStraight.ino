@@ -32,34 +32,58 @@ void driveStraight() {
   // readUltrasonic();
   pidUltrasonic();
 
-  if (POUT  > 23)
+  if (POUT  > 34)
   {
     rightDrive.write(masterPower);
   }
   else
   {
-    rightDrive.write(masterPower + POUT); //- with 2 ultras
+    rightDrive.write(masterPower - POUT); 
   }
   doTrig(trackDistance(), readGyro());
   distOrientation(readGyro());
   displayLCD();
   // }
-
-
-
-  
 }
 
 
 void pidUltrasonic() {
   readUltrasonic();
- // error = distanceRight1 - distanceRight2;  // distanceRight - 7.5
-  error = distanceRight - distanceR;
+  error = (distanceRight - distanceLeft)/2;  // distanceRight - 7.5
+  //error = distanceRight - distanceR;
   DError = error - oldError;
   IError += error;
   oldError = error;
   POUT = error * kp + DError * kd + IError * ki;
 }
+
+
+
+//void driveStraight() {
+////  pidUltrasonic();
+////  Serial.println(POUT);
+//  readUltrasonic();
+//  rightDrive.write(70);
+//  if(distanceRight > distanceR) leftDrive.write(60);
+//  else if(distanceRight < distanceR) leftDrive.write(120);
+//  else if(distanceRight <= distanceR + 2.0 && distanceRight >= distanceR - 2.0) {
+////    if(distanceLeft > distanceR) leftDrive.write(120);
+////    else if(distanceLeft < distanceR) leftDrive.write(60);
+////    else {
+//      leftDrive.write(70);
+//    }
+//  }
+////  leftDrive.write(slavePower + POUT);
+////}
+
+//void pidUltrasonic() {
+//  readUltraSonic();
+//  error = distanceRight-distanceR;
+//  DError = error - oldError;
+//  IError += error;
+//  oldError = error;
+//  POUT = error * kp + DError * kd + IError * ki;
+//}
 
 
 
