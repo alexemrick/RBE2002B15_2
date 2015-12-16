@@ -39,8 +39,8 @@
 
 #define fanPin 24
 
-#define leftMotorPin 4
-#define rightMotorPin 5
+#define leftMotorPin 5
+#define rightMotorPin 4
 
 #define ledPin 27
 
@@ -48,6 +48,8 @@
 float xDistanceTraveled = 0;
 float yDistanceTraveled = 0;
 
+float distanceRight2;
+float distanceRight1;
 float distanceFront;
 float distanceRight;
 float distanceLeft;
@@ -59,22 +61,20 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-Servo fan;
+Servo testDrive;
 
+Servo fan;
 L3G gyro;
 
 char str1[8]; //8?
 char str2[8];
-unsigned long timerDR;
 
-float lastVAL;
-float currVAL;
 /*
  * Variables for driving straight
  */
 // initialize variables
-int masterPower = 45;//35;
-int slavePower = 30;//35;
+int masterPower = 35;
+int slavePower = 35;
 boolean keepGoing = true;
 
 int state = 8; //0
@@ -105,9 +105,9 @@ const float kpE = 8.0;//.01
 const float kiE = 0;//1.8
 const float kdE = -1.4;//-.3;//0.7;
 
-const float kp = 10.0; //4.45;//0.5;
-const float ki = 0.000; //0.1;//0.0;
-const float kd = 0.0; //-4.0;//0;
+const float kp = 10.1; //4.45;//0.5;
+const float ki = 0; //0.1;//0.0;
+const float kd = 0; //-4.0;//0;
 
 //NEVER TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
@@ -145,62 +145,65 @@ float gerrz; // Gyro z error
 
 //initial setup
 void setup() {
-  lastVAL = 0;
-  currVAL = 0;
-  timerDR = millis();
   Serial.begin(115200);
-  Serial3.begin(115200);
-  Serial.println("start");
+  //Serial3.begin(115200);
   Wire.begin(); // i2c begin
-  pinMode(fanPin, OUTPUT);
-  pinMode(ledPin, OUTPUT);
-  pinMode(A3, INPUT);
+  //pinMode(fanPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
+  //testDrive.attach(6,1000,2000);
 
-  lcd.begin(16, 2);
-  lcd.setCursor(0, 0);
+  //lcd.begin(16, 2);
+  //lcd.setCursor(0, 0);
 
   // sets led on for looking for candle
-  digitalWrite(ledPin, HIGH);
+  //digitalWrite(ledPin, HIGH);
+
+  //pinMode(13, OUTPUT);
 
   //setup for gyro stuff
 
-  if (!gyro.init()) // gyro init
-  {
-    Serial.println("Failed to autodetect gyro type! not connected");
-    lcd.print("FAIL");
-    while (1);
-  }
-  delay(500);
-  timer = micros(); // init timer for first reading
-  gyro.enableDefault(); // gyro init. default 250/deg/s
-  delay(1000);// allow time for gyro to settle
-  Serial.println("starting zero, stay still for 10 seconds");
-  lcd.print("INIT");
-  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
-    gyro.read(); // read gyro I2C call
-    gerrx += gyro.g.x; // add all the readings
-    gerry += gyro.g.y;
-    gerrz += gyro.g.z;
-    delay(5);
-  }
-
-  gerrx = gerrx / 2000; // average readings to obtain an error offset
-  gerry = gerry / 2000;
-  gerrz = gerrz / 2000;
-  lcd.setCursor(0, 0);
-  lcd.print("INIT COMPLETE");
-  lcd.setCursor(0,0);
+//  if (!gyro.init()) // gyro init
+//  {
+//    Serial.println("Failed to autodetect gyro type! not connected");
+//    lcd.print("FAIL");
+//    while (1);
+//  }
+//  delay(500);
+//  timer = micros(); // init timer for first reading
+//  gyro.enableDefault(); // gyro init. default 250/deg/s
+//  delay(1000);// allow time for gyro to settle
+//  Serial.println("starting zero, stay still for 10 seconds");
+//  lcd.print("INIT");
+//  for (int i = 1; i <= 2000; i++) { // takes 2000 samples of the gyro
+//    gyro.read(); // read gyro I2C call
+//    gerrx += gyro.g.x; // add all the readings
+//    gerry += gyro.g.y;
+//    gerrz += gyro.g.z;
+//    delay(5);
+//  }
+//
+//  gerrx = gerrx / 2000; // average readings to obtain an error offset
+//  gerry = gerry / 2000;
+//  gerrz = gerrz / 2000;
+ // lcd.setCursor(0, 0);
+  //lcd.print("INIT COMPLETE");
+  //lcd.clear();
 }
-
 
 //main loop
 void loop()
 {
-   state = 8;
-  findCandle();
-//driveStraight();
+  //  state = 8;
+//  findCandle();
+  // driveStraight();
+leftDrive.write(90+35);
+  rightDrive.write(90+35); 
+  Serial.println(slavePower);
+  Serial.println(masterPower);
+  //testDrive.write(90+masterPower);
+  delay(20);
 }
 
 /*
@@ -405,8 +408,7 @@ void findCandle()
       readUltrasonic();
       while (distanceFront > 7.5) //while the robot is at least 7.5 inches away from the wall
       {
-       // encoderDriveStraight(); //drive forward
-       driveForward(40,40);
+        encoderDriveStraight(); //drive forward
         readUltrasonic();
       }
       stopRobot();
