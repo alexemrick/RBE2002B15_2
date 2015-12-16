@@ -234,7 +234,7 @@ void findCandle()
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
-        state = 1;
+        state = 1;//next case to make turning decision
       }
       else
       {
