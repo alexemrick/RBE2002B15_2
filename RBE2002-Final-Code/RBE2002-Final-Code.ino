@@ -195,23 +195,40 @@ void setup() {
 //main loop
 void loop()
 {
-//  state = 0;
-//  //  findCandle();
-//  lcd.setCursor(0, 0);
-//  lcd.print("WALL FOLLOW");
-//
-//  digitalWrite(27 , HIGH);
-//  readUltrasonic();
-  driveStraight();
-//  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
-//  {
-//    digitalWrite(27, HIGH); //turn on the LED
-//    stopRobot();
-//    delay(100);//stop the robot
-//    displayLCD();
-//    //  state = 1;//next case to make turning decision
-//  }
+  ////  state = 0;
+  ////  //  findCandle();
+  //  lcd.setCursor(0, 0);
+  //  lcd.print("WALL FOLLOW");
+  //
+  //  digitalWrite(27 , HIGH);
+  //  readUltrasonic();
+  //  driveStraight();
+  ////  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  ////  {
+  ////    digitalWrite(27, HIGH); //turn on the LED
+  ////    stopRobot();
+  ////    delay(100);//stop the robot
+  ////    displayLCD();
+  ////    //  state = 1;//next case to make turning decision
+  ////  }
+  state = 0;
+  //  findCandle();
+  lcd.setCursor(0, 0);
+  lcd.print("WALL FOLLOW");
 
+  digitalWrite(27 , HIGH);
+    readUltrasonic();
+  Serial.println(analogRead(A3));
+  driveStraight();
+  if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+    // if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  {
+    digitalWrite(27, HIGH); //turn on the LED
+    stopRobot();
+    delay(100);//stop the robot
+    displayLCD();
+
+  }
 }
 
 /*
@@ -243,7 +260,7 @@ void findCandle()
         delay(100);//stop the robot
         state = 1;//next case to make turning decision
       }
-      if (distanceLeft >= rightObstacleDistance){}
+      if (distanceLeft >= rightObstacleDistance) {}
       else
       {
         state = 0; //keep following the wall
@@ -289,7 +306,7 @@ void findCandle()
       //        state = 0;
       //      }
       state = 7;
-              break;
+      break;
 
     case 3: //turn left
       lcd.setCursor(0, 0);

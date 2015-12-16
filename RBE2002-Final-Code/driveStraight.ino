@@ -95,8 +95,8 @@ void driveStraight() {
       }
     }
   }
-  doTrig(trackDistance(), readGyro());
-  distOrientation(readGyro());
+//  doTrig(trackDistance(), readGyro());
+//  distOrientation(readGyro());
 }
 
 

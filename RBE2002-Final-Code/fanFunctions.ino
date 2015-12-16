@@ -20,5 +20,4 @@ void runFan()
     digitalWrite(fanPin, LOW);
     digitalWrite(ledPin, LOW);
   }
->>>>>>> origin/master
 }
