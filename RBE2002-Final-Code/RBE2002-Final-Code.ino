@@ -126,9 +126,6 @@ const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" awa
 
 float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
-unsigned long timer = 0; //general purpose timer
-unsigned long timer1 = 0;
- 
 float G_gain = .010936; // gyros gain factor for 250deg/sec
 //This gain factor can be effected upto +/- %2 based on mechanical stress to the component after mounting.
 // if you rotate the gyro 180 degress and it only show 170 this could be the issue.
@@ -206,7 +203,7 @@ void loop()
   digitalWrite(27 , HIGH);
   readUltrasonic();
   driveStraight();
-  if (distanceFront <= distanceToFront) //|| (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
   {
     digitalWrite(27, HIGH); //turn on the LED
     stopRobot();

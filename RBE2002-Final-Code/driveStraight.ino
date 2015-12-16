@@ -29,11 +29,11 @@ void driveStraight() {
 
   if (exec) {
     if (sequenceCounter == 0) {
-//      if (flameClose()) {
-//        foundFlame();
-//      }      
-      else {
+      if (flameClose()) {
+        foundFlame();
+      }       else {
         if (timerDR + 200 <= millis()) {
+
           sequenceCounter++;
           timerDR = millis();
         } else {
@@ -42,10 +42,10 @@ void driveStraight() {
         }
       }
     } else if (sequenceCounter == 1) {
-//      if (flameClose()) {
-//        foundFlame();
-//      }
-      if { //else
+      if (flameClose()) {
+        foundFlame();
+      }
+      else {
         if (val > highest) {
           highest = val;
         }
