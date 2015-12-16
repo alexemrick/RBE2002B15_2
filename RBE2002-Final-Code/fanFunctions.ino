@@ -16,10 +16,9 @@ void runFan()
     digitalWrite(fanPin, HIGH);
     delay(5000);
   }
-  else 
-  {
+  else {
     digitalWrite(fanPin, LOW);
     digitalWrite(ledPin, LOW);
   }
-  
+>>>>>>> origin/master
 }

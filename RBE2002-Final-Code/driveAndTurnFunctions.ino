@@ -237,3 +237,17 @@ void stopRobot()
   leftDrive.write(Stop);
   rightDrive.write(Stop);
 }
+
+/*
+ *  This function stops the robot from moving by turning off the motors.
+ *
+ *  This function is used to stop the robot 10 whatever's from the wall
+ *
+ *  input: none
+ *  output: none
+ */
+void stopFromWall()
+{
+  readUltrasonic();
+  if(distanceFront <= 10) stopRobot();
+}
