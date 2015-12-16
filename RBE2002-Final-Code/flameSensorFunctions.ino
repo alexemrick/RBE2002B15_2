@@ -22,7 +22,7 @@ boolean flameClose(int flameValue)
 }
 
 /*
- * This function calls the rotateUntilHot func. when a possible flame is seen
+ * This function calls the isHot func. when a possible flame is seen
  * 
  * inputs: none
  * outputs: none
@@ -30,7 +30,11 @@ boolean flameClose(int flameValue)
  void seeFlameStop() {
   float flameSensorValue = analogRead(flameSensorPin);
 
-  if(flameSensorValue <= )
+  if(flameSensorValue <= 870) {
+    stopRobot();
+    delay(500);
+    isHot();
+  }
  }
 
 
