@@ -66,6 +66,8 @@ L3G gyro;
 char str1[8]; //8?
 char str2[8];
 
+String key = "";
+
 /*
  * Variables for driving straight
  */
@@ -177,8 +179,8 @@ void setup() {
 //main loop
 void loop()
 {
+  state = 0;
   findCandle();
- Serial.println(readGyro()); 
 }
 
 /*
@@ -197,6 +199,20 @@ void findCandle()
   switch (state)
   {
     case 0:
+      angle = readGyro();
+      turnRobot(1, angle);
+      stopRobot();
+      delay(4000);
+    //      angle = readGyro();
+    //      turnRobot(1, angle);
+    //      stopRobot();
+    //      delay(4000);
+    //      angle = readGyro();
+    //      turnRobot(1, angle);
+    //      stopRobot();
+    //      delay(4000);
+
+    case 10:
       digitalWrite(27 , HIGH);
       driveStraight();
       /*
@@ -232,7 +248,7 @@ void findCandle()
       {
         state = 4;
       }
-      
+
       else
       {
         state = 0;
@@ -312,12 +328,12 @@ void findCandle()
         turnRobot(1, angle);
         stopRobot();
       }
-        state = 0;
+      state = 0;
       break;
     case 8:
       digitalWrite(27, HIGH);
-    //  encoderDriveStraight();
-    driveForward(75,72);
+      //  encoderDriveStraight();
+      driveForward(75, 72);
       readUltrasonic();
       if (distanceFront <= distanceToFront)
       {
