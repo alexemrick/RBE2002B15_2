@@ -38,8 +38,12 @@ void driveStraight() {
   Serial.println(val);
   //  }
 
+
   if (exec) {
     if(sequenceCounter == 0){
+       if(flameClose()){
+        foundFlame();
+       else{
       if(timerDR + 200 <= millis()){
         sequenceCounter++;
         timerDR = millis();
@@ -47,7 +51,13 @@ void driveStraight() {
         leftDrive.write(slavePower);
         rightDrive.write(masterPower + 7);
       }
+     
+    }
     }else if(sequenceCounter == 1){
+     if(flameClose(){
+      foundFlame();
+     }
+     else{
       if(val > highest){
         highest = val;
       }
@@ -59,13 +69,24 @@ void driveStraight() {
         sequenceCounter = 0;
       }
     }
-  } else {
+   }
+   else {
+    if(flameClose()){
+      foundFlame();
+    }
+    else{
+    }
     if (val < 300) {
       exec = true;
       sequenceCounter = 0;
       timerDR = millis();
+    }
     } else {
       if (sequenceCounter == 0) {
+        if(flameClose()){
+          foundFlame();
+        }
+        else{
         if (timerDR + 500 <= millis()) {
           timerDR = millis();
           pidUltrasonic();
@@ -86,10 +107,11 @@ void driveStraight() {
           rightDrive.write(masterPower);
         }
       }
+      }
     }
   }
 
-
+}
 
 
   //Serial.println("Motors: ");
