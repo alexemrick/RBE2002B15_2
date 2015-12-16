@@ -1,3 +1,5 @@
+#include <L3G.h>
+
 /*
  * This program was written to operate the final robot for team 2 in RBE 2002 B term 2015. The robot drives forward
  * until an ultrasonic sensor senses an object. It uses the flame sensor to determine if the object is the candle

@@ -43,7 +43,7 @@ void driveStraight() {
     if(sequenceCounter == 0){
        if(flameClose()){
         foundFlame();
-       else{
+       }       else{
       if(timerDR + 200 <= millis()){
         sequenceCounter++;
         timerDR = millis();
@@ -51,10 +51,10 @@ void driveStraight() {
         leftDrive.write(slavePower);
         rightDrive.write(masterPower + 7);
       }
-     
-    }
+       }
+    
     }else if(sequenceCounter == 1){
-     if(flameClose(){
+     if(flameClose()){
       foundFlame();
      }
      else{
@@ -81,6 +81,7 @@ void driveStraight() {
       sequenceCounter = 0;
       timerDR = millis();
     }
+   }
     } else {
       if (sequenceCounter == 0) {
         if(flameClose()){
@@ -96,7 +97,8 @@ void driveStraight() {
            leftDrive.write(slavePower);
           rightDrive.write(masterPower + 3);
         }
-      } else {
+        }
+        }      else {
         if (timerDR + 100 <= millis()) {
           timerDR = millis();
           Serial.println("here2");
@@ -106,12 +108,16 @@ void driveStraight() {
           leftDrive.write(slavePower + POUT);
           rightDrive.write(masterPower);
         }
+        }
       }
+      
       }
-    }
-  }
+    
 
-}
+
+
+
+
 
 
   //Serial.println("Motors: ");
@@ -129,7 +135,7 @@ void driveStraight() {
   //  displayLCD();
   // }
   //delay(20);
-}
+
 
 
 void pidUltrasonic() {
