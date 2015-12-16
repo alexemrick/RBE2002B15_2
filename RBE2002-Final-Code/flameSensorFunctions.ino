@@ -11,7 +11,7 @@ void flameClose(int flameValue)
 {
   if(flameValue < possibleFlame)
   {
-    present = true;
+//    present = true;
     lcd.print("flame close");
     stopRobot();
     delay(2000);
@@ -31,16 +31,13 @@ void rotateUntilHot()
   float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
   int pastSensorValue = flameSensorValue;
 
-  lcd.print("rotating");
+//  lcd.print("rotating");
   
   rotate(70);
   // If at certain flame sensor value away from candle, stop
   if(flameSensorValue <= 860 && flameSensorValue >= 0) {
     stopRobot();
     delay(1000);
-    rightDrive.write(70);
-    leftDrive.write(70);
-    delay(2000);
     rightDrive.write(90);
     leftDrive.write(90);
     runFan();
