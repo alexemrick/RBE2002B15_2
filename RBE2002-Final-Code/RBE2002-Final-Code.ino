@@ -77,7 +77,7 @@ int masterPower = 45;//35;
 int slavePower = 30;//35;
 boolean keepGoing = true;
 
-int state = 8; //0
+int state = 0; //0
 
 // set encoders and motors
 // master on left; slave on right; for robot front faces away from you
@@ -198,9 +198,9 @@ void setup() {
 //main loop
 void loop()
 {
-   state = 8;
-  findCandle();
-//driveStraight();
+   state = 0;
+//  findCandle();
+driveStraight();
 }
 
 /*
