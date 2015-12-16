@@ -68,7 +68,7 @@ L3G gyro;
 char str1[8]; //8?
 char str2[8];
 unsigned long timerDR;
-
+unsigned long timerF;
 float lastVAL;
 float currVAL;
 /*
@@ -207,6 +207,8 @@ void loop()
 
       digitalWrite(27 , HIGH);
   driveStraight();
+//Serial.println(analogRead(flameSensorPin));
+//runFan();
 }
 
 /*

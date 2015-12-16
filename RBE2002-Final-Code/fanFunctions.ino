@@ -16,4 +16,5 @@ void runFan()
     fan.write(0);
   }
   fan.write(90);
+  digitalWrite(ledPin, LOW);
 }
