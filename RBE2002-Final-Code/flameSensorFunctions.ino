@@ -7,21 +7,19 @@
  * outputs: boolean flameClose - if the flame is within the cone described above, return true
  * 
  */
-boolean flameClose(int flameValue)
+boolean flameClose()
 {
+  float flameValue = analogRead(flameSensorPin); //read the flame sensor reading
   boolean present = false;
-  if(flameValue < possibleFlame)
-  {
-    present = true;
-    stopRobot();
-    delay(2000);
-    rotateUntilHot();
-  }
-  else
-  {
-    present = false;
-  }
+  if(flameValue < possibleFlame) present = true;
+  else present = false;
   return present;
+}
+
+void foundFlame() {
+  stopRobot();
+  delay(1000);
+  rotateUntilHot();
 }
 
 /*
@@ -46,4 +44,5 @@ void rotateUntilHot()
     rightDrive.write(90);
     leftDrive.write(90);
     runFan();
+}
 }
