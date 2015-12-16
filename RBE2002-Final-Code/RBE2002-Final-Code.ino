@@ -39,8 +39,8 @@
 
 #define fanPin 24
 
-#define leftMotorPin 5
-#define rightMotorPin 4
+#define leftMotorPin 4
+#define rightMotorPin 5
 
 #define ledPin 27
 
@@ -198,13 +198,22 @@ void setup() {
 //main loop
 void loop()
 {
-     state = 0;
+  state = 0;
   //  findCandle();
   lcd.setCursor(0, 0);
-      lcd.print("WALL FOLLOW");
+  lcd.print("WALL FOLLOW");
 
-      digitalWrite(27 , HIGH);
+  digitalWrite(27 , HIGH);
+  readUltrasonic();
   driveStraight();
+  if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  {
+    digitalWrite(27, HIGH); //turn on the LED
+    stopRobot();
+    delay(100);//stop the robot
+  //  state = 1;//next case to make turning decision
+  }
+
 }
 
 /*
@@ -227,13 +236,13 @@ void findCandle()
       lcd.print("WALL FOLLOW");
 
       digitalWrite(27 , HIGH);
+      readUltrasonic();
       driveStraight();
       //      if (flameClose(analogRead(flameSensorPin))) {
       //        state = 10;
       //      }
-      readUltrasonic();
+      
       //  driveStraight();
-      delay(100);
       if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
