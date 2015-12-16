@@ -179,8 +179,8 @@ void setup() {
 //main loop
 void loop()
 {
-  findCandle();
-  
+//  findCandle();  
+state = 0;
 }
 
 /*
@@ -198,7 +198,21 @@ void findCandle()
 
   switch (state)
   {
-    case 0:
+    case 0: 
+      angle = readGyro();
+      turnRobot(1, angle);
+      stopRobot();
+      delay(4000);
+//      angle = readGyro();
+//      turnRobot(1, angle);
+//      stopRobot();
+//      delay(4000);
+//      angle = readGyro();
+//      turnRobot(1, angle);
+//      stopRobot();
+//      delay(4000);
+      
+    case 10:
       digitalWrite(27 , HIGH);
       driveStraight();
       /*
