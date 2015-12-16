@@ -39,8 +39,8 @@
 
 #define fanPin 24
 
-#define leftMotorPin 4
-#define rightMotorPin 5
+#define leftMotorPin 5
+#define rightMotorPin 4
 
 #define ledPin 27
 

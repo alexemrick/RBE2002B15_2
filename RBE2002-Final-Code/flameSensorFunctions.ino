@@ -7,18 +7,19 @@
  * outputs: boolean flameClose - if the flame is within the cone described above, return true
  * 
  */
-boolean flameClose(int flameValue)
+boolean flameClose()
 {
+  float flameValue = analogRead(flameSensorPin); //read the flame sensor reading
   boolean present = false;
-  if(flameValue < possibleFlame)
-  {
-    present = true;
-  }
-  else
-  {
-    present = false;
-  }
+  if(flameValue < possibleFlame) present = true;
+  else present = false;
   return present;
+}
+
+void foundFlame() {
+  stopRobot();
+  delay(1000);
+  rotateUntilHot();
 }
 
 /*
@@ -31,37 +32,17 @@ boolean flameClose(int flameValue)
 void rotateUntilHot()
 {
   float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
-  delay(200); //this delay may need to be altered or removed
-  rotate(10);
-  if(flameSensorValue > analogRead(flameSensorPin)) //if the new value is smaller, the candle is closer
-  {
-    rotate(10);                               //...so keep turning that direction
-  }
-  else    //if the new value is larger, the candle is farther away
-  {
-    rotate(170);
-    if((flameSensorValue - analogRead(flameSensorPin)) - 10)  //
-    {
-      stopRobot();
-    }
-  }
-  //save the higher flame sensor value and make that the setpoint in a PID loop. use the loop to turn the robot 
-  //back to that flame sensor value. just an idea.
-}
+  int pastSensorValue = flameSensorValue;
 
-//void blinkLED() {
-//  unsigned long currentMillis = millis();
-//  if(currentMillis - previousMillis >= interval) {
-//    // save the last time you blinked the LED 
-//    previousMillis = currentMillis;   
-//
-//    // if the LED is off turn it on and vice-versa:
-//    if (ledState == LOW)
-//      ledState = HIGH;
-//    else
-//      ledState = LOW;
-//
-//    // set the LED with the ledState of the variable:
-//    digitalWrite(ledPin, ledState);
-//  }
-//}
+//  lcd.print("rotating");
+  
+  rotate(70);
+  // If at certain flame sensor value away from candle, stop
+  if(flameSensorValue <= 860 && flameSensorValue >= 0) {
+    stopRobot();
+    delay(1000);
+    rightDrive.write(90);
+    leftDrive.write(90);
+    runFan();
+  }
+}
