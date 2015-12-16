@@ -191,16 +191,20 @@ void setup() {
   gerrz = gerrz / 2000;
   lcd.setCursor(0, 0);
   lcd.print("INIT COMPLETE");
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
 }
 
 
 //main loop
 void loop()
 {
-   state = 0;
-//  findCandle();
-driveStraight();
+     state = 0;
+  //  findCandle();
+  lcd.setCursor(0, 0);
+      lcd.print("WALL FOLLOW");
+
+      digitalWrite(27 , HIGH);
+  driveStraight();
 }
 
 /*
@@ -224,13 +228,13 @@ void findCandle()
 
       digitalWrite(27 , HIGH);
       driveStraight();
-      if (flameClose(analogRead(flameSensorPin))) {
-        state = 10;
-      }
+      //      if (flameClose(analogRead(flameSensorPin))) {
+      //        state = 10;
+      //      }
       readUltrasonic();
       //  driveStraight();
       delay(100);
-      if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
@@ -250,9 +254,9 @@ void findCandle()
       digitalWrite(27, HIGH);
       if (distanceLeft >= rightObstacleDistance) //there is a gap to the right
       {
-//        encoderDriveStraight();
-//        delay(1000);
-//        stopRobot();
+        //        encoderDriveStraight();
+        //        delay(1000);
+        //        stopRobot();
         state = 6;
       }
       else if (distanceFront <= distanceToFront) //there is an obstacle in front
@@ -273,17 +277,17 @@ void findCandle()
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
-//      delay(100);
-//      encoderDriveStraight(); //NEW
-//      delay(1000);
-//      if (flameClose(analogRead(flameSensorPin))) {
-//        state = 10;
-//      }
-//      else
-//      {
-//        state = 0;
-//      }
-//state = 7
+      //      delay(100);
+      //      encoderDriveStraight(); //NEW
+      //      delay(1000);
+      //      if (flameClose(analogRead(flameSensorPin))) {
+      //        state = 10;
+      //      }
+      //      else
+      //      {
+      //        state = 0;
+      //      }
+      //state = 7
       break;
 
     case 3: //turn left
@@ -293,13 +297,13 @@ void findCandle()
       angle = readGyro();
       turnRobot(2, angle);
       stopRobot();
-//      if (flameClose(analogRead(flameSensorPin))) {
-//        state = 10;
-//      }
-//      else
-//      {
-        state = 0;
-//      }
+      //      if (flameClose(analogRead(flameSensorPin))) {
+      //        state = 10;
+      //      }
+      //      else
+      //      {
+      state = 0;
+      //      }
       break;
 
     case 4: //is it the candle
@@ -345,13 +349,13 @@ void findCandle()
       break;
 
     case 6: //it is not the candle, there is a wall in front of you AND/OR there is a gap to the right
-     
+
 
       readUltrasonic();
-      if (distanceLeft >= rightObstacleDistance) //if there is no obstacle to the right, 
+      if (distanceLeft >= rightObstacleDistance) //if there is no obstacle to the right,
       {
-         lcd.setCursor(0, 0);
-      lcd.print("GAP!!");
+        lcd.setCursor(0, 0);
+        lcd.print("GAP!!");
         state = 2; //state 2 plus if there is not wall
         //        stopRobot();
         //         encoderDriveStraight();
@@ -359,15 +363,15 @@ void findCandle()
         //
         //state = 0;
       }
-     else if ((distanceFront <= distanceToFront) && (distanceLeft < rightObstacleDistance)) //if you're in a corner
+      else if ((distanceFront <= distanceToFront) && (distanceLeft < rightObstacleDistance)) //if you're in a corner
         //this is sorta redundant, double check the ultrasonic values
       {
         lcd.setCursor(0, 0);
-      lcd.print("WALL!!");
+        lcd.print("WALL!!");
         state = 3; //turn left
       }
-     
-  //this case is just a double check, should not happen
+
+      //this case is just a double check, should not happen
       else if (distanceFront > distanceToFront)
       {
         state = 0;
@@ -383,18 +387,18 @@ void findCandle()
 
       angle = readGyro();
       readUltrasonic();
-            if (distanceLeft >= rightObstacleDistance)
-            {
-      digitalWrite(27, HIGH);
-      encoderDriveStraight();// turning left instead of driving straight after baby wall
-//      if (flameClose(analogRead(flameSensorPin))) {
-//        state = 10;
-//      }
-      delay(3000); //just timing drive straight for now
-      stopRobot();
-      turnRobot(1, angle); //turn right
-      stopRobot();
-          }
+      if (distanceLeft >= rightObstacleDistance)
+      {
+        digitalWrite(27, HIGH);
+        encoderDriveStraight();// turning left instead of driving straight after baby wall
+        //      if (flameClose(analogRead(flameSensorPin))) {
+        //        state = 10;
+        //      }
+        delay(3000); //just timing drive straight for now
+        stopRobot();
+        turnRobot(1, angle); //turn right
+        stopRobot();
+      }
       state = 0; //start wall following again
 
       break;
@@ -406,8 +410,8 @@ void findCandle()
       readUltrasonic();
       while (distanceFront > 7.5) //while the robot is at least 7.5 inches away from the wall
       {
-       // encoderDriveStraight(); //drive forward
-       driveForward(40,40);
+        // encoderDriveStraight(); //drive forward
+        driveForward(40, 40);
         readUltrasonic();
       }
       stopRobot();
