@@ -4,21 +4,19 @@
  * This function is called while the robot is driving to see if the candle is anywhere close.
  * 
  * inputs: int flameValue - analog reading from flame sensor
- * outputs: boolean flameClose - if the flame is within the cone described above, return true
+ * outputs: None
  * 
  */
-boolean flameClose(int flameValue)
+void flameClose(int flameValue)
 {
-  boolean present = false;
   if(flameValue < possibleFlame)
   {
     present = true;
+    lcd.print("flame close");
+    stopRobot();
+    delay(2000);
+    rotateUntilHot();
   }
-  else
-  {
-    present = false;
-  }
-  return present;
 }
 
 /*
@@ -32,9 +30,20 @@ void rotateUntilHot()
 {
   float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
   int pastSensorValue = flameSensorValue;
+
+  lcd.print("rotating");
   
   rotate(70);
   // If at certain flame sensor value away from candle, stop
-  if(flameSensorValue <= 860 && flameSensorValue >= 0) stopRobot();
+  if(flameSensorValue <= 860 && flameSensorValue >= 0) {
+    stopRobot();
+    delay(1000);
+    rightDrive.write(70);
+    leftDrive.write(70);
+    delay(2000);
+    rightDrive.write(90);
+    leftDrive.write(90);
+    runFan();
+  }
 }
 
