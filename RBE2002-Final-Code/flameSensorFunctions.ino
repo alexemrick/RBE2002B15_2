@@ -22,6 +22,19 @@ boolean flameClose(int flameValue)
 }
 
 /*
+ * This function calls the rotateUntilHot func. when a possible flame is seen
+ * 
+ * inputs: none
+ * outputs: none
+ */
+ void seeFlameStop() {
+  float flameSensorValue = analogRead(flameSensorPin);
+
+  if(flameSensorValue <= )
+ }
+
+
+/*
  * This function rotates the robot until it finds the candle by stopping when the flame sensor value goes from high 
  * to low.
  * 
