@@ -206,11 +206,12 @@ void loop()
   digitalWrite(27 , HIGH);
   readUltrasonic();
   driveStraight();
-  if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
   {
     digitalWrite(27, HIGH); //turn on the LED
     stopRobot();
     delay(100);//stop the robot
+    displayLCD();
   //  state = 1;//next case to make turning decision
   }
 
@@ -238,11 +239,6 @@ void findCandle()
       digitalWrite(27 , HIGH);
       readUltrasonic();
       driveStraight();
-      //      if (flameClose(analogRead(flameSensorPin))) {
-      //        state = 10;
-      //      }
-      
-      //  driveStraight();
       if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
@@ -358,8 +354,6 @@ void findCandle()
       break;
 
     case 6: //it is not the candle, there is a wall in front of you AND/OR there is a gap to the right
-
-
       readUltrasonic();
       if (distanceLeft >= rightObstacleDistance) //if there is no obstacle to the right,
       {
@@ -379,13 +373,11 @@ void findCandle()
         lcd.print("WALL!!");
         state = 3; //turn left
       }
-
       //this case is just a double check, should not happen
       else if (distanceFront > distanceToFront)
       {
         state = 0;
       }
-
       break;
     //after turns right go back to wall following
 
