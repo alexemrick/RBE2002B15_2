@@ -59,7 +59,7 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-Servo fan;
+//Servo fan;
 
 L3G gyro;
 
@@ -197,21 +197,6 @@ void loop()
 {
   state = 0;
   findCandle();
-  //  lcd.setCursor(0, 0);
-  //  lcd.print("WALL FOLLOW");
-  //
-  //  digitalWrite(27 , HIGH);
-  //  readUltrasonic();
-  //  driveStraight();
-  //  if (distanceFront <= distanceToFront) //if there is an obstacle in front or a gap to the right
-  //  {
-  //    digitalWrite(27, HIGH); //turn on the LED
-  //    stopRobot();
-  //    delay(100);//stop the robot
-  //    displayLCD();
-  //    //  state = 1;//next case to make turning decision
-  //  }
-
 }
 
 /*
@@ -240,15 +225,15 @@ void findCandle()
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
-        delay(100);//stop the robot
+        delay(10);//stop the robot //delay(100);
         //   displayLCD();
         state = 1;//next case to make turning decision
       }
-      //  if (distanceLeft >= rightObstacleDistance){}
-      //      else
-      //      {
-      //        state = 0; //keep following the wall
-      //      }
+//      if (distanceLeft >= rightObstacleDistance) {}
+      else
+      {
+        state = 0; //keep following the wall
+      }
 
       break;
     case 1:  //if the robot is stopped
