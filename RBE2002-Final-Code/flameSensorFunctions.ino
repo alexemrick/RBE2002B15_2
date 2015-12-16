@@ -47,13 +47,11 @@ void rotateUntilHot()
 //    {
 //      stopRobot();
 //      delay(100);
-rightDrive.write(90);
-leftDrive.write(90);
       runFan();
 //    }
 //    else driveForward(45,30);
 //    delay(10);
-//    digitalWrite(fanPin,LOW);
+    digitalWrite(fanPin,LOW);
    // digitalWrite(ledPin,LOW);
   }
 }
