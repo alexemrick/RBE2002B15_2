@@ -66,7 +66,8 @@ L3G gyro;
 char str1[8]; //8?
 char str2[8];
 unsigned long timerDR;
-
+unsigned long timer = 0;
+unsigned long timer1 = 0;
 float lastVAL;
 float currVAL;
 /*
@@ -191,26 +192,25 @@ void setup() {
   lcd.setCursor(0, 0);
 }
 
-
 //main loop
 void loop()
 {
-  state = 0;
-  //  findCandle();
-  lcd.setCursor(0, 0);
-  lcd.print("WALL FOLLOW");
-
-  digitalWrite(27 , HIGH);
-  readUltrasonic();
+//  state = 0;
+//  //  findCandle();
+//  lcd.setCursor(0, 0);
+//  lcd.print("WALL FOLLOW");
+//
+//  digitalWrite(27 , HIGH);
+//  readUltrasonic();
   driveStraight();
-  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
-  {
-    digitalWrite(27, HIGH); //turn on the LED
-    stopRobot();
-    delay(100);//stop the robot
-    displayLCD();
-  //  state = 1;//next case to make turning decision
-  }
+//  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+//  {
+//    digitalWrite(27, HIGH); //turn on the LED
+//    stopRobot();
+//    delay(100);//stop the robot
+//    displayLCD();
+//    //  state = 1;//next case to make turning decision
+//  }
 
 }
 
@@ -236,13 +236,14 @@ void findCandle()
       digitalWrite(27 , HIGH);
       readUltrasonic();
       driveStraight();
-      if (distanceFront <= distanceToFront)// || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      if (distanceFront <= distanceToFront) //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
         delay(100);//stop the robot
         state = 1;//next case to make turning decision
       }
+      if (distanceLeft >= rightObstacleDistance){}
       else
       {
         state = 0; //keep following the wall
@@ -256,9 +257,9 @@ void findCandle()
       digitalWrite(27, HIGH);
       if (distanceLeft >= rightObstacleDistance) //there is a gap to the right
       {
-        //        encoderDriveStraight();
-        //        delay(1000);
-        //        stopRobot();
+        driveForward(50, 50);
+        delay(1000);
+        stopRobot();
         state = 6;
       }
       else if (distanceFront <= distanceToFront) //there is an obstacle in front
@@ -279,18 +280,16 @@ void findCandle()
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
-      //      delay(100);
-      //      encoderDriveStraight(); //NEW
-      //      delay(1000);
-      //      if (flameClose(analogRead(flameSensorPin))) {
-      //        state = 10;
-      //      }
+      delay(100);
+      //encoderDriveStraight(); //NEW
+      driveForward(60, 60);
+      delay(1000);
       //      else
       //      {
       //        state = 0;
       //      }
-      //state = 7
-      break;
+      state = 7;
+              break;
 
     case 3: //turn left
       lcd.setCursor(0, 0);
@@ -317,10 +316,6 @@ void findCandle()
       {
         if (analogRead(flameSensorPin) < definiteFlame)
         {
-          digitalWrite(27, HIGH);   // turn the LED on (HIGH is the voltage level)
-          delay(1000);              // wait for a second
-          digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
-          delay(1000);
           state = 5; //the obstacle is the candle
         }
         else

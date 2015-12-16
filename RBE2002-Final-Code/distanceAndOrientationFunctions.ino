@@ -1,25 +1,25 @@
 
 /* THIS FUNCTION IS USELESS IF WE GO PERFECTLY STRAIGHT
- * 
+ *
  * The trigonometry functions change depending on which way the robot is facing. To
  * accurately add the calculated displacements in each axis, this function is used.
  * This function finds the displacement in the x or y direction that the robot traveled using trigonometry.
  * This function decomposes the distance read from the encoders into its x and y components.
- * 
+ *
  * inputs: float dist = distance from encoder reading, float angle = angle from gyro
  * outputs: x displacement of robot
  */
 void doTrig(float dist, float angle) //fix this, need to add tolerances, can't really use mod
 {
- // int ang = angle*100;
- int ang = angle;
-    distX = (dist * (sin((PI / 2) - (ang * (PI / 90))))); //robot is in the x direction
-    distY = (dist * (sin((ang * (PI / 90))))); //otherwise robot is in the y direction
+  // int ang = angle*100;
+  int ang = angle;
+  distX = (dist * (sin((PI / 2) - (ang * (PI / 180))))); //robot is in the x direction
+  distY = (dist * (sin((ang * (PI / 180))))); //otherwise robot is in the y direction
 
 }
 
 /* IF DOTRIG IS SCRAPPED, USE THE OTHER DISTORIENTATION (NOT THIS ONE)
- *  
+ *
  * This function takes the distance traveled measured by the encoders and determines the orientation of the robot
  * and adds that distance to either the x or y global variable depending on the gyro.
  *
@@ -43,12 +43,12 @@ void distOrientation(int gyro)
   }
   else if (gyro > -90 && gyro < 0) //if the robot is facing backward, the negative x direction
   {
-    xDistanceTraveled -= distX;
+    xDistanceTraveled += distX;
     yDistanceTraveled -= distY;
   }
-  else if (gyro > -180 && gyro < -90) //if the robot is facing right, the negative y direction
+  else if ((gyro > -180 && gyro < -90) || (gyro < 270 && gyro > 180)) //if the robot is facing right, the negative y direction
   {
-    xDistanceTraveled += distX;
+    xDistanceTraveled -= distX;
     yDistanceTraveled -= distY;
   }
 }
