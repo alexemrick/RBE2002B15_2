@@ -180,7 +180,7 @@ void setup() {
 void loop()
 {
   state = 0;
-  findCandle();  
+  findCandle();
 }
 
 /*
@@ -198,20 +198,20 @@ void findCandle()
 
   switch (state)
   {
-    case 0: 
+    case 0:
       angle = readGyro();
       turnRobot(1, angle);
       stopRobot();
       delay(4000);
-//      angle = readGyro();
-//      turnRobot(1, angle);
-//      stopRobot();
-//      delay(4000);
-//      angle = readGyro();
-//      turnRobot(1, angle);
-//      stopRobot();
-//      delay(4000);
-      
+    //      angle = readGyro();
+    //      turnRobot(1, angle);
+    //      stopRobot();
+    //      delay(4000);
+    //      angle = readGyro();
+    //      turnRobot(1, angle);
+    //      stopRobot();
+    //      delay(4000);
+
     case 10:
       digitalWrite(27 , HIGH);
       driveStraight();
@@ -224,6 +224,7 @@ void findCandle()
       }
       */
       readUltrasonic();
+      delay(100);
       if ((distanceFront <= distanceToFront) || (distanceRight >= rightObstacleDistance))
       {
         digitalWrite(27, HIGH);
@@ -234,7 +235,6 @@ void findCandle()
       {
         state = 0;
       }
-      Serial.println(state);
       break;
 
     case 1:
@@ -248,12 +248,11 @@ void findCandle()
       {
         state = 4;
       }
-      
+
       else
       {
         state = 0;
       }
-      Serial.println(state);
       break;
 
     case 2: //turn right
@@ -262,7 +261,6 @@ void findCandle()
       turnRobot(1, angle);
       stopRobot();
       state = 7;
-      Serial.println(state);
       break;
 
     case 3: //turn left
@@ -271,7 +269,6 @@ void findCandle()
       turnRobot(2, angle);
       stopRobot();
       state = 0;
-      Serial.println(state);
       break;
 
     case 4: //is it the candle
@@ -289,8 +286,6 @@ void findCandle()
         digitalWrite(27, HIGH);
         state = 6; //the obstacle is not the candle
       }
-
-      Serial.println(state);
       break;
 
     case 5: //it is the candle, blow out the candle
@@ -298,8 +293,6 @@ void findCandle()
       runFan();
       digitalWrite(27, LOW);    // turn the LED off by making the voltage LOW
       state = 9;
-
-      Serial.println(state);
       break;
 
     case 6: //it is not the candle, there is a wall in front of you OR there is a gap to the right
@@ -319,10 +312,6 @@ void findCandle()
         digitalWrite(27, HIGH);
         state = 3; //turn left
       }
-
-
-
-      Serial.println(state);
       break;
 
     case 7:
@@ -339,19 +328,12 @@ void findCandle()
         turnRobot(1, angle);
         stopRobot();
       }
-        state = 0;
-//      }
-//      else
-//      {
-//        state = 0;
-//      }
-
-      Serial.println(state);
+      state = 0;
       break;
     case 8:
       digitalWrite(27, HIGH);
-    //  encoderDriveStraight();
-    driveForward(70,72);
+      //  encoderDriveStraight();
+      driveForward(75, 72);
       readUltrasonic();
       if (distanceFront <= distanceToFront)
       {
@@ -363,13 +345,9 @@ void findCandle()
 
       }
       state = 0;
-
-      Serial.println(state);
       break;
     case 9:
       stopRobot();
-
-      Serial.println(state);
 
   }
   delay(10);
