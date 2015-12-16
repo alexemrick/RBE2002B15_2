@@ -17,44 +17,147 @@
 // run motors
 
 // initialize timer & attach interrupt
+int sequenceCounter = 0;
+int seq2 = 0;
+bool exec = false;
+int highest = 0;
 
 void driveStraight() {
-  // initializes values
-//    for(int i = 0; i < 1; i++) {
-//      rightDrive.write(masterPower);
-//     // leftDrive.write(slavePower);
-//    }
 
-  //if (Serial3.available()) {
-    leftDrive.write(slavePower);
-  //  rightDrive.write(masterPower + POUT);
-//    rightDrive.write(masterPower + POUT);
-   // readUltrasonic();
-    pidUltrasonic();
 
-    if (POUT  > 20) 
-    {
-      rightDrive.write(69);
+  //  pidUltrasonic();
+  //  //Serial.println(POUT);
+  //  if(POUT == 0){
+  //    leftDrive.write(90);
+  //    rightDrive.write(90);
+  //  }else{
+  //    leftDrive.write(90);
+  //    rightDrive.write(90);
+
+  double val = analogRead(A3);
+  Serial.println(val);
+  //  }
+
+  if (exec) {
+    if(sequenceCounter == 0){
+      if(timerDR + 200 <= millis()){
+        sequenceCounter++;
+        timerDR = millis();
+      }else{
+        leftDrive.write(slavePower);
+        rightDrive.write(masterPower + 7);
+      }
+    }else if(sequenceCounter == 1){
+      if(val > highest){
+        highest = val;
+      }
+      leftDrive.write(90);
+      rightDrive.write(masterPower + 20);
+      if(val < highest - 15){
+        timerDR = millis();
+        exec = false;
+        sequenceCounter = 0;
+      }
     }
-    else
-    {
-      rightDrive.write(masterPower + POUT);
+  } else {
+    if (val < 300) {
+      exec = true;
+      sequenceCounter = 0;
+      timerDR = millis();
+    } else {
+      if (sequenceCounter == 0) {
+        if (timerDR + 500 <= millis()) {
+          timerDR = millis();
+          pidUltrasonic();
+          sequenceCounter++;
+          Serial.println("here");
+        } else {
+           leftDrive.write(slavePower);
+          rightDrive.write(masterPower + 3);
+        }
+      } else {
+        if (timerDR + 100 <= millis()) {
+          timerDR = millis();
+          Serial.println("here2");
+          sequenceCounter = 0;
+        } else {
+          //driveForward();
+          leftDrive.write(slavePower + POUT);
+          rightDrive.write(masterPower);
+        }
+      }
     }
-    doTrig(trackDistance(), readGyro());
-    distOrientation(readGyro());
-    //    displayLCD();
- // }
+  }
+
+
+
+
+  //Serial.println("Motors: ");
+  //Serial.print(leftDrive.read());
+  //Serial.print(", ");
+  // Serial.println(rightDrive.read());
+  //  lcd.clear();
+  //  lcd.setCursor(0,0);
+  //  lcd.print(masterPower + POUT);
+  //  lcd.setCursor(0,8);
+  //  lcd.println(slavePower);
+
+  //  doTrig(trackDistance(), readGyro());
+  //  distOrientation(readGyro());
+  //  displayLCD();
+  // }
+  //delay(20);
 }
 
 
 void pidUltrasonic() {
-  readUltrasonic();
-  error = distanceRight - distanceR;  // distanceRight - 7.5
+  //  readUltrasonic();
+  //  //delay(1000);
+  //  error = (distanceLeft - distanceRight)/2;//- distanceR;  // distanceRight - 7.5
+  //  if (error > 20.0) error = 0;
+  //  if (error < -20.0) error = 0;
+  //  Serial.print("LEFT = ");
+  //  Serial.print(distanceLeft);
+  double sensorValue = analogRead(A3);
+  currVAL = sensorValue;
+  error = currVAL - lastVAL;
+  lastVAL = currVAL;
+
+  //  if (error > 20.0) error = 0;
+  //  if (error < -20.0) error = 0;
   DError = error - oldError;
   IError += error;
   oldError = error;
-  POUT = error * kp + DError * kd + IError * ki;
+  POUT = error * kp + DError * -kd + IError * ki;
 }
+
+
+
+//void driveStraight() {
+////  pidUltrasonic();
+////  Serial.println(POUT);
+//  readUltrasonic();
+//  rightDrive.write(70);
+//  if(distanceRight > distanceR) leftDrive.write(60);
+//  else if(distanceRight < distanceR) leftDrive.write(120);
+//  else if(distanceRight <= distanceR + 2.0 && distanceRight >= distanceR - 2.0) {
+////    if(distanceLeft > distanceR) leftDrive.write(120);
+////    else if(distanceLeft < distanceR) leftDrive.write(60);
+////    else {
+//      leftDrive.write(70);
+//    }
+//  }
+////  leftDrive.write(slavePower + POUT);
+////}
+
+//void pidUltrasonic() {
+//  readUltraSonic();
+//  error = distanceRight-distanceR;
+//  DError = error - oldError;
+//  IError += error;
+//  oldError = error;
+//  POUT = error * kp + DError * kd + IError * ki;
+//}
 
 
 

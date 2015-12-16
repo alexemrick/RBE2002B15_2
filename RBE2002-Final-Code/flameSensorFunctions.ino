@@ -44,5 +44,5 @@ void rotateUntilHot()
     rightDrive.write(90);
     leftDrive.write(90);
     runFan();
-}
+  }
 }

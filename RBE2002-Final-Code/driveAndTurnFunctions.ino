@@ -15,29 +15,178 @@ void turnRobot (int turn, float angle)
   {
     case 1: //turn right
       newAngle = (int)readGyro();
-        while (newAngle > (ang - 90)) //while the gyro reading is less than 90 degrees to the left of the initial angle
+      if (newAngle > -10 && newAngle < 10) 
+      {
+        while (newAngle > -90)
         {
-          rotate(71);  //turn right
-          newAngle = readGyro(); //read the gyro 
-        }
-      break;
-    case 2: //turn left
-      
-        newAngle = (int)readGyro(); 
-        while (newAngle < (ang + 90))  //while the gyro reading is less than 90 degrees to the right of the initial angle
-        {
-          rotate(110); //turn left
+          rotate(69); //turn right
           newAngle = readGyro(); //read the gyro
         }
+      }
+      else if (newAngle < -80 && newAngle > -100)
+      {
+        while (newAngle > -180)
+        {
+          rotate(69); //turn right
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle > -190 && newAngle < -170)
+      {
+        while (newAngle > -270)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+      else if (newAngle > -280 && newAngle < -260)
+      {
+        while (newAngle > -360)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+       else if (newAngle > -370 && newAngle < -350)
+      {
+        while (newAngle > -450)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+      else if (newAngle > 440 && newAngle < 460)
+      {
+        while (newAngle > 360)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+       else if (newAngle > 350 && newAngle < 370)
+      {
+        while (newAngle > 270)
+        {
+          rotate(69);
+          newAngle = readGyro();
+        }
+      }
+      else if (newAngle < 280 && newAngle > 260)
+      {
+        while (newAngle < 180)  //while the gyro reading is less than 90 degrees to the right of the initial angle
+        {
+          rotate(69); //turn right
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 190 && newAngle > 170)
+      {
+        while (newAngle < 90)
+        {
+          rotate(69); //turn right
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 100 && newAngle > 80)
+      {
+        while (newAngle < 0)  //while the gyro reading is less than 90 degrees to the right of the initial angle
+        {
+          rotate(69); //turn right
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      break;
+    case 2: //turn left
+      newAngle = (int)readGyro();
+      if (newAngle > -10 && newAngle < 10)
+      {
+        while (newAngle < 90)  //while the gyro reading is less than 90 degrees to the right of the initial angle
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 100 && newAngle > 80)
+      {
+        while (newAngle < 180)  //while the gyro reading is less than 90 degrees to the right of the initial angle
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle > -190 && newAngle < -170)
+      {
+        while (newAngle < -90)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < -80 && newAngle > -100)
+      {
+        while (newAngle < 0)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 190 && newAngle > 170)
+      {
+        while (newAngle < 270)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 280 && newAngle > 260)
+      {
+        while (newAngle < 360)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+      else if (newAngle < 370 && newAngle > 350)
+      {
+        while (newAngle < 450)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+       else if (newAngle > -280 && newAngle < -260)
+      {
+        while (newAngle < -180)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+       else if (newAngle > -460 && newAngle < -440)
+      {
+        while (newAngle < -360)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
+       else if (newAngle > -370 && newAngle < -350)
+      {
+        while (newAngle < -270)
+        {
+          rotate(111); //turn left
+          newAngle = readGyro(); //read the gyro
+        }
+      }
       break;
     case 3: // u turn
 
-        newAngle = (int)readGyro(); 
-        while (newAngle < (ang - 180))
-        {
-          rotate(71);
-          newAngle = readGyro(); //read the gyro
-        }
+      newAngle = (int)readGyro();
+      while (newAngle < (ang - 180))
+      {
+        rotate(69);
+        newAngle = readGyro(); //read the gyro
+      }
       break;
 
   }
