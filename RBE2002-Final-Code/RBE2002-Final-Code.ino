@@ -200,7 +200,7 @@ void loop()
 {
 
   driveStraight();
-  Serial.println(readGyro());
+ // Serial.println(readGyro());
   
 //  state = 0;
 //  //  findCandle();
