@@ -13,8 +13,8 @@ void doTrig(float dist, float angle) //fix this, need to add tolerances, can't r
 {
  // int ang = angle*100;
  int ang = angle;
-    distX = (dist * (sin((PI / 2) - (ang * (PI / 90))))); //robot is in the x direction
-    distY = (dist * (sin((ang * (PI / 90))))); //otherwise robot is in the y direction
+    distX = (dist * (sin((PI / 2) - (ang * (PI / 180))))); //robot is in the x direction
+    distY = (dist * (sin((ang * (PI / 180))))); //otherwise robot is in the y direction
 
 }
 
@@ -43,14 +43,15 @@ void distOrientation(int gyro)
   }
   else if (gyro > -90 && gyro < 0) //if the robot is facing backward, the negative x direction
   {
-    xDistanceTraveled -= distX;
-    yDistanceTraveled -= distY;
-  }
-  else if (gyro > -180 && gyro < -90) //if the robot is facing right, the negative y direction
-  {
     xDistanceTraveled += distX;
     yDistanceTraveled -= distY;
   }
+  else if (gyro > -180 && gyro < -90 || (gyro < 270 && gyro > 180)) //if the robot is facing right, the negative y direction
+  {
+    xDistanceTraveled -= distX;
+    yDistanceTraveled -= distY;
+  }
+ 
 }
 
 void distOrientation(float gyro, float distance)

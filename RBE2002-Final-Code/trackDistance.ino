@@ -12,13 +12,13 @@
 void displayLCD()
 {
   lcd.setCursor(0,1);
-  sprintf(str1, "%f", xDistanceTraveled);
+  sprintf(str1, "%f", distX);
   lcd.print("X=");
-  lcd.print(xDistanceTraveled);
+  lcd.print(distX);
   lcd.setCursor(8, 1);
-  sprintf(str2, "%f", yDistanceTraveled);
+  sprintf(str2, "%f", distY);
   lcd.print("Y=");
-  lcd.print(yDistanceTraveled);
+  lcd.print(distY);
   lcd.clear();
   lcd.home();
 }

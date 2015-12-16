@@ -33,20 +33,19 @@ void driveStraight() {
         foundFlame();
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
       }       else {
         if (timerDR + 200 <= millis()) {
           sequenceCounter++;
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
           timerDR = millis();
         } else {
           leftDrive.write(slavePower);
           rightDrive.write(masterPower + 7);
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
+//          displayLCD();
+//          lcd.print(trackDistance());
         }
       }
     } else if (sequenceCounter == 1) {
@@ -54,14 +53,12 @@ void driveStraight() {
         foundFlame();
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
       }
       else {
         if (val > highest) {
           highest = val;
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
         }
         leftDrive.write(90);
         rightDrive.write(masterPower + 20);
@@ -74,14 +71,12 @@ void driveStraight() {
           sequenceCounter = 0;
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
         }
       }
     } else if (flameClose()) {
       foundFlame();
       doTrig(trackDistance(), readGyro());
       distOrientation(readGyro());
-      displayLCD();
     }
     else {
       if (val < 300) {
@@ -89,7 +84,6 @@ void driveStraight() {
         sequenceCounter = 0;
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
         timerDR = millis();
       }
     }
@@ -99,7 +93,6 @@ void driveStraight() {
         foundFlame();
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
       }
       else {
         if (timerDR + 500 <= millis()) {
@@ -108,14 +101,14 @@ void driveStraight() {
           sequenceCounter++;
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
           Serial.println("here");
         } else {
           leftDrive.write(slavePower);
           rightDrive.write(masterPower + 3);
           doTrig(trackDistance(), readGyro());
           distOrientation(readGyro());
-          displayLCD();
+      displayLCD();
+            //lcd.print(trackDistance());
         }
       }
     } else {
@@ -125,14 +118,14 @@ void driveStraight() {
         sequenceCounter = 0;
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
       } else {
         //driveForward();
         leftDrive.write(slavePower + POUT);
         rightDrive.write(masterPower);
         doTrig(trackDistance(), readGyro());
         distOrientation(readGyro());
-        displayLCD();
+       displayLCD();
+         // lcd.print(trackDistance());
       }
     }
   }

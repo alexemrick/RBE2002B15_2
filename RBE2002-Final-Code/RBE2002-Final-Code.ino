@@ -52,6 +52,9 @@ float distanceFront;
 float distanceRight;
 float distanceLeft;
 
+unsigned long timer = 0;
+unsigned long timer1 = 0;
+
 float distX;
 float distY;
 
@@ -197,6 +200,7 @@ void loop()
 {
 
   driveStraight();
+  Serial.println(readGyro());
   
 //  state = 0;
 //  //  findCandle();
