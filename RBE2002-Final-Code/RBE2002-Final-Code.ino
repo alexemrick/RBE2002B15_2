@@ -66,6 +66,8 @@ L3G gyro;
 char str1[8]; //8?
 char str2[8];
 
+String key = "";
+
 /*
  * Variables for driving straight
  */
