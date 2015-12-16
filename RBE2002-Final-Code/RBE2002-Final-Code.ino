@@ -217,20 +217,19 @@ void findCandle()
   readUltrasonic();
   switch (state)
   {
-    //  follow
+    //  follow the wall
     case 0:
       lcd.setCursor(0, 0);
       lcd.print("WALL FOLLOW");
-
       digitalWrite(27 , HIGH);
-      driveStraight();
-      if (flameClose(analogRead(flameSensorPin))) {
-        state = 10;
+      driveStraight(); //drive straight using ultrasonic sensor
+      if (flameClose(analogRead(flameSensorPin))) { //if the flame is within the cone
+        state = 10;                                 //rotate around the cone and find candle
       }
-      readUltrasonic();
-      //  driveStraight();
+      readUltrasonic(); //update ultrasonic readings
       delay(100);
-      if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+      if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) 
+      //if there is an obstacle in front or a gap to the right
       {
         digitalWrite(27, HIGH); //turn on the LED
         stopRobot();
