@@ -40,8 +40,8 @@
 
 #define fanPin 24
 
-#define leftMotorPin 8
-#define rightMotorPin 9
+#define leftMotorPin 5
+#define rightMotorPin 4
 
 #define ledPin 27
 
@@ -179,8 +179,8 @@ void setup() {
 //main loop
 void loop()
 {
-//  findCandle();  
-state = 0;
+  state = 0;
+  findCandle();  
 }
 
 /*
