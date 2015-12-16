@@ -195,22 +195,25 @@ void setup() {
 //main loop
 void loop()
 {
-  state = 0;
-  //  findCandle();
-  lcd.setCursor(0, 0);
-  lcd.print("WALL FOLLOW");
 
-  digitalWrite(27 , HIGH);
-  readUltrasonic();
   driveStraight();
-  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
-  {
-    digitalWrite(27, HIGH); //turn on the LED
-    stopRobot();
-    delay(100);//stop the robot
-    displayLCD();
-  //  state = 1;//next case to make turning decision
-  }
+  
+//  state = 0;
+//  //  findCandle();
+//  lcd.setCursor(0, 0);
+//  lcd.print("WALL FOLLOW");
+//
+//  digitalWrite(27 , HIGH);
+//  readUltrasonic();
+//  driveStraight();
+//  if ((distanceFront <= distanceToFront) || (distanceLeft >= rightObstacleDistance)) //if there is an obstacle in front or a gap to the right
+//  {
+//    digitalWrite(27, HIGH); //turn on the LED
+//    stopRobot();
+//    delay(100);//stop the robot
+//    displayLCD();
+//  //  state = 1;//next case to make turning decision
+//  }
 
 }
 
