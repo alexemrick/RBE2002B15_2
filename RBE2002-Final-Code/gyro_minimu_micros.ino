@@ -26,7 +26,6 @@ float readGyro() {
     gyro_xold = gyro_x ; // Set the old gyro angle to the current gyro angle
     gyro_yold = gyro_y ;
     gyro_zold = gyro_z ;
-    // flag = 0;
     timer = micros(); //reset timer
 
   }

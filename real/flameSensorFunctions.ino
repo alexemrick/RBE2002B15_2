@@ -34,11 +34,24 @@ void rotateUntilHot()
   float flameSensorValue = analogRead(flameSensorPin); //read the flame sensor reading
   int pastSensorValue = flameSensorValue;
 
+  //  lcd.print("rotating");
+
   rotate(70);
-  
   // If at certain flame sensor value away from candle, stop
   if (flameSensorValue <= 860 && flameSensorValue >= 0) {
     stopRobot();
-    runFan();
+    delay(1000);
+   // driveForward(45, 30);
+//    readUltrasonic();
+//    if (distanceFront <= 4.0)
+//    {
+//      stopRobot();
+//      delay(100);
+      runFan();
+//    }
+//    else driveForward(45,30);
+//    delay(10);
+    digitalWrite(fanPin,LOW);
+   // digitalWrite(ledPin,LOW);
   }
 }

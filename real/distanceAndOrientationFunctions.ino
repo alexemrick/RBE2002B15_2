@@ -1,5 +1,6 @@
 
-/* 
+/* THIS FUNCTION IS USELESS IF WE GO PERFECTLY STRAIGHT
+ *
  * The trigonometry functions change depending on which way the robot is facing. To
  * accurately add the calculated displacements in each axis, this function is used.
  * This function finds the displacement in the x or y direction that the robot traveled using trigonometry.
@@ -17,7 +18,8 @@ void doTrig(float dist, float angle) //fix this, need to add tolerances, can't r
 
 }
 
-/* 
+/* IF DOTRIG IS SCRAPPED, USE THE OTHER DISTORIENTATION (NOT THIS ONE)
+ *
  * This function takes the distance traveled measured by the encoders and determines the orientation of the robot
  * and adds that distance to either the x or y global variable depending on the gyro.
  *

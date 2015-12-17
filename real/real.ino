@@ -49,7 +49,7 @@ Servo rightDrive;
 Encoder masterEnc(2, 3);
 Encoder slaveEnc(18, 19);
 
-//L3G gyro;
+L3G gyro;
 
 //global variables
 float xDistanceTraveled = 0;
@@ -70,9 +70,9 @@ unsigned long timer1 = 0;
 float lastVAL = 0;
 float currVAL = 0;
 
+
 int masterPower = 45;
 int slavePower = 30;
-int Stop = 90;
 float slaveEncValue = 0, masterEncValue = 0, previousMaster = 0, previousSlave = 0, distanceTraveled = 0;
 float encoderConversion = 8.6393 / 300;
 
@@ -84,28 +84,31 @@ double errorE = 0;
 double oldErrorE = 0;
 double DErrorE, IErrorE, POUTE;
 
-// PID for encoders
-const float kpE = 8.0;
-const float kiE = 0.0;
-const float kdE = -1.4;
+// decides how much the difference in encoder values effects
+// the final power change to the motor
+// final values: kp = 0.01; ki = 1.8; kd = 0.7;
+const float kpE = 8.0;//.01
+const float kiE = 0;//1.8
+const float kdE = -1.4;//-.3;//0.7;
 
-// PID for driving straight
-const float kp = 11.0;
-const float ki = 0.0;
-const float kd = 0.0;
+const float kp = 11.0; //4.45;//0.5;
+const float ki = 0.000; //0.1;//0.0;
+const float kd = 0.0; //-4.0;//0;
 
 //NEVER TOUCH THESE NEXT THREE NUMBERS
 const float distanceToFront = 10.0;
 const float rightObstacleDistance = 40.0;
 const float distanceR = 7.5;
 
+const int Stop = 90;
+
 const long timeInterval = 500;
-int state;
 
 const int possibleFlame = 900; //flame sensor value if it's in the cone
 const int definiteFlame = 22;  //flame sensor value if it's in line up to 8" away
 
 //variables for gyro
+
 float G_Dt = 0.005;  // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
 float G_gain = .010936; // gyros gain factor for 250deg/sec
@@ -134,7 +137,7 @@ void setup() {
   pinMode(A3, INPUT);
   leftDrive.attach(leftMotorPin, 1000, 2000);
   rightDrive.attach(rightMotorPin, 1000, 2000);
-  state = 0;
+  int state = 0;
 
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
