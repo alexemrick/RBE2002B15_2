@@ -8,20 +8,19 @@
  *
  * Other I/O pins
  * - I/O pins 40,41,42,43,44,45 are used for connecting to data lines D4-D7 and control lines on the LCD
- * - LED pins for flame detection on pin 22
- * - Fan control on pin 4
+ * - LED pins for flame detection on pin 27
+ * - Fan control on pin 24
  *
  * Motor pins
- * - VEX motor for left drive on pin 8
- * - VEX motor for right drive on pin 9
+ * - VEX motor for left drive on pin 5
+ * - VEX motor for right drive on pin 4
  *
  * Sensor Pins
- * - Ultrasonics input on pin 3
- * - Ultrasonics output on pin 2
- * - Left Encoder channel A on interrupt port 18
- * - Left Encoder channel B on interrupt port 19
- * - Right Encoder channel A on interrupt port 21
- * - Right Encoder channel B on interrupt port 20
+ * - Ultrasonics on Serial3
+ * - Left Encoder channel A on interrupt port 2
+ * - Left Encoder channel B on interrupt port 3
+ * - Right Encoder channel A on interrupt port 18
+ * - Right Encoder channel B on interrupt port 19
  * - Flame sensor on port A0
  *
  */
@@ -49,7 +48,7 @@ Servo rightDrive;
 Encoder masterEnc(2, 3);
 Encoder slaveEnc(18, 19);
 
-//L3G gyro;
+L3G gyro;
 
 //global variables
 float xDistanceTraveled = 0;
