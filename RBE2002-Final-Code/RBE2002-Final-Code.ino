@@ -36,12 +36,9 @@
 
 //i/o, motor, and sensor pin constants
 #define flameSensorPin A0
-
 #define fanPin 24
-
 #define leftMotorPin 4
 #define rightMotorPin 5
-
 #define ledPin 27
 
 //global variables
@@ -59,17 +56,20 @@ LiquidCrystal lcd(40, 41, 42, 43, 44, 45);
 
 Servo leftDrive;
 Servo rightDrive;
-//Servo fan;
 
 L3G gyro;
 
-char str1[8]; //8?
+char str1[8];
 char str2[8];
 unsigned long timerDR;
 unsigned long timer = 0;
 unsigned long timer1 = 0;
 float lastVAL;
 float currVAL;
+int sequenceCounter = 0;
+int seq2 = 0;
+bool exec = false;
+int highest = 0;
 /*
  * Variables for driving straight
  */
@@ -196,7 +196,8 @@ void setup() {
 void loop()
 {
   state = 0;
-  findCandle();
+ // findCandle();
+ driveStraight();
 }
 
 /*
