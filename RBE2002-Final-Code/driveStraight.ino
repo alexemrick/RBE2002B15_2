@@ -3,10 +3,7 @@
  */
 
 // initialize timer & attach interrupt
-int sequenceCounter = 0;
-int seq2 = 0;
-bool exec = false;
-int highest = 0;
+
 
 void driveStraight() {
 
